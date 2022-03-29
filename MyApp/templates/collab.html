@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <a style=margin-left:1px;" class="navbar-brand" href="/">
+        Accueil
+    </a>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <title>Tableau des Collaborateurs</title>
+</head>
+
+<body>
+{% block content %}
+<table id="tableau" style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
+    <tr style="height:40px;background-color:rgb(197,224,180); "> <!-- tr : ligne / td : colonne -->
+        <td style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">Nom</td>
+        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Prénom</td>
+        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Access</td>
+        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Bon Comm</td>
+    </tr>
+
+    {% for data in data%}
+
+    <tr id="{{data.id_collab}}"
+        style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
+        <td style=" border-right:solid 1px black;">{{data.nom}}</td>
+        <td style="border-right:solid 1px black;">{{data.prenom}}</td>
+        <td style="" ...>{{data.access}}</td>
+
+        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">
+            {% for boncomm in data.boncomms %} {{boncomm.activite}} <br> {% endfor %}
+
+        </td>
+        <td><a href="/see_imput_collab/{{data.id_collab}}">Imputer</a></td>
+        <td rowspan="1" style="border:1px solid black"><a href="/deletecollab/{{data.id_collab}}">Effacer</a></td>
+        <td>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modif{{data.id_collab}}">
+                Modifier
+            </button>
+            <div class="modal fade" id="modif{{data.id_collab}}" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="modifCollab">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modifier le collaborateur</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/modif_collab/{{data.id_collab}}" method="post">
+                                <label for="name">Nom :</label>
+                                <input type="text" id="name" name="nom" placeholder="Changez le nom">
+                                <br>
+                                <label for="prenom">Prénom :</label>
+                                <input type="text" id="prenom" name="prenom" placeholder="Changez le prénom">
+                                <br>
+                                <label for="access">Access :</label>
+                                <input type="number" id="access" value={{data.access}} name="access"
+                                       placeholder="Changez les droits d'accès">
+                                <br>
+                                <button name="button" class="btn btn-primary">Modifier le collaborateur</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}
+<script>
+    function create_url(id_collab) {
+        var id_annee = document.getElementById("choixAn");
+        var annee = id_annee.options[id_annee.selectedIndex].value;
+        var id_mois = document.getElementById("choixMois");
+        var mois = id_mois.options[id_mois.selectedIndex].value;
+        console.log(id_collab);
+        console.log(mois);
+        var url=`/see_imput_collab/${id_collab}/${annee}/${mois}`;
+        console.log(url);
+        document.formulaireDate.action = url;
+	    document.forms["formulaireDate"].submit();
+    }
+
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

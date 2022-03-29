@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <a style=margin-left:1px;" class="navbar-brand" href="/">
+        Retourner à l'accueil
+    </a>
+    <br>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <title>Global</title>
+</head>
+<body>
+{% block content %}
+<div class="title"><h1>- Suivi des imputations -</h1></div>
+<br>
+<table id="tableau" style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
+    <tr style="height:40px;background-color:rgb(197,224,180); ">
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">N°</td>
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">Poste</td>
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">Projet</td>
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">Tâche</td>
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">Etat</td>
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">Jours Alloués</td>
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">Avancement (en %)</td>
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">RAF</td>
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">Consommés</td>
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">Ecart Alloués - (RAF + Conso)</td>
+        {% for collab in collabs %}
+        <td style="height:40px;background-color:rgb(197,224,180); " width="160">
+            {{collab.nom}}
+        </td>
+        {% endfor %}
+    </tr>
+
+    {% for boncomm in boncomms %}
+    <tr style=" border-right:solid 1px black;">
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[1].num}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[1].poste}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[1].projet}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[1].activite}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncomms[boncomm[0]][1]}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[1].jourThq}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncomms[boncomm[0]][2]}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncomms[boncomm[0]][3]}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncomms[boncomm[0]][4]}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncomms[boncomm[0]][5]}}</td>
+    </tr>
+    <tr style=" border-right:solid 1px black;">
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[2].num}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[2].poste}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[2].projet}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[2].activite}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncommsGDP[boncomm[0]][1]}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{boncomm[2].jourThq}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncommsGDP[boncomm[0]][2]}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncommsGDP[boncomm[0]][3]}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncommsGDP[boncomm[0]][4]}}</td>
+        <td style=" border-right:solid 1px black;" width="160">{{valeursBoncomms[boncomm[0]][5]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous">
+</script>
+</body>
+{% endblock content %}
+</html>

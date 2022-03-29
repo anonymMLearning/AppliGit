@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Date</title>
+</head>
+
+<a style=margin-left:1px;" class="navbar-brand" href="/">
+    Accueil
+</a>
+
+<body>
+{% block content %}
+<table id="tableau" style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
+    <tr style="height:40px;background-color:rgb(197,224,180); "> <!-- tr : ligne / td : colonne -->
+        <td style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">Jour</td>
+        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Mois</td>
+        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Annee</td>
+    </tr>
+
+    {% for data3 in data3%}
+
+    <tr style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
+        <td style=" border-right:solid 1px black;">{{data3.jour}}</td>
+        <td style="border-right:solid 1px black;">{{data3.mois}}</td>
+        <td style="" ...>{{data3.annee}}</td>
+
+        {% endfor %}
+</table>
+{% endblock content %}
+</body>
+</html>
