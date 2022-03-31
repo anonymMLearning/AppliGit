@@ -3,6 +3,7 @@
 <head>
     <link rel="shortcut icon" href="C:\Users\a857591\Documents\Projet PyCharm\MyApp\static\atos.png"/>
     <a style=margin-left:1px;" class="navbar-brand" href="/">Accueil</a>
+    <br>
     <meta charset="UTF-8">
     <title>Tableau des activités</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -11,6 +12,7 @@
 </head>
 <body>
 {% block content %}
+<br>
 <table id="tableboncomm" style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
 
 
@@ -34,69 +36,68 @@
         <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Collaborateurs</td>
     </tr>
 
-    {% for data2 in data2%}
+    {% for data in data%}
 
     <tr style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
-        <td width="130" style=" border-right:solid 1px black;">{{data2.activite}}</td>
-        <td width="130" style="border-right:solid 1px black;">{{data2.com}}</td>
-        <td width="130" style="" ...>{{data2.anneeTarif}}</td>
-        <td width="130" style="" ...>{{data2.caAtos}}</td>
-        <td width="130" style="" ...>{{data2.jourThq}}</td>
-        <td width="130" style="" ...>{{data2.delais}}</td>
-        <td width="130" style="" ...>{{data2.montantHT}}</td>
-        <td width="130" style="" ...>{{data2.partEGIS}}</td>
-        <td width="130" style="" ...>{{data2.num}}</td>
-        <td width="80" style="" ...>{{data2.poste}}</td>
-        <td width="80" style="" ...>{{data2.projet}}</td>
-        <td width="65" style="" ...>{{data2.tjm}}</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">{% for collab in
-            data2.collabs %} {{collab.nom}} {{collab.prenom}} <br> {% endfor %}
+        <td width="130" style=" border-right:solid 1px black;">{{data[0].activite}}</td>
+        <td width="130" style="border-right:solid 1px black;">{{data[0].com}}</td>
+        <td width="130" style="" ...>{{data[0].anneeTarif}}</td>
+        <td width="130" style="" ...>{{data[0].caAtos}}</td>
+        <td width="130" style="" ...>{{data[0].jourThq}}</td>
+        <td width="130" style="" ...>{{data[0].delais}}</td>
+        <td width="130" style="" ...>{{data[0].montantHT}}</td>
+        <td width="130" style="" ...>{{data[0].partEGIS}}</td>
+        <td width="130" style="" ...>{{data[0].num}}</td>
+        <td width="80" style="" ...>{{data[0].poste}}</td>
+        <td width="80" style="" ...>{{data[0].projet}}</td>
+        <td width="65" style="" ...>{{data[0].tjm}}</td>
+        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">{% for collabs in
+            data[1] %} {{collabs.collab.nom}} <br> {% endfor %}
         </td>
         <td width="130" rowspan="1" style="border:1px solid black"><a
-                href="/deleteactivite/{{data2.id_acti}}">Effacer</a>
+                href="/deleteactivite/{{data[0].id_acti}}">Effacer</a>
         </td>
         <td>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#modif{{data2.id_acti}}">Modifier
+                    data-bs-target="#modif{{data[0].id_acti}}">Modifier
             </button>
-            <div class="modal fade" id="modif{{data2.id_acti}}" tabindex="-1" aria-hidden="true"
+            <div class="modal fade" id="modif{{data[0].id_acti}}" tabindex="-1" aria-hidden="true"
                  aria-labelledby="modifBoncomm">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Modifier le bon</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <a href="/deleteactivite/{{data[0].id_acti}}">Effacer</a>
                         </div>
                         <div class="modal-body">
-                            <a href="/deleteactivite/{{data2.id_acti}}">Effacer</a>
-                            <br>
-                            <form action="/modif_activite/{{data2.id_acti}}" method="post">
+                            <form action="/modif_activite/{{data[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
                                 <input type="text" id="activite" name="activite">
                                 <br>
-                                <label for="com">Commenataire :</label>
+                                <label for="com">Commentaire :</label>
                                 <input type="text" id="com" name="com">
                                 <br>
                                 <label for="anneeTarif">Année tarifaire :</label>
-                                <input type="number" id="anneeTarif" name="anneeTarif" value={{data2.anneeTarif}}>
+                                <input type="number" id="anneeTarif" name="anneeTarif" value={{data[0].anneeTarif}}>
                                 <br>
                                 <label for="caAtos">CA Atos :</label>
-                                <input type="number" id="caAtos" name="caAtos" value={{data2.caAtos}}>
+                                <input type="number" id="caAtos" name="caAtos" value={{data[0].caAtos}}>
                                 <br>
                                 <label for="jourThq">Jours alloués théoriques :</label>
-                                <input type="number" id="jourThq" name="jourThq" value={{data2.jourThq}}>
+                                <input type="number" id="jourThq" name="jourThq" value={{data[0].jourThq}}>
                                 <br>
                                 <label for="partGDP">Part GdP :</label>
-                                <input type="number" id="partGDP" name="partGDP" value={{data2.partGDP}}>
+                                <input type="number" id="partGDP" name="partGDP" value={{data[0].partGDP}}>
                                 <br>
                                 <label for="delais">Délais :</label>
-                                <input type="number" id="delais" name="delais" value={{data2.delais}}>
+                                <input type="number" id="delais" name="delais" value={{data[0].delais}}>
                                 <br>
                                 <label for="montantHT">Montant HT :</label>
-                                <input type="number" id="montantHT" name="montantHT" value={{data2.montantHT}}>
+                                <input type="number" id="montantHT" name="montantHT" value={{data[0].montantHT}}>
                                 <br>
                                 <label for="partEGIS">Part EGIS :</label>
-                                <input type="number" id="partEGIS" name="partEGIS" value={{data2.partEGIS}}>
+                                <input type="number" id="partEGIS" name="partEGIS" value={{data[0].partEGIS}}>
                                 <br>
                                 <label for="num">Numéro :</label>
                                 <input type="text" id="num" name="num">
@@ -108,22 +109,23 @@
                                 <input type="text" id="projet" name="projet">
                                 <br>
                                 <label for="tjm">TJM :</label>
-                                <input type="number" id="tjm" name="tjm" value={{data2.tjm}}>
+                                <input type="number" id="tjm" name="tjm" value={{data[0].tjm}}>
                                 <br>
                                 <select multiple name="collabs" id="collabs">
-                                    {% for data in data %}
-                                    <option value={{data.id_collab}}>{{data.nom}}</option>
+                                    {% for collab in collabs %}
+                                    <option value={{collab.id_collab}}>{{collab.nom}}</option>
                                     {% endfor %}
                                 </select>
                                 <br>
-                                <select multiple name="collabsGDP" id="collabsGDP">
-                                    {% for data in data %}
-                                    <option value={{data.id_collab}}>{{data.nom}}</option>
-                                    {% endfor %}
-                                </select>
+                                <label>Répartition des jours (pour les collaborateurs sélectionnés) :</label>
                                 <br>
-                                <a> Ne sélectionnez que les nouveaux collaborateurs à ajouter </a>
-                                <br> <br>
+                                {% for collab in collabs %}
+                                <label for="collabs">{{collab.nom}}</label>
+                                <input type="number" step="0.5" id="jours{{collab.id_collab}}"
+                                       name="jours{{collab.id_collab}}">
+                                <br>
+                                {% endfor %}
+                                <br><br>
                                 <button name="button" class="btn btn-primary">Modifier le bon</button>
                             </form>
                         </div>

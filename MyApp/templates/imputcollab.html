@@ -34,6 +34,8 @@
                 {{column[1]}}
             </td>
             {% endfor %}
+            <td width="160">Jours alloués sur ce bon</td>
+            <td width="160">Jours déjà consommés</td>
         </tr>
 
         {% for boncomm in boncomms%}
@@ -46,6 +48,8 @@
                        id="{{boncomm[0].id_acti}}/{{imput[0]}}" value="{{imput[1]}}">
             </td>
             {% endfor %}
+            <td width="160">Jours alloués sur ce bon</td>
+            <td width="160">Jours déjà consommés</td>
         </tr>
         {% endfor %}
     </table>

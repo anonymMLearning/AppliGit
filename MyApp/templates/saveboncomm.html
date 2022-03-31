@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer une activité</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <a style=margin-left:1px;" class="navbar-brand" href="/">Accueil</a>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+
+        <h3>Enregistrer un bon de commande :</h3>
+        <br>
+
+        <form action="/save_boncomm" id="formulaire" method="post">
+            <div class="col-6">
+                <label for="activite">Description du bon de commande :</label>
+                <input type="text" id="activite" name="activite" placeholder="Décrivez l'activité"
+                       required="required">
+                <br>
+                <label for="com">Commentaire :</label>
+                <input type="text" id="com" name="com">
+                <br>
+                <label for="anneeTarif">Année tarifaire :</label>
+                <input type="number" id="anneeTarif" name="anneeTarif" required="required">
+                <br>
+                <label for="caAtos">CA Atos :</label>
+                <input type="number" id="caAtos" name="caAtos" required="required"
+                       onblur="calculjoursthq()">
+                <br>
+                <label for="tjm">TJM :</label>
+                <input type="number" id="tjm" name="tjm" placeholder="TJM actuel" value="500" required="required"
+                       onblur="calculjoursthq()">
+                <br>
+                <label for="jourThq">Jours théoriques alloués :</label>
+                <input type="number" id="jourThq" name="jourThq" required="required">
+                <br>
+                <label for="partGDP">Part Gestion de Projet :</label>
+                <input type="number" id="partGDP" name="partGDP" required="required">
+                <br>
+                <label for="delais">Délais :</label>
+                <input type="number" id="delais" name="delais" required="required">
+                <br>
+                <label for="montantHT">Montant HT :</label>
+                <input type="number" id="montantHT" name="montantHT" required="required">
+                <br>
+                <label for="partEGIS">Part EGIS :</label>
+                <input type="number" id="partEGIS" name="partEGIS" required="required">
+                <br>
+                <label for="num">Numéro du bon :</label>
+                <input type="text" id="num" name="num" required="required">
+                <br>
+                <label for="poste">Poste :</label>
+                <input type="text" id="poste" name="poste" required="required">
+                <br>
+                <label for="projet">Projet :</label>
+                <input type="text" id="projet" name="projet" required="required">
+                <br>
+                <label for="collabs">Liste des collaborateurs concernés :</label>
+                <br>
+                <select multiple name="collabs" id="collabs">
+                    {% for data in data %}
+                    <option name="{{data.id_collab}}" value={{data.id_collab}}>{{data.nom}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <label for="collabs">Liste des collaborateurs pour la GdP :</label>
+                <br>
+                <select multiple name="collabsGDP" id="collabsGDP">
+                    {% for data in data %}
+                    <option value={{data.id_collab}}>{{data.nom}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+            </div>
+            <div class="col-6">
+                <label>Répartition des jours (pour les collaborateurs sélectionnés) :</label>
+                <br>
+                {% for data in data %}
+                <label for="collabs">{{data.nom}}</label>
+                <input type="number" step="0.5" id="jours{{data.id_collab}}" name="jours{{data.id_collab}}">
+                <br>
+                {% endfor %}
+                <br>
+                <label>Répartition des jours de la GdP (pour les collaborateurs sélectionnés) :</label>
+                <br>
+                {% for data in data %}
+                <label for="collabs">{{data.nom}}</label>
+                <input type="number" step="0.5" id="joursGDP{{data.id_collab}}" name="joursGDP{{data.id_collab}}">
+                <br>
+                {% endfor %}
+            </div>
+            <button name="button">Enregistrer le BC</button>
+        </form>
+    </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous">
+</script>
+<script>function calculjoursthq(){
+                            var caAtos = parseFloat(document.getElementById("formulaire").elements["caAtos"].value);
+                            var tjm = parseFloat(document.getElementById("formulaire").elements["tjm"].value);
+                            var jAllouesThq= caAtos / tjm;
+                            document.getElementById("formulaire").elements["jourThq"].value=jAllouesThq;
+                            document.getElementById("formulaire").elements["partGDP"].value = jAllouesThq*0.2;}
+
+
+
+
+
+</script>
+</body>
+</html>

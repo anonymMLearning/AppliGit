@@ -97,15 +97,75 @@ imp = db.session.query(Imputation).filter(Imputation.date_id == 35,
 imp = db.session.query(Imputation).all()
 #print(imp[0].get_jours())
 """
-
+"""
 collabs=db.session.query(Collab).all()
-print(collabs)
+#print(collabs)
 collab = collabs[0]
-print(collab.nom)
+#print(collab.nom)
 boncomms = collab.boncomms
-print(boncomms)
+#print(boncomms)
 for boncomm in boncomms:
     if boncomm.nbCongesTot !=0:
         print(boncomm.activite)
         boncomms.remove(boncomm)
+#print(boncomms)"""
+
+collabs = db.session.query(Collab).all()
+# for collab in collabs:
+
+# print(collab.boncomms)
+"""
+data2 = db.session.query(Boncomm).filter(Boncomm.nbJoursFormation == 0, Boncomm.nbCongesTot == 0,
+                                                                         Boncomm.nbJoursAutre == 0).all()
+                                        
+print(data2)
+for boncomm in data2:
+    print(boncomm.collabs[0].collab)
+
+collab = db.session.query(Collab).get(1)
+assos = collab.boncomms
+boncomms = []
+for asso in assos:
+    boncomms.append(asso.boncomm)
 print(boncomms)
+for boncomm in boncomms:
+    imputation = db.session.query(Imputation).filter(
+        Imputation.acti_id == boncomm.id_acti,
+        Imputation.collab_id == 2,
+        Imputation.date_id == 3
+    ).all()
+    if imputation[0] == []:
+        print(imp)"""
+
+boncomm = db.session.query(Boncomm).get(1)
+data = []
+# for boncomm in boncomms:
+# print(boncomm)
+"""collabs = db.session.query(Collab).all()
+data = []
+for collab in collabs:
+    boncomms = collab.boncomms
+    for i in range(len(boncomms)):
+        print(boncomms[i].boncomm)
+collabs = boncomm.collabs
+for collab in collabs:
+    print(collab.collab.id_collab)
+
+boncomm = db.session.query(Boncomm).get(5)
+print(boncomm.activite)
+assocs=db.session.query(AssociationBoncommCollab).filter(AssociationBoncommCollab.boncomm_id==5).all()
+for assoc in assocs:
+    print(assoc.joursAllouesBC)"""
+
+collabs = db.session.query(Collab).all()
+imputations = db.session.query(Imputation).all()
+boncomms = []
+bons = db.session.query(Boncomm).filter(Boncomm.nbJoursFormation == 0, Boncomm.nbCongesTot == 0,
+                                        Boncomm.nbJoursAutre == 0).all()
+bonsGDP = []
+for bon in bons:  # On ne veut pas les parts de GdP
+    if bon.activite[0:4] == "CP -":
+        bonsGDP.append(bon)
+        bons.remove(bon)
+print(len(bons))
+print(len(bonsGDP))

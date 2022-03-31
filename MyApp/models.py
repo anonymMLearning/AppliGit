@@ -10,10 +10,19 @@ from jours_feries_france import JoursFeries
 # Create database connection object
 db = SQLAlchemy(app)
 
-assoBoncommCollab = db.Table('assoBoncommCollab',
+"""assoBoncommCollab = db.Table('assoBoncommCollab',
                              db.Column('boncomm_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True),
                              db.Column('collab_id', db.Integer, db.ForeignKey('boncomm.id_acti'), primary_key=True)
                              )
+"""
+
+
+class AssociationBoncommCollab(db.Model):
+    boncomm_id = db.Column('boncomm_id', db.Integer, db.ForeignKey('boncomm.id_acti'), primary_key=True)
+    collab_id = db.Column('collab_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True)
+    joursAllouesBC = db.Column(db.Integer, nullable=False)
+    collab = db.relationship("Collab", back_populates="boncomms")
+    boncomm = db.relationship("Boncomm", back_populates="collabs")
 
 
 class Collab(db.Model):
@@ -47,7 +56,7 @@ class Collab(db.Model):
     prenom = db.Column(db.String(30), nullable=False)
     access = db.Column(db.Integer, nullable=False)
     imputations = db.relationship('Imputation', backref='collab', uselist=False)
-    boncomms = db.relationship('Boncomm', secondary=assoBoncommCollab, back_populates="collabs")
+    boncomms = db.relationship('AssociationBoncommCollab', back_populates="collab")
 
     def __init__(self, nom, prenom, access):
         self.nom = nom
@@ -142,7 +151,7 @@ class Boncomm(db.Model):
             __init__(self, activite, com, anneeTarif, caAtos, jourThq, delais, montantHT, partEGIS, num, poste, projet, tjm)
                constructeur de la classe
             """
-    id_acti = db.Column(db.Integer, primary_key=True)
+    id_acti = db.Column(db.Integer, primary_key=True, autoincrement=True)
     activite = db.Column(db.String(100))
     com = db.Column(db.String(100))
     anneeTarif = db.Column(db.Integer)
@@ -161,7 +170,7 @@ class Boncomm(db.Model):
     nbCongesPose = db.Column(db.Float)
     nbJoursAutre = db.Column(db.Float)
     imputations = db.relationship('Imputation', backref='boncomm', uselist=False)
-    collabs = db.relationship('Collab', secondary=assoBoncommCollab, back_populates="boncomms")
+    collabs = db.relationship('AssociationBoncommCollab', back_populates="boncomm")
 
     def __init__(self, activite, com, anneeTarif, caAtos, jourThq, delais, montantHT, partEGIS, num, poste,
                  projet, tjm, horsProjet, nbJoursFormation, nbCongesTot, nbCongesPose, nbJoursAutre):
@@ -267,7 +276,10 @@ def columnMois(mois, annee):
 
 def valeursGlobales(boncomm):
     joursConsommes = 0
-    collabs = boncomm.collabs
+    assoCollabs = boncomm.collabs
+    collabs = []
+    for asso in assoCollabs:
+        collabs.append(asso.collab)
     consoCollabs = []
     for collab in collabs:
         joursConsommesCollab = 0

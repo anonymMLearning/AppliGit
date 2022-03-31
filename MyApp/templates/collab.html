@@ -24,24 +24,23 @@
 
     {% for data in data%}
 
-    <tr id="{{data.id_collab}}"
+    <tr id="{{data[0].id_collab}}"
         style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
-        <td style=" border-right:solid 1px black;">{{data.nom}}</td>
-        <td style="border-right:solid 1px black;">{{data.prenom}}</td>
-        <td style="" ...>{{data.access}}</td>
+        <td style=" border-right:solid 1px black;">{{data[0].nom}}</td>
+        <td style="border-right:solid 1px black;">{{data[0].prenom}}</td>
+        <td style="" ...>{{data[0].access}}</td>
 
         <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">
-            {% for boncomm in data.boncomms %} {{boncomm.activite}} <br> {% endfor %}
+            {% for boncomm in data[1] %} {{boncomm.activite}} <br> {% endfor %}
 
         </td>
-        <td><a href="/see_imput_collab/{{data.id_collab}}">Imputer</a></td>
-        <td rowspan="1" style="border:1px solid black"><a href="/deletecollab/{{data.id_collab}}">Effacer</a></td>
+        <td><a href="/see_imput_collab/{{data[0].id_collab}}">Imputer</a></td>
         <td>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#modif{{data.id_collab}}">
+                    data-bs-target="#modif{{data[0].id_collab}}">
                 Modifier
             </button>
-            <div class="modal fade" id="modif{{data.id_collab}}" tabindex="-1" aria-hidden="true"
+            <div class="modal fade" id="modif{{data[0].id_collab}}" tabindex="-1" aria-hidden="true"
                  aria-labelledby="modifCollab">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -50,7 +49,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="/modif_collab/{{data.id_collab}}" method="post">
+                            <form action="/modif_collab/{{data[0].id_collab}}" method="post">
                                 <label for="name">Nom :</label>
                                 <input type="text" id="name" name="nom" placeholder="Changez le nom">
                                 <br>
@@ -58,7 +57,7 @@
                                 <input type="text" id="prenom" name="prenom" placeholder="Changez le prénom">
                                 <br>
                                 <label for="access">Access :</label>
-                                <input type="number" id="access" value={{data.access}} name="access"
+                                <input type="number" id="access" value={{data[0].access}} name="access"
                                        placeholder="Changez les droits d'accès">
                                 <br>
                                 <button name="button" class="btn btn-primary">Modifier le collaborateur</button>
