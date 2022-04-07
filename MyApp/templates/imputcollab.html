@@ -2,9 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <a style=margin-left:1px;" class="navbar-brand" href="/see_data_collab">
-        Retourner aux collaborateurs
-    </a>
+    <nav class="bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_archives">Archives</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_global">Imputations globales</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_conges">Congés</a>
+                </li>
+                {% for data in data %}
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_collab/{{data.id_collab}}/{{annee_courant}}/{{mois_courant}}">{{data.nom}}
+                        {{data.prenom}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
     <br>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -15,44 +42,65 @@
 <body>
 {% block content %}
 <br>
-<h1>Imputations de {{collab.prenom}} {{collab.nom}} - {{mois}}/{{annee}}</h1>
+<h1 style="text-align:center; margin-bottom: 50px;">Imputations de {{collab.prenom}} {{collab.nom}} - {{mois}}/{{annee}}</h1>
 <br>
-<form action="/save_imputation/{{collab.id_collab}}/{{annee}}/{{mois}}" id="formulaire" method="post">
-    <table id="tableau" style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
+<form action="/save_imputation/{{collab.id_collab}}/{{annee}}/{{mois}}" name="formulaire" id="formulaire" method="post">
+    <table id="tableau" style=" margin-left:10px;   text-align:center;   table-layout: fixed;">
         <tr style="height:40px;background-color:rgb(197,224,180); "> <!-- tr : ligne / td : colonne -->
-            <td width="160" style="...">N° Semaine</td>
+            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">N°
+                Semaine
+            </td>
             {%for column in columns%}
-            <td id="{{column[0]}}" name="{{column[0]}}" width="160" style="...">
+            <td id="{{column[0]}}" name="{{column[0]}}" width="160"
+                style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
                 {{column[0]}}
             </td>
             {% endfor %}
         </tr>
-        <tr style="height:40px;background-color:rgb(197,224,180); ">
-            <td width="160" style="...">Jours disponibles</td>
+        <tr style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+                Jours disponibles
+            </td>
             {%for column in columns%}
-            <td width="160" style="...">
+            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
                 {{column[1]}}
             </td>
             {% endfor %}
+            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+                Jours alloués sur ce bon
+            </td>
+            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+                Jours déjà consommés
+            </td>
         </tr>
 
         {% for boncomm in boncomms%}
         <tr id="{{boncomm[0].id_acti}}"
-            style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
-            <td width="160" style=" border-right:solid 1px black;">{{boncomm[0].activite}}</td>
+            style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+                {{boncomm[0].activite}}
+            </td>
             {%for imput in boncomm[1] %}
-            <td width="160">
+            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;">
                 <input type="number" step="0.5" name="{{boncomm[0].id_acti}}/{{imput[0]}}"
                        id="{{boncomm[0].id_acti}}/{{imput[0]}}" value="{{imput[1]}}">
             </td>
             {% endfor %}
+            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+                {{boncomm[2]}}
+            </td>
+            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+                {{boncomm[3]}}
+            </td>
         </tr>
         {% endfor %}
     </table>
 
     <br>
+    <div class="position-absolute start-50 translate-middle">
+        <input style="center" type="submit" value="Enregistrer">
+    </div>
 
-    <input type="submit" value="Enregistrer">
 </form>
 
 
@@ -60,7 +108,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous">
+</script>
 </body>
 {% endblock content %}
 </html>

@@ -2,36 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <nav class="bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_archives">Archives</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_global">Imputations globales</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_conges">Congés</a>
+                </li>
+                {% for data in data %}
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_collab/{{data.id_collab}}/{{annee}}/{{mois}}">{{data.nom}}
+                        {{data.prenom}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
+    <br>
     <title>Congés</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 </head>
 <body>
-    <table style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;" id="tableconges">
-        <tr style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
-            <td style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;"></td>
-            {% for collab in collabs %}
-            <td style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
-                <a>{{collab.nom}} {{collab.prenom}}</a>
-            </td>
-            {% endfor %}
-        </tr>
-        <tr style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
-            <td style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
-                Congés
-            </td>
-            {% for collab in collabs %}
-            <td style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
+<br>
+{% block content %}
+<table style="margin-left:10px; margin-right:10px;  text-align:center;   table-layout: fixed;" id="tableconges">
+    <tr style=" border-right:solid 1px black; border-left:solid 1px black; border-top:solid 1px black;border-bottom:solid 1px black;background-color:rgb(70,130,180);">
+        <td style=" border-right:solid 1px black;background-color:rgb(70,130,180);" width="200"></td>
+        <td style=" border-right:solid 1px black;background-color:rgb(70,130,180);" width="150">Nombre de congés</td>
+        <td style=" border-right:solid 1px black;background-color:rgb(70,130,180);" width="150">Nombre de congés posés
+        </td>
+        <td style=" border-right:solid 1px black;background-color:rgb(70,130,180);" width="200"></td>
+    </tr>
+    {% for collab in collabs %}
+    <tr style=" border-right:solid 1px black; border-left:solid 1px black; border-top:solid 1px black;border-bottom:solid 1px black;">
+        <td style=" border-right:solid 1px black;">{{collab[1].prenom}} {{collab[1].nom}}</td>
+        <td style=" border-right:solid 1px black;">{{conges[collab[0]].nbCongesTot}}</td>
+        <td style=" border-right:solid 1px black;">{{conges[collab[0]].nbCongesPose}}</td>
+        <td style=" border-right:solid 1px black;" width="200"><a style="margin-left:10px; font-weight:bold;"
+       href="/see_poser_conges/{{collab[1].id_collab}}">Poser des congés</a></td>
+    </tr>
+    {% endfor %}
+</table>
 
-            </td>
-            {% endfor %}
-        </tr>
-
-    </table>
+<br>
+<br>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous">
+</script>
 </body>
+{% endblock content %}
 </html>

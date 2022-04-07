@@ -5,9 +5,36 @@
     <title>Date</title>
 </head>
 
-<a style=margin-left:1px;" class="navbar-brand" href="/">
-    Accueil
-</a>
+<nav class="bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_archives">Archives</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_global">Imputations globales</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_conges">Congés</a>
+                </li>
+                {% for data in data %}
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_collab/{{data.id_collab}}/{{annee}}/{{mois}}">{{data.nom}}
+                        {{data.prenom}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
 
 <body>
 {% block content %}

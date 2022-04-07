@@ -2,7 +2,37 @@
 <html lang="en">
 <head>
     <link rel="shortcut icon" href="C:\Users\a857591\Documents\Projet PyCharm\MyApp\static\atos.png"/>
-    <a style=margin-left:1px;" class="navbar-brand" href="/">Accueil</a>
+    <nav class="bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_archives">Archives</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_global">Imputations globales</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_conges">Congés</a>
+                </li>
+                {% for data_navbar in data_navbar %}
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_collab/{{data_navbar.id_collab}}/{{annee}}/{{mois}}">{{data_navbar.nom}}
+                        {{data_navbar.prenom}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
+    <br>
     <meta charset="UTF-8">
     <title>Tableau des activités</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -11,7 +41,192 @@
 </head>
 <body>
 {% block content %}
-<table id="tableboncomm" style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <button style="margin-bottom: 30px;" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#saveboncomm">
+                Créer un BC
+            </button>
+            <div class="modal fade" id="saveboncomm" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="saveboncomm">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Créer un BC</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/save_boncomm" id="formulaire" method="post">
+                                <div class="col-6">
+                                    <label for="activiteBC">Description du bon de commande :</label>
+                                    <input type="text" id="activiteBC" name="activiteBC"
+                                           placeholder="Décrivez l'activité"
+                                           required="required">
+                                    <br>
+                                    <label for="comBC">Commentaire :</label>
+                                    <input type="text" id="comBC" name="comBC">
+                                    <br>
+                                    <label for="anneeTarifBC">Année tarifaire :</label>
+                                    <input type="number" id="anneeTarifBC" name="anneeTarifBC" required="required">
+                                    <br>
+                                    <label for="caAtosBC">CA Atos :</label>
+                                    <input type="number" id="caAtosBC" name="caAtosBC" required="required"
+                                           onblur="calculjoursthq()">
+                                    <br>
+                                    <label for="tjmBC">Taux Journalier Moyen :</label>
+                                    <input type="number" id="tjmBC" name="tjmBC" placeholder="TJM actuel" value="500"
+                                           required="required"
+                                           onblur="calculjoursthq()">
+                                    <br>
+                                    <label for="jourThqBC">Jours théoriques alloués :</label>
+                                    <input type="number" id="jourThqBC" name="jourThqBC" required="required">
+                                    <br>
+                                    <label for="partGDPBC">Part Gestion de Projet :</label>
+                                    <input type="number" id="partGDPBC" name="partGDPBC" required="required">
+                                    <br>
+                                    <label for="delaisBC">Délais :</label>
+                                    <input type="number" id="delaisBC" name="delaisBC" required="required">
+                                    <br>
+                                    <label for="montantHTBC">Montant HT :</label>
+                                    <input type="number" id="montantHTBC" name="montantHTBC" required="required">
+                                    <br>
+                                    <label for="partEGISBC">Part EGIS :</label>
+                                    <input type="number" id="partEGISBC" name="partEGISBC" required="required">
+                                    <br>
+                                    <label for="numBC">Numéro du bon :</label>
+                                    <input type="text" id="numBC" name="numBC" required="required">
+                                    <br>
+                                    <label for="posteBC">Poste :</label>
+                                    <input type="text" id="posteBC" name="posteBC" required="required">
+                                    <br>
+                                    <label for="projetBC">Projet :</label>
+                                    <input type="text" id="projetBC" name="projetBC" required="required">
+                                    <br>
+                                    <label for="collabsBC">Liste des collaborateurs concernés :</label>
+                                    <br>
+                                    <select multiple name="collabsBC" id="collabsBC">
+                                        {% for collab in collabs %}
+                                        <option name="{{collab.id_collab}}" value={{collab.id_collab}}>
+                                            {{collab.nom}}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <br>
+                                </div>
+                                <div class="col-6">
+                                    <label>Répartition des jours (pour les collaborateurs sélectionnés) :</label>
+                                    <br>
+                                    {% for collab in collabs %}
+                                    <label>{{collab.nom}}</label>
+                                    <input type="number" step="0.5" id="joursBC{{collab.id_collab}}"
+                                           name="joursBC{{collab.id_collab}}">
+                                    <br>
+                                    {% endfor %}
+                                </div>
+                                <button name="button">Enregistrer le BC</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <button style="margin-bottom: 30px;" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#saveformation">
+                Créer une formation
+            </button>
+            <div class="modal fade" id="saveformation" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="saveformation">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Créer une formation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/save_formation" id="formulaire2" method="post">
+                                <label for="activite2">Description du bon de commande :</label>
+                                <input type="text" id="activite2" name="activite2" placeholder="Décrivez l'activité"
+                                       required="required">
+                                <br>
+                                <label for="com2">Commentaire :</label>
+                                <input type="text" id="com2" name="com2">
+                                <br>
+                                <label for="anneeTarif2">Année :</label>
+                                <input type="number" id="anneeTarif2" name="anneeTarif2" required="required">
+                                <br>
+                                <label for="hprojet">Formation hors projet :</label>
+                                <select name="hprojet" id="hprojet">
+                                    <option value="Oui">Oui</option>
+                                    <option value="Non">Non</option>
+                                </select>
+                                <br>
+                                <label for="nbjoursformation">Nombres de jours :</label>
+                                <input type="number" step="0.5" id="nbjoursformation" name="nbjoursformation"
+                                       required="required">
+                                <br>
+                                <select multiple name="collabs2" id="collabs2">
+                                    {% for collab in collabs %}
+                                    <option value={{collab.id_collab}}>{{collab.nom}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <button name="button">Enregistrer la formation</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <button style="margin-bottom: 30px;" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#saveautre">
+                Créer une autre activité
+            </button>
+            <div class="modal fade" id="saveautre" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="saveautre">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Créer une autre activité</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/save_autre" id="formulaire3" method="post">
+                                <label for="activite3">Description :</label>
+                                <input type="text" id="activite3" name="activite3"
+                                       required="required">
+                                <br>
+                                <label for="com3">Commentaire :</label>
+                                <input type="text" id="com3" name="com3">
+                                <br>
+                                <label for="anneeTarif3">Année :</label>
+                                <input type="number" id="anneeTarif3" name="anneeTarif3" required="required">
+                                <br>
+                                <label for="nbjoursautre">Nombre de jours :</label>
+                                <input type="number" id="nbjoursautre" name="nbjoursautre" required="required">
+                                <br>
+                                <select multiple name="collabs3" id="collabs3">
+                                    {% for collab in collabs %}
+                                    <option value={{collab.id_collab}}>{{collab.nom}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <button name="button">Enregistrer l'activité</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="tableboncomm" style="margin-left:10px;   text-align:center;   table-layout: fixed;">
 
 
     <tr style="height:40px;background-color:rgb(197,224,180); ">
@@ -34,32 +249,61 @@
         <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Collaborateurs</td>
     </tr>
 
-    {% for data2 in data2%}
+    {% for data in data%}
 
-    <tr style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
-        <td width="130" style=" border-right:solid 1px black;">{{data2.activite}}</td>
-        <td width="130" style="border-right:solid 1px black;">{{data2.com}}</td>
-        <td width="130" style="" ...>{{data2.anneeTarif}}</td>
-        <td width="130" style="" ...>{{data2.caAtos}}</td>
-        <td width="130" style="" ...>{{data2.jourThq}}</td>
-        <td width="130" style="" ...>{{data2.delais}}</td>
-        <td width="130" style="" ...>{{data2.montantHT}}</td>
-        <td width="130" style="" ...>{{data2.partEGIS}}</td>
-        <td width="130" style="" ...>{{data2.num}}</td>
-        <td width="80" style="" ...>{{data2.poste}}</td>
-        <td width="80" style="" ...>{{data2.projet}}</td>
-        <td width="65" style="" ...>{{data2.tjm}}</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">{% for collab in
-            data2.collabs %} {{collab.nom}} {{collab.prenom}} <br> {% endfor %}
-        </td>
-        <td width="130" rowspan="1" style="border:1px solid black"><a
-                href="/deleteactivite/{{data2.id_acti}}">Effacer</a>
+    <tr style="color: rgb(82,82,82) ;border: 1px solid black;padding:15px;">
+        <td width="130" style=" border-right:solid 1px black;">{{data[0].activite}}</td>
+        <td width="130" style="border-right:solid 1px black;">{{data[0].com}}</td>
+        <td width="130" style="" ...>{{data[0].anneeTarif}}</td>
+        <td width="130" style="" ...>{{data[0].caAtos}}</td>
+        <td width="130" style="" ...>{{data[0].jourThq}}</td>
+        <td width="130" style="" ...>{{data[0].delais}}</td>
+        <td width="130" style="" ...>{{data[0].montantHT}}</td>
+        <td width="130" style="" ...>{{data[0].partEGIS}}</td>
+        <td width="130" style="" ...>{{data[0].num}}</td>
+        <td width="80" style="" ...>{{data[0].poste}}</td>
+        <td width="80" style="" ...>{{data[0].projet}}</td>
+        <td width="65" style="" ...>{{data[0].tjm}}</td>
+        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">{% for collabs in
+            data[1] %} {{collabs.collab.nom}} <br> {% endfor %}
         </td>
         <td>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#modif{{data2.id_acti}}">Modifier
+                    data-bs-target="#effacer{{data[0].id_acti}}">
+                Effacer
             </button>
-            <div class="modal fade" id="modif{{data2.id_acti}}" tabindex="-1" aria-hidden="true"
+            <div class="modal fade" id="effacer{{data[0].id_acti}}" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="effacerBC">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Effacer le BC</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label>Voulez-vous vraiment supprimer ce BC ?</label>
+                            <br>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a href="/deleteactivite/{{data[0].id_acti}}">Oui</a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="/see_data_boncomm">Non</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modif{{data[0].id_acti}}">Modifier
+            </button>
+            <div class="modal fade" id="modif{{data[0].id_acti}}" tabindex="-1" aria-hidden="true"
                  aria-labelledby="modifBoncomm">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -68,35 +312,33 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <a href="/deleteactivite/{{data2.id_acti}}">Effacer</a>
-                            <br>
-                            <form action="/modif_activite/{{data2.id_acti}}" method="post">
+                            <form action="/modif_activite/{{data[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
                                 <input type="text" id="activite" name="activite">
                                 <br>
-                                <label for="com">Commenataire :</label>
+                                <label for="com">Commentaire :</label>
                                 <input type="text" id="com" name="com">
                                 <br>
                                 <label for="anneeTarif">Année tarifaire :</label>
-                                <input type="number" id="anneeTarif" name="anneeTarif" value={{data2.anneeTarif}}>
+                                <input type="number" id="anneeTarif" name="anneeTarif" value={{data[0].anneeTarif}}>
                                 <br>
                                 <label for="caAtos">CA Atos :</label>
-                                <input type="number" id="caAtos" name="caAtos" value={{data2.caAtos}}>
+                                <input type="number" id="caAtos" name="caAtos" value={{data[0].caAtos}}>
                                 <br>
                                 <label for="jourThq">Jours alloués théoriques :</label>
-                                <input type="number" id="jourThq" name="jourThq" value={{data2.jourThq}}>
+                                <input type="number" id="jourThq" name="jourThq" value={{data[0].jourThq}}>
                                 <br>
                                 <label for="partGDP">Part GdP :</label>
-                                <input type="number" id="partGDP" name="partGDP" value={{data2.partGDP}}>
+                                <input type="number" id="partGDP" name="partGDP" value={{data[0].partGDP}}>
                                 <br>
                                 <label for="delais">Délais :</label>
-                                <input type="number" id="delais" name="delais" value={{data2.delais}}>
+                                <input type="number" id="delais" name="delais" value={{data[0].delais}}>
                                 <br>
                                 <label for="montantHT">Montant HT :</label>
-                                <input type="number" id="montantHT" name="montantHT" value={{data2.montantHT}}>
+                                <input type="number" id="montantHT" name="montantHT" value={{data[0].montantHT}}>
                                 <br>
                                 <label for="partEGIS">Part EGIS :</label>
-                                <input type="number" id="partEGIS" name="partEGIS" value={{data2.partEGIS}}>
+                                <input type="number" id="partEGIS" name="partEGIS" value={{data[0].partEGIS}}>
                                 <br>
                                 <label for="num">Numéro :</label>
                                 <input type="text" id="num" name="num">
@@ -108,22 +350,23 @@
                                 <input type="text" id="projet" name="projet">
                                 <br>
                                 <label for="tjm">TJM :</label>
-                                <input type="number" id="tjm" name="tjm" value={{data2.tjm}}>
+                                <input type="number" id="tjm" name="tjm" value={{data[0].tjm}}>
                                 <br>
                                 <select multiple name="collabs" id="collabs">
-                                    {% for data in data %}
-                                    <option value={{data.id_collab}}>{{data.nom}}</option>
+                                    {% for collab in collabs %}
+                                    <option value={{collab.id_collab}}>{{collab.nom}}</option>
                                     {% endfor %}
                                 </select>
                                 <br>
-                                <select multiple name="collabsGDP" id="collabsGDP">
-                                    {% for data in data %}
-                                    <option value={{data.id_collab}}>{{data.nom}}</option>
-                                    {% endfor %}
-                                </select>
+                                <label>Répartition des jours (pour les collaborateurs sélectionnés) :</label>
                                 <br>
-                                <a> Ne sélectionnez que les nouveaux collaborateurs à ajouter </a>
-                                <br> <br>
+                                {% for collab in collabs %}
+                                <label for="collabs">{{collab.nom}}</label>
+                                <input type="number" step="0.5" id="jours{{collab.id_collab}}"
+                                       name="jours{{collab.id_collab}}">
+                                <br>
+                                {% endfor %}
+                                <br><br>
                                 <button name="button" class="btn btn-primary">Modifier le bon</button>
                             </form>
                         </div>
@@ -138,5 +381,16 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script>function calculjoursthq(){
+                            var caAtos = parseFloat(document.getElementById("formulaire").elements["caAtosBC"].value);
+                            var tjm = parseFloat(document.getElementById("formulaire").elements["tjmBC"].value);
+                            var jAllouesThq= caAtos / tjm;
+                            document.getElementById("formulaire").elements["jourThqBC"].value=jAllouesThq;
+                            document.getElementById("formulaire").elements["partGDPBC"].value = jAllouesThq*0.2;}
+
+
+
+
+</script>
 </body>
 </html>
