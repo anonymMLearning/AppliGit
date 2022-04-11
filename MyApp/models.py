@@ -251,6 +251,9 @@ class Date(db.Model):
                 return True
         return False
 
+    def jourSemaine(self):
+        return self.transfoDate().weekday()
+
 
 def columnMois(mois, annee):
     dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
@@ -274,6 +277,25 @@ def columnMois(mois, annee):
     return columns
 
 
+def columnMoisWeekEnd(mois, annee):
+    dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
+    columns = []
+    numSem = dates[0].numSemaine()
+    joursDispo = 0
+    for date in dates:
+        if date.numSemaine() == numSem:
+            if not date.estFerie():
+                joursDispo += 1
+        else:
+            columns.append([numSem, joursDispo])
+            numSem = date.numSemaine()
+            joursDispo = 0
+            if not date.estFerie():
+                joursDispo += 1
+    columns.append([numSem, joursDispo])
+    return columns
+
+
 def valeursGlobales(boncomm):
     joursConsommes = 0
     assoCollabs = boncomm.collabs
@@ -290,7 +312,7 @@ def valeursGlobales(boncomm):
         consoCollabs.append(joursConsommesCollab)
         joursConsommes += joursConsommesCollab
     raf = boncomm.jourThq - joursConsommes
-    avancement = joursConsommes / boncomm.jourThq * 100
+    avancement = int(joursConsommes / boncomm.jourThq * 100)
     ecart = boncomm.jourThq - (raf + joursConsommes)
     etat = ""
     if joursConsommes == boncomm.jourThq:
@@ -300,6 +322,18 @@ def valeursGlobales(boncomm):
     else:
         etat = "HB"
     return [consoCollabs, etat, avancement, raf, joursConsommes, ecart]
+
+
+def nbJoursMois(mois, annee):
+    if mois == 1 or mois == 3 or mois == 5 or mois == 7 or mois == 8 or mois == 10 or mois == 12:
+        return 31
+    elif mois == 2:
+        if (annee - 2020) % 4 == 0:
+            return 29
+        else:
+            return 28
+    else:
+        return 30
 
 
 db.create_all()

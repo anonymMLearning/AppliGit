@@ -155,7 +155,7 @@ boncomm = db.session.query(Boncomm).get(5)
 print(boncomm.activite)
 assocs=db.session.query(AssociationBoncommCollab).filter(AssociationBoncommCollab.boncomm_id==5).all()
 for assoc in assocs:
-    print(assoc.joursAllouesBC)"""
+    print(assoc.joursAllouesBC)
 
 collabs = db.session.query(Collab).all()
 imputations = db.session.query(Imputation).all()
@@ -168,4 +168,18 @@ for bon in bons:  # On ne veut pas les parts de GdP
         bonsGDP.append(bon)
         bons.remove(bon)
 print(len(bons))
-print(len(bonsGDP))
+print(len(bonsGDP))"""
+
+collab = db.session.query(Collab).get(5)
+assos = collab.boncomms
+for asso in assos:
+    if asso.boncomm.nbCongesTot != 0:
+        conges = boncomm
+
+date = db.session.query(Date).filter(Date.annee == 2021, Date.mois == 2, Date.jour == 22).all()
+date = date[0]
+imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
+                                          Imputation.collab_id == collab.id_collab,
+                                          Imputation.acti_id == conges.id_acti).all()[0]
+imp.joursAllouesTache = 1
+db.session.commit()

@@ -2,7 +2,36 @@
 <html lang="en">
 <head>
     <link rel="shortcut icon" href="C:\Users\a857591\Documents\Projet PyCharm\MyApp\static\atos.png"/>
-    <a style=margin-left:1px;" class="navbar-brand" href="/">Accueil</a>
+    <nav class="bg-light" style="border-bottom : 2px solid blue">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_archives">Archives</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_global">Imputations globales</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_conges">Congés</a>
+                </li>
+                {% for data_navbar in data_navbar %}
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_collab/{{data_navbar.id_collab}}/{{annee}}/{{mois}}">{{data_navbar.nom}}
+                        {{data_navbar.prenom}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
     <br>
     <meta charset="UTF-8">
     <title>Tableau des activités</title>
@@ -13,51 +42,374 @@
 <body>
 {% block content %}
 <br>
-<table id="tableboncomm" style="width:45%; margin-left:10px;   text-align:center;   table-layout: fixed;">
+<div style="text-align:center; margin-bottom : 20px" class="title"><h1 class="text-primary">- Tableau des activités
+    -</h1></div>
+<br>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin-left: 20px; margin-right:20px; margin-bottom: 20px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px" class="text-primary">Ce tableau contient la liste des activités, avec la liste des
+            collaborateurs qui imputent sur chacune d'entre elles. <br>
+            Pour modifier ou effacer une activité, cliquer sur les boutons associés sur la ligne de l'activité en
+            question.
+            <h5 class="text-danger">Attention : La suppression d'une activité entraine la suppression des imputations
+                des collaborateurs liés à ce bon !</h5></h5>
+    </div>
+</div>
+<h5 style="margin-left: 20px; margin-top: 20px;margin-bottom: 20px" class="text-primary font-italic">Pour enregistrer
+    une nouvelle activité, cliquer sur le bouton associé : </h5>
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <button style="margin-bottom: 20px;background-image: var(--bs-gradient);" type="button"
+                    class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#saveboncomm">
+                Créer un BC
+            </button>
+            <div class="modal fade" id="saveboncomm" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="saveboncomm">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Créer un BC</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/save_boncomm" id="formulaire" method="post">
+
+                                <label class="form-label text-primary" for="activiteBC">Description du bon de commande
+                                    :</label>
+                                <input class="text-primary form-control" type="text" id="activiteBC" name="activiteBC"
+                                       placeholder="Décrivez l'activité"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="comBC">Commentaire :</label>
+                                <input class="text-primary form-control" type="text" id="comBC" name="comBC">
+                                <br>
+                                <label class="form-label text-primary" for="anneeTarifBC">Année tarifaire :</label>
+                                <input class="text-primary form-control" type="number" id="anneeTarifBC"
+                                       name="anneeTarifBC" required="required">
+                                <br>
+                                <label class="form-label text-primary" for="caAtosBC">CA Atos :</label>
+                                <input class="text-primary form-control" type="number" id="caAtosBC" name="caAtosBC"
+                                       required="required"
+                                       onblur="calculjoursthq()">
+                                <br>
+                                <label class="form-label text-primary" for="tjmBC">Taux Journalier Moyen :</label>
+                                <input class="text-primary form-control" type="number" id="tjmBC" name="tjmBC"
+                                       placeholder="TJM actuel" value="500"
+                                       required="required"
+                                       onblur="calculjoursthq()">
+                                <br>
+                                <label class="form-label text-primary" for="jourThqBC">Jours théoriques alloués
+                                    :</label>
+                                <input class="text-primary form-control" type="number" id="jourThqBC" name="jourThqBC"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="partGDPBC">Part Gestion de Projet :</label>
+                                <input class="text-primary form-control" type="number" id="partGDPBC" name="partGDPBC"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="delaisBC">Délais :</label>
+                                <input class="text-primary form-control" type="number" id="delaisBC" name="delaisBC"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="montantHTBC">Montant HT :</label>
+                                <input class="text-primary form-control" type="number" id="montantHTBC"
+                                       name="montantHTBC" required="required">
+                                <br>
+                                <label class="form-label text-primary" for="partEGISBC">Part EGIS :</label>
+                                <input class="text-primary form-control" type="number" id="partEGISBC" name="partEGISBC"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="numBC">Numéro du bon :</label>
+                                <input class="text-primary form-control" type="text" id="numBC" name="numBC"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="posteBC">Poste :</label>
+                                <input class="text-primary form-control" type="text" id="posteBC" name="posteBC"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="projetBC">Projet :</label>
+                                <input class="text-primary form-control" type="text" id="projetBC" name="projetBC"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="collabsBC">Liste des collaborateurs
+                                    concernés :</label>
+                                <br>
+                                <select class="form-select bg-white text-primary" multiple name="collabsBC"
+                                        id="collabsBC">
+                                    {% for collab in collabs %}
+                                    <option name="{{collab.id_collab}}" value={{collab.id_collab}}>
+                                        {{collab.nom}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+
+                                <label class="form-label text-primary">Répartition des jours (pour les collaborateurs
+                                    sélectionnés) :</label>
+                                <br>
+                                {% for collab in collabs %}
+                                <label class="form-label text-primary">{{collab.nom}}</label>
+                                <input class="text-primary form-control" onclick="nbJoursAllouables()" type="number"
+                                       step="0.5"
+                                       id="joursBC{{collab.id_collab}}"
+                                       name="joursBC{{collab.id_collab}}">
+                                <br>
+                                {% endfor %}
+
+                                <button class="btn btn-primary" name="button">Enregistrer le BC</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <button style="margin-bottom: 20px;background-image: var(--bs-gradient);" type="button"
+                    class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#saveformation">
+                Créer une formation
+            </button>
+            <div class="modal fade" id="saveformation" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="saveformation">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Créer une formation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/save_formation" id="formulaire2" method="post">
+                                <label class="form-label text-primary" for="activite2">Description du bon de commande
+                                    :</label>
+                                <input class="text-primary form-control" type="text" id="activite2" name="activite2"
+                                       placeholder="Décrivez l'activité"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="com2">Commentaire :</label>
+                                <input class="text-primary form-control" type="text" id="com2" name="com2">
+                                <br>
+                                <label class="form-label text-primary" for="anneeTarif2">Année :</label>
+                                <input class="text-primary form-control" type="number" id="anneeTarif2"
+                                       name="anneeTarif2" required="required">
+                                <br>
+                                <label class="form-label text-primary" for="hprojet">Formation hors projet :</label>
+                                <select class="form-select bg-white text-primary" name="hprojet" id="hprojet">
+                                    <option value="Oui">Oui</option>
+                                    <option value="Non">Non</option>
+                                </select>
+                                <br>
+                                <label class="form-label text-primary" for="nbjoursformation">Nombres de jours :</label>
+                                <input class="text-primary form-control" type="number" step="0.5" id="nbjoursformation"
+                                       name="nbjoursformation"
+                                       required="required">
+                                <br>
+                                <select class="form-select bg-white text-primary" multiple name="collabs2"
+                                        id="collabs2">
+                                    {% for collab in collabs %}
+                                    <option value={{collab.id_collab}}>{{collab.nom}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <button class="btn btn-primary " style="background-image: var(--bs-gradient);"
+                                        name="button">Enregistrer la formation
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <button style="margin-bottom: 20px; background-image: var(--bs-gradient);" type="button"
+                    class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#saveautre">
+                Créer une autre activité
+            </button>
+            <div class="modal fade" id="saveautre" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="saveautre">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Créer une autre activité</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/save_autre" id="formulaire3" method="post">
+                                <label class="form-label text-primary" for="activite3">Description :</label>
+                                <input class="text-primary form-control" type="text" id="activite3" name="activite3"
+                                       required="required">
+                                <br>
+                                <label class="form-label text-primary" for="com3">Commentaire :</label>
+                                <input class="text-primary form-control" type="text" id="com3" name="com3">
+                                <br>
+                                <label class="form-label text-primary" for="anneeTarif3">Année :</label>
+                                <input class="text-primary form-control" type="number" id="anneeTarif3"
+                                       name="anneeTarif3" required="required">
+                                <br>
+                                <label class="form-label text-primary" for="nbjoursautre">Nombre de jours :</label>
+                                <input class="text-primary form-control" type="number" id="nbjoursautre"
+                                       name="nbjoursautre" required="required">
+                                <br>
+                                <select class="form-select bg-white text-primary" multiple name="collabs3"
+                                        id="collabs3">
+                                    {% for collab in collabs %}
+                                    <option value={{collab.id_collab}}>{{collab.nom}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <button class="btn btn-primary" name="button">Enregistrer l'activité</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="tableboncomm"
+       style="margin-top :10px; margin-left:30px;margin-right:30px;margin-bottom:30px; text-align:center; table-layout: fixed;">
 
 
-    <tr style="height:40px;background-color:rgb(197,224,180); ">
-        <td width="130" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+    <tr class="p-3 mb-2 bg-primary text-white" style="height:40px;background-image: var(--bs-gradient);">
+        <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
             Activité
         </td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Commentaire</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Annee Tarif</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">CA Atos</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Jours Théoriques
+        <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Commentaire
+        </td>
+        <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Annee Tarif
+        </td>
+        <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">CA
+            Atos
+        </td>
+        <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Jours Théoriques
             Alloués
         </td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Délais (mois)</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Montant HT</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Part EGIS</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Numéro</td>
-        <td width="80" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Poste</td>
-        <td width="80" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Projet</td>
-        <td width="65" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">TJM</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Collaborateurs</td>
+        <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Délais (mois)
+        </td>
+        <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Montant HT
+        </td>
+        <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Part EGIS
+        </td>
+        <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Numéro
+        </td>
+        <td width="80" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Poste
+        </td>
+        <td width="80" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Projet
+        </td>
+        <td width="65" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            TJM
+        </td>
+        <td width="130" style="font-weight:bold; padding: 1px;">
+            Collaborateurs
+        </td>
     </tr>
 
     {% for data in data%}
 
-    <tr style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
-        <td width="130" style=" border-right:solid 1px black;">{{data[0].activite}}</td>
-        <td width="130" style="border-right:solid 1px black;">{{data[0].com}}</td>
-        <td width="130" style="" ...>{{data[0].anneeTarif}}</td>
-        <td width="130" style="" ...>{{data[0].caAtos}}</td>
-        <td width="130" style="" ...>{{data[0].jourThq}}</td>
-        <td width="130" style="" ...>{{data[0].delais}}</td>
-        <td width="130" style="" ...>{{data[0].montantHT}}</td>
-        <td width="130" style="" ...>{{data[0].partEGIS}}</td>
-        <td width="130" style="" ...>{{data[0].num}}</td>
-        <td width="80" style="" ...>{{data[0].poste}}</td>
-        <td width="80" style="" ...>{{data[0].projet}}</td>
-        <td width="65" style="" ...>{{data[0].tjm}}</td>
-        <td width="130" style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">{% for collabs in
+    <tr>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].activite}}
+        </td>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].com}}
+        </td>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].anneeTarif}}
+        </td>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].caAtos}}
+        </td>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].jourThq}}
+        </td>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].delais}}
+        </td>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].montantHT}}
+        </td>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].partEGIS}}
+        </td>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].num}}
+        </td>
+        <td width="80" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].poste}}
+        </td>
+        <td width="80" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].projet}}
+        </td>
+        <td width="65" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{data[0].tjm}}
+        </td>
+        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {% for collabs in
             data[1] %} {{collabs.collab.nom}} <br> {% endfor %}
         </td>
-        <td width="130" rowspan="1" style="border:1px solid black"><a
-                href="/deleteactivite/{{data[0].id_acti}}">Effacer</a>
+        <td class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#effacer{{data[0].id_acti}}">
+                Effacer
+            </button>
+            <div class="modal fade" id="effacer{{data[0].id_acti}}" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="effacerBC">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Effacer le BC</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label>Voulez-vous vraiment supprimer ce BC ?</label>
+                            <br>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a href="/deleteactivite/{{data[0].id_acti}}">Oui</a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="/see_data_boncomm">Non</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </td>
-        <td>
+        <td class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#modif{{data[0].id_acti}}">Modifier
             </button>
@@ -65,53 +417,60 @@
                  aria-labelledby="modifBoncomm">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title">Modifier le bon</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <a href="/deleteactivite/{{data[0].id_acti}}">Effacer</a>
                         </div>
                         <div class="modal-body">
                             <form action="/modif_activite/{{data[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
-                                <input type="text" id="activite" name="activite">
+                                <input class="text-primary form-control" type="text" id="activite" name="activite">
                                 <br>
                                 <label for="com">Commentaire :</label>
-                                <input type="text" id="com" name="com">
+                                <input class="text-primary form-control" type="text" id="com" name="com">
                                 <br>
                                 <label for="anneeTarif">Année tarifaire :</label>
-                                <input type="number" id="anneeTarif" name="anneeTarif" value={{data[0].anneeTarif}}>
+                                <input class="text-primary form-control" type="number" id="anneeTarif" name="anneeTarif"
+                                       value={{data[0].anneeTarif}}>
                                 <br>
                                 <label for="caAtos">CA Atos :</label>
-                                <input type="number" id="caAtos" name="caAtos" value={{data[0].caAtos}}>
+                                <input class="text-primary form-control" type="number" id="caAtos" name="caAtos"
+                                       value={{data[0].caAtos}}>
                                 <br>
                                 <label for="jourThq">Jours alloués théoriques :</label>
-                                <input type="number" id="jourThq" name="jourThq" value={{data[0].jourThq}}>
+                                <input class="text-primary form-control" type="number" id="jourThq" name="jourThq"
+                                       value={{data[0].jourThq}}>
                                 <br>
                                 <label for="partGDP">Part GdP :</label>
-                                <input type="number" id="partGDP" name="partGDP" value={{data[0].partGDP}}>
+                                <input class="text-primary form-control" type="number" id="partGDP" name="partGDP"
+                                       value={{data[0].partGDP}}>
                                 <br>
                                 <label for="delais">Délais :</label>
-                                <input type="number" id="delais" name="delais" value={{data[0].delais}}>
+                                <input class="text-primary form-control" type="number" id="delais" name="delais"
+                                       value={{data[0].delais}}>
                                 <br>
                                 <label for="montantHT">Montant HT :</label>
-                                <input type="number" id="montantHT" name="montantHT" value={{data[0].montantHT}}>
+                                <input class="text-primary form-control" type="number" id="montantHT" name="montantHT"
+                                       value={{data[0].montantHT}}>
                                 <br>
                                 <label for="partEGIS">Part EGIS :</label>
-                                <input type="number" id="partEGIS" name="partEGIS" value={{data[0].partEGIS}}>
+                                <input class="text-primary form-control" type="number" id="partEGIS" name="partEGIS"
+                                       value={{data[0].partEGIS}}>
                                 <br>
                                 <label for="num">Numéro :</label>
-                                <input type="text" id="num" name="num">
+                                <input class="text-primary form-control" type="text" id="num" name="num">
                                 <br>
                                 <label for="poste">Poste :</label>
-                                <input type="text" id="poste" name="poste">
+                                <input class="text-primary form-control" type="text" id="poste" name="poste">
                                 <br>
                                 <label for="projet">Projet :</label>
-                                <input type="text" id="projet" name="projet">
+                                <input class="text-primary form-control" type="text" id="projet" name="projet">
                                 <br>
                                 <label for="tjm">TJM :</label>
-                                <input type="number" id="tjm" name="tjm" value={{data[0].tjm}}>
+                                <input class="text-primary form-control" type="number" id="tjm" name="tjm"
+                                       value={{data[0].tjm}}>
                                 <br>
-                                <select multiple name="collabs" id="collabs">
+                                <select class="form-select bg-white text-primary" multiple name="collabs" id="collabs">
                                     {% for collab in collabs %}
                                     <option value={{collab.id_collab}}>{{collab.nom}}</option>
                                     {% endfor %}
@@ -121,7 +480,8 @@
                                 <br>
                                 {% for collab in collabs %}
                                 <label for="collabs">{{collab.nom}}</label>
-                                <input type="number" step="0.5" id="jours{{collab.id_collab}}"
+                                <input class="text-primary form-control" type="number" step="0.5"
+                                       id="jours{{collab.id_collab}}"
                                        name="jours{{collab.id_collab}}">
                                 <br>
                                 {% endfor %}
@@ -140,5 +500,24 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script>function calculjoursthq(){
+                            var caAtos = parseFloat(document.getElementById("formulaire").elements["caAtosBC"].value);
+                            var tjm = parseFloat(document.getElementById("formulaire").elements["tjmBC"].value);
+                            var jAllouesThq= caAtos / tjm;
+                            document.getElementById("formulaire").elements["jourThqBC"].value=jAllouesThq;
+                            document.getElementById("formulaire").elements["partGDPBC"].value = jAllouesThq*0.2;}
+
+         function nbJoursAllouables(){
+            var joursThq = document.getElementById("formulaire").elements["jourThqBC"].value;
+            var partGDP = document.getElementById("formulaire").elements["partGDPBC"].value;
+            var joursAllouables = joursThq - partGDP;
+            alert("Il y a " +joursAllouables+" jours à répartir");
+            }
+
+
+
+
+
+</script>
 </body>
 </html>
