@@ -10,17 +10,29 @@ from jours_feries_france import JoursFeries
 # Create database connection object
 db = SQLAlchemy(app)
 
-"""assoBoncommCollab = db.Table('assoBoncommCollab',
-                             db.Column('boncomm_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True),
-                             db.Column('collab_id', db.Integer, db.ForeignKey('boncomm.id_acti'), primary_key=True)
-                             )
-"""
-
 
 class AssociationBoncommCollab(db.Model):
+    """
+            Réprésente l'association entre un collab et une activité.
+
+            ...
+
+            Attributs
+            ----------
+            collab_id : int
+                id du collaborateur, clé primaire.
+            boncomm_id : int
+                id de l'activité, clé primaire.
+            joursAllouesBC : float
+                nombre de jours alloués au collab pour cette activité .
+            collab :
+                lien d'association au collaborateur.
+            boncomm :
+                lien d'association à l'activité.
+    """
     boncomm_id = db.Column('boncomm_id', db.Integer, db.ForeignKey('boncomm.id_acti'), primary_key=True)
     collab_id = db.Column('collab_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True)
-    joursAllouesBC = db.Column(db.Integer, nullable=False)
+    joursAllouesBC = db.Column(db.Float, nullable=False)
     collab = db.relationship("Collab", back_populates="boncomms")
     boncomm = db.relationship("Boncomm", back_populates="collabs")
 
@@ -63,6 +75,13 @@ class Collab(db.Model):
         self.prenom = prenom
         self.access = access
 
+    def abreviation(self):
+        prenom = self.prenom[0]
+        nomDebut = self.nom[0]
+        nomFin = self.nom[-1]
+        abrev = (prenom+nomDebut+nomFin).upper()
+        return abrev
+
 
 class Imputation(db.Model):
     """
@@ -87,6 +106,9 @@ class Imputation(db.Model):
             -------
             __init__(self, acti_id, collab_id, date_id, joursAllouesTache)
                 constructeur de la classe
+            get_jours(self)
+                méthode pour récupérer nombre de jours alloués a la tache pour ce collab, cette activité à cette date.
+                (équivalent à .joursAllouesTache)
             """
 
     id_imp = db.Column(db.Integer, primary_key=True)
@@ -121,6 +143,8 @@ class Boncomm(db.Model):
                 id du bon de commande, clé primaire.
             activite : str
                 description du bon de commande.
+            etat : str
+                état, terminé ou en cours, du bon de commande.
             com : str
                 Commentaire, si nécessaire, sur le bon de commande.
             anneeTarif : float
@@ -152,7 +176,8 @@ class Boncomm(db.Model):
                constructeur de la classe
             """
     id_acti = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    activite = db.Column(db.String(100))
+    activite = db.Column(db.String(20))
+    etat = db.Column(db.String(100))
     com = db.Column(db.String(100))
     anneeTarif = db.Column(db.Integer)
     caAtos = db.Column(db.Float)
@@ -172,9 +197,10 @@ class Boncomm(db.Model):
     imputations = db.relationship('Imputation', backref='boncomm', uselist=False)
     collabs = db.relationship('AssociationBoncommCollab', back_populates="boncomm")
 
-    def __init__(self, activite, com, anneeTarif, caAtos, jourThq, delais, montantHT, partEGIS, num, poste,
+    def __init__(self, activite, etat, com, anneeTarif, caAtos, jourThq, delais, montantHT, partEGIS, num, poste,
                  projet, tjm, horsProjet, nbJoursFormation, nbCongesTot, nbCongesPose, nbJoursAutre):
         self.activite = activite
+        self.etat = etat
         self.com = com
         self.anneeTarif = anneeTarif
         self.caAtos = caAtos
@@ -222,6 +248,8 @@ class Date(db.Model):
                 renvoie le numéro de la semaine associé à ce jour.
             estFerie(self)
                 indique par un booléen en sortie si le jour est férié ou non.
+            jourSemaine(self)
+                indique à quel jour de la semaine la date correspond.
             """
     id_date = db.Column(db.Integer, primary_key=True)
     jour = db.Column(db.Integer, nullable=False)
@@ -255,6 +283,12 @@ class Date(db.Model):
         return self.transfoDate().weekday()
 
 
+"""
+    Méthode pour calculer, pour le mois voulu, le nombre de jours disponibles par semaine, sans prendre en compte le 
+    samedi et le dimanche.
+"""
+
+
 def columnMois(mois, annee):
     dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
     columns = []
@@ -277,6 +311,12 @@ def columnMois(mois, annee):
     return columns
 
 
+"""
+    Méthode pour calculer, pour le mois voulu, le nombre de jours disponibles par semaine, en prenant en compte le 
+    samedi et le dimanche.
+"""
+
+
 def columnMoisWeekEnd(mois, annee):
     dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
     columns = []
@@ -284,16 +324,19 @@ def columnMoisWeekEnd(mois, annee):
     joursDispo = 0
     for date in dates:
         if date.numSemaine() == numSem:
-            if not date.estFerie():
-                joursDispo += 1
+            joursDispo += 1
         else:
             columns.append([numSem, joursDispo])
             numSem = date.numSemaine()
-            joursDispo = 0
-            if not date.estFerie():
-                joursDispo += 1
+            joursDispo = 1
     columns.append([numSem, joursDispo])
     return columns
+
+
+"""
+    Méthode pour calculer l'ensemble des valeurs nécessaires pour la création des tables résumant l'avancement des 
+    activités.
+"""
 
 
 def valeursGlobales(boncomm):
@@ -304,17 +347,17 @@ def valeursGlobales(boncomm):
         collabs.append(asso.collab)
     consoCollabs = []
     for collab in collabs:
-        joursConsommesCollab = 0
         imputations = db.session.query(Imputation).filter(Imputation.acti_id == boncomm.id_acti,
                                                           Imputation.collab_id == collab.id_collab,
-                                                          Imputation.joursAllouesTache == 1).all()
-        joursConsommesCollab += len(imputations)
+                                                          Imputation.joursAllouesTache != 0).all()
+        joursConsommesCollab = 0
+        for imputation in imputations:
+            joursConsommesCollab += imputation.joursAllouesTache
         consoCollabs.append(joursConsommesCollab)
         joursConsommes += joursConsommesCollab
     raf = boncomm.jourThq - joursConsommes
     avancement = int(joursConsommes / boncomm.jourThq * 100)
     ecart = boncomm.jourThq - (raf + joursConsommes)
-    etat = ""
     if joursConsommes == boncomm.jourThq:
         etat = "TE"
     elif joursConsommes < boncomm.jourThq:
@@ -322,6 +365,11 @@ def valeursGlobales(boncomm):
     else:
         etat = "HB"
     return [consoCollabs, etat, avancement, raf, joursConsommes, ecart]
+
+
+"""
+    Méthode pour renvoyer le nombre de jours total dans le mois.
+"""
 
 
 def nbJoursMois(mois, annee):
@@ -334,6 +382,55 @@ def nbJoursMois(mois, annee):
             return 28
     else:
         return 30
+
+
+"""
+    Méthode pour renvoyer le nombre de jours total dans le mois sans compter les week-ends.
+"""
+
+
+def nbJoursMoisSansWeekEnd(mois, annee):
+    dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
+    nb = 0
+    for date in dates:
+        date_format = date.transfoDate().weekday()
+        if date_format != 5 and date_format != 6:
+            nb += 1
+    return nb
+
+
+"""
+    Méthode pour renvoyer sous forme de str le mois voulu.
+"""
+
+
+def stringMois(mois):
+    if mois == "1":
+        return "Janvier"
+    elif mois == "2":
+        return "Février"
+    elif mois == "3":
+        return "Mars"
+    elif mois == "4":
+        return "Avril"
+    elif mois == "5":
+        return "Mai"
+    elif mois == "6":
+        return "Juin"
+    elif mois == "7":
+        return "Juillet"
+    elif mois == "8":
+        return "Août"
+    elif mois == "9":
+        return "Septembre"
+    elif mois == "10":
+        return "Octobre"
+    elif mois == "11":
+        return "Novembre"
+    elif mois == "12":
+        return "Décembre"
+    else:
+        return ""
 
 
 db.create_all()

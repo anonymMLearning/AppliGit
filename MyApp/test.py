@@ -170,16 +170,5 @@ for bon in bons:  # On ne veut pas les parts de GdP
 print(len(bons))
 print(len(bonsGDP))"""
 
-collab = db.session.query(Collab).get(5)
-assos = collab.boncomms
-for asso in assos:
-    if asso.boncomm.nbCongesTot != 0:
-        conges = boncomm
-
-date = db.session.query(Date).filter(Date.annee == 2021, Date.mois == 2, Date.jour == 22).all()
-date = date[0]
-imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
-                                          Imputation.collab_id == collab.id_collab,
-                                          Imputation.acti_id == conges.id_acti).all()[0]
-imp.joursAllouesTache = 1
-db.session.commit()
+collab = db.session.query(Collab).get(1)
+print(collab.abreviation())

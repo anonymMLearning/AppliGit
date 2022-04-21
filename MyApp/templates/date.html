@@ -5,19 +5,19 @@
     <title>Date</title>
 </head>
 
-<nav class="bg-light">
+<nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_archives">Archives</a>
+                    <a class="nav-link" href="/see_archives">Données d'imputation</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                    <a class="nav-link" href="/see_data_boncomm">Activités</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_imput_global">Imputations globales</a>
@@ -25,10 +25,9 @@
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_conges">Congés</a>
                 </li>
-                {% for data in data %}
+                {% for collab in data_navbar %}
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_imput_collab/{{data.id_collab}}/{{annee}}/{{mois}}">{{data.nom}}
-                        {{data.prenom}}</a>
+                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee}}/{{mois}}">{{collab[0]}}</a>
                 </li>
                 {% endfor %}
             </ul>

@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <nav class="bg-light">
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_archives">Archives</a>
+                    <a class="nav-link" href="/see_archives">Données d'imputation</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                    <a class="nav-link" href="/see_data_boncomm">Activités</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_imput_global">Imputations globales</a>
@@ -22,10 +22,9 @@
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_conges">Congés</a>
                 </li>
-                {% for data in data %}
+                {% for collab in data_navbar %}
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_imput_collab/{{data.id_collab}}/{{annee_courant}}/{{mois_courant}}">{{data.nom}}
-                        {{data.prenom}}</a>
+                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee_courant}}/{{mois_courant}}">{{collab[0]}}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -42,73 +41,124 @@
 <body>
 {% block content %}
 <br>
-<h1 style="text-align:center; margin-bottom: 50px;">Imputations de {{collab.prenom}} {{collab.nom}} - {{mois}}/{{annee}}</h1>
+<h1 style="text-align:center; " class="text-primary">- Imputations de {{collab.prenom}}
+    {{collab.nom}} -
+    {{moisStr}}/{{annee}} -</h1>
+<br>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin-left: 20px; margin-right:20px; margin-bottom: 20px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau de vos imputations sur le mois en
+            cours. <br> Demi-journée : 0.5 / Journée : 1 <br> Cliquez sur " Enregistrer " quand vous avez finis.
+            <h5 class="text-danger" style="text-align: center">Attention : vérifier que les jours consommés ne dépassent
+                pas les jours alloués</h5></h5>
+    </div>
+</div>
 <br>
 <form action="/save_imputation/{{collab.id_collab}}/{{annee}}/{{mois}}" name="formulaire" id="formulaire" method="post">
-    <table id="tableau" style=" margin-left:10px;   text-align:center;   table-layout: fixed;">
-        <tr style="height:40px;background-color:rgb(197,224,180); "> <!-- tr : ligne / td : colonne -->
-            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">N°
+    <table id="tableau" style=" margin-left:15px; margin-right:15px;   text-align:center;   table-layout: fixed;">
+        <tr id="nbsemaine" class="p-3 mb-2 bg-primary text-white"
+            style="height:40px;background-image: var(--bs-gradient); border-bottom: 1px solid white">
+            <!-- tr : ligne / td : colonne -->
+            <td width="160" style="font-weight:bold">N°
                 Semaine
             </td>
             {%for column in columns%}
-            <td id="{{column[0]}}" name="{{column[0]}}" width="160"
-                style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+            <td width="160" style="border-left: 1px solid white">
                 {{column[0]}}
             </td>
             {% endfor %}
         </tr>
-        <tr style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
-            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+        <tr id="joursdispo" class="p-3 mb-2 bg-primary text-white"
+            style="height:40px;background-image: var(--bs-gradient)">
+            <td style="font-weight:bold" width="160">
                 Jours disponibles
             </td>
             {%for column in columns%}
-            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+            <td style="border-left: 1px solid white" value="{{column[1]}}" id="{{column[0]}}" name="{{column[0]}}"
+                width="160">
                 {{column[1]}}
             </td>
             {% endfor %}
-            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+            <td width="160" style="border-left: 1px solid white; font-weight: bold">
                 Jours alloués sur ce bon
             </td>
-            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
-                Jours déjà consommés
+            <td width="160" style="border-left: 1px solid white; font-weight: bold">
+                RAF
             </td>
         </tr>
 
         {% for boncomm in boncomms%}
-        <tr id="{{boncomm[0].id_acti}}"
-            style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
-            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+        <tr id="{{boncomm[0].id_acti}}" style="border-top: 1px solid white">
+            <td width="160" class="p-3 mb-2 bg-primary text-white"
+                style="height:40px;background-image: var(--bs-gradient); font-weight: bold; border-right: 1px solid white">
                 {{boncomm[0].activite}}
             </td>
             {%for imput in boncomm[1] %}
-            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;">
-                <input type="number" step="0.5" name="{{boncomm[0].id_acti}}/{{imput[0]}}"
+            <td style="border-right: 1px solid white; background-image: var(--bs-gradient)" width="160"
+                class="bg-secondary">
+                <input class="bg-secondary text-white" onblur="validImput(this.id)" style="text-align:center;" type="number" step="0.5"
+                       name="{{boncomm[0].id_acti}}/{{imput[0]}}"
                        id="{{boncomm[0].id_acti}}/{{imput[0]}}" value="{{imput[1]}}">
             </td>
             {% endfor %}
-            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+            <td width="160" class="p-3 mb-2 bg-primary text-white"
+                style="height:40px;background-image: var(--bs-gradient);">
                 {{boncomm[2]}}
             </td>
-            <td width="160" style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">
+            <td width="160" class="p-3 mb-2 bg-primary text-white"
+                style="height:40px;background-image: var(--bs-gradient); border-left:1px solid white">
                 {{boncomm[3]}}
             </td>
         </tr>
         {% endfor %}
     </table>
-
     <br>
-    <div class="position-absolute start-50 translate-middle">
-        <input style="center" type="submit" value="Enregistrer">
-    </div>
-
+    <button name="button" style="font-weight: bold; margin-top: 15px; margin-left: 15px" class="btn btn-primary">
+        Enregistrer
+    </button>
 </form>
-
-
 <br>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous">
+</script>
+<script src=
+                "https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js">
+</script>
+<script>
+    function validImput(id){
+        var joursImput = parseFloat(document.getElementById("formulaire").elements[id].value);
+        if (joursImput < 0){
+            document.getElementById("formulaire").elements[id].value = 0;
+            alert("Saisissez un nombre entre 0 et le nombre de jours disponibles");
+        }
+        const str = id;
+        var i=0;
+        while (str.slice(i,i+1) !== "/"){
+            i++;
+        }
+        i++;
+        var numSemaine = str.substr(i);
+
+        var tr = document.getElementById("tableau").getElementsByTagName("tr");
+        var joursImputTot = 0;
+        for (i=0; i < tr.length-2; i++){
+            id_col = tr[i+2].id +"/"+numSemaine;
+            var joursImputBC = parseFloat(document.getElementById("formulaire").elements[id_col].value);
+            joursImputTot+=joursImputBC
+        }
+
+        var nbJoursDispo = parseFloat(document.getElementById(numSemaine).innerHTML);
+        if (joursImputTot > nbJoursDispo){
+            document.getElementById("formulaire").elements[id].value = 0;
+            alert("Attention ! Vérifiez les jours disponibles");
+        }
+        }
+
+
+
 </script>
 </body>
 {% endblock content %}

@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
     <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
-    <nav class="bg-light">
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_archives">Archives</a>
+                    <a class="nav-link" href="/see_archives">Données d'imputation</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                    <a class="nav-link" href="/see_data_boncomm">Activités</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_imput_global">Imputations globales</a>
@@ -22,10 +22,9 @@
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_conges">Congés</a>
                 </li>
-                {% for data_navbar in data_navbar %}
+                {% for collab in data_navbar %}
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_imput_collab/{{data_navbar.id_collab}}/{{annee}}/{{mois}}">{{data_navbar.nom}}
-                        {{data_navbar.prenom}}</a>
+                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee}}/{{mois}}">{{collab[0]}}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -41,7 +40,24 @@
 
 <body>
 {% block content %}
-<button style="margin-top : 40px; margin-left : 40%" type="button" class="btn btn-primary" data-bs-toggle="modal"
+<div style="text-align:center; margin-top: 45px" class="title"><h1 class="text-primary">- Tableau des collaborateurs
+    -</h1></div>
+<br>
+<div class="bg-light border border-3 border-primary rounded mt-2" style="margin-left: 20px; margin-right:20px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px" class="text-primary">Ce tableau contient la liste des collaborateurs, ainsi que
+            leur niveau d'accès et les bons de commande sur lesquels ils imputent. <br>
+            Pour modifier ou effacer un collaborateur, cliquer sur les boutons associés sur la ligne du collaborateur en
+            question.
+            <h5 class="text-danger">Attention : La suppression d'un collaborateur entraine la suppression de ses
+                imputations
+                sur ses bons de commande !</h5></h5>
+    </div>
+</div>
+<h5 style="margin-left: 20px; margin-top: 30px" class="text-primary font-italic">Pour enregistrer un nouveau
+    collaborateur, cliquer ici : </h5>
+<button style="margin-top : -65px; margin-left : 39%;background-image: var(--bs-gradient);" type="button"
+        class="btn btn-primary" data-bs-toggle="modal"
         data-bs-target="#savecollab">
     Ajouter un collaborateur
 </button>
@@ -49,29 +65,31 @@
      aria-labelledby="modifCollab">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">Ajouter un collaborateur</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="/save_collab" method="post">
-                    <label for="nom_save">Nom :</label>
-                    <input type="text" id="nom_save" name="nom_save">
+                    <label class="form-label text-primary" for="nom_save">Nom :</label>
+                    <input class="text-primary form-control" type="text" id="nom_save" name="nom_save">
                     <br>
-                    <label for="prenom_save">Prénom :</label>
-                    <input type="text" id="prenom_save" name="prenom_save">
+                    <label class="form-label text-primary" for="prenom_save">Prénom :</label>
+                    <input class="text-primary form-control" type="text" id="prenom_save"
+                           name="prenom_save">
                     <br>
-                    <label for="access_save">Access :</label>
-                    <select name="access_save" id="access_save">
+                    <label class="form-label text-primary" for="access_save">Access :</label>
+                    <select class="form-select bg-white text-primary" name="access_save" id="access_save">
                         <option value="1">1 : Admin</option>
-                        <option value="2">2 : Modificateur</option>
+                        <option value="2">2 : Collaborateur</option>
                         <option value="3">3 : Observateur</option>
                         <option value="4">4 : Partis</option>
                     </select>
                     <br>
-                    <label for="conges_save">Jours de congés :</label>
-                    <input type="number" id="conges_save" name="conges_save">
+                    <label class="form-label text-primary" for="conges_save">Jours de congés :</label>
+                    <input class="text-primary form-control" type="number" id="conges_save"
+                           name="conges_save">
                     <br>
                     <button name="button" class="btn btn-primary">Ajouter ce collaborateur</button>
                 </form>
@@ -79,36 +97,43 @@
         </div>
     </div>
 </div>
-<table id="tableau" style=" margin-left:20px; margin-top:50px;   text-align:center;   table-layout: fixed;">
-    <tr style="height:40px;background-color:rgb(197,224,180); "> <!-- tr : ligne / td : colonne -->
-        <td style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;" width="200">Nom
+
+
+<table id="tableau" style=" margin-left:20px; margin-top:20px;   text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2 bg-primary text-white" style="height:20px;background-image: var(--bs-gradient);">
+        <!-- tr : ligne / td : colonne -->
+        <td style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
+            Nom
         </td>
-        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF" width="200">Prénom</td>
-        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF" width="200">Access</td>
-        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF" width="200">BC</td>
+        <td style="font-weight:bold;border-right: 1px solid white;">Prénom</td>
+        <td style="font-weight:bold;border-right: 1px solid white; padding:10px">Access</td>
+        <td style="font-weight:bold;">BC</td>
     </tr>
 
-    {% for data in data%}
+    {% for data in data %}
 
-    <tr id="{{data[0].id_collab}}" style="border: 1px solid black">
-        <td style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
+    <tr id="{{data[0].id_collab}}">
+        <td class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="font-size: 20px;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
             {{data[0].nom}}
         </td>
-        <td style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
+        <td class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="font-size: 20px;border-left: 1px solid ; vertical-align: middle;border-right:1px solid white;padding:15px;">
             {{data[0].prenom}}
         </td>
-        <td style="color: rgb(82,82,82) ;border-left: 1px solid black; border-right:1px solid;padding:15px;">
+        <td class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="font-size: 20px;border-left: 1px solid white; vertical-align: middle;border-right:1px solid white;padding:15px;">
             {{data[0].access}}
         </td>
 
-        <td style="border: 1px solid black;background-color:#CFE2FF">
+        <td class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="font-size: 20px;background-image: var(--bs-gradient);">
             {% for boncomm in data[1] %} {{boncomm.activite}} <br> {% endfor %}
 
         </td>
-        <td width="150" style="border: 1px solid black;"><a
-                href="/see_imput_collab/{{data[0].id_collab}}/{{annee}}/{{mois}}">Imputer</a></td>
-        <td width="150" style="border: 1px solid black;">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+        <td class="p-3 mb-2 text-secondary border border-primary" width="150"
+            style="border: 1px solid white;vertical-align: middle;background-image: var(--bs-gradient);">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                     data-bs-target="#effacer{{data[0].id_collab}}">
                 Effacer
             </button>
@@ -116,7 +141,7 @@
                  aria-labelledby="effacerCollab">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title">Effacer le collaborateur</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
@@ -137,8 +162,9 @@
                 </div>
             </div>
         </td>
-        <td width="150" style="border: 1px solid black;">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+        <td class="p-3 mb-2 text-white border border-primary" width="150"
+            style="border: 1px solid white;vertical-align: middle;background-image: var(--bs-gradient);">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                     data-bs-target="#modif{{data[0].id_collab}}">
                 Modifier
             </button>
@@ -146,26 +172,31 @@
                  aria-labelledby="modifCollab">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title">Modifier le collaborateur</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form action="/modif_collab/{{data[0].id_collab}}" method="post">
-                                <label for="nom2">Nom :</label>
-                                <input type="text" id="nom2" name="nom2" placeholder="Changez le nom">
+                                <label class="form-label text-primary" for="nom2">Nom :</label>
+                                <input class="text-primary form-control" type="text" id="nom2" name="nom2"
+                                       placeholder="Changez le nom">
                                 <br>
-                                <label for="prenom">Prénom :</label>
-                                <input type="text" id="prenom2" name="prenom2"
+                                <label class="form-label text-primary" for="prenom2">Prénom :</label>
+                                <input class="text-primary form-control" type="text" id="prenom2" name="prenom2"
                                        placeholder="Changez le prénom">
                                 <br>
-                                <label for="access">Access :</label>
-                                <input type="number" id="access2" value={{data[0].access}} name="access2"
-                                       placeholder="Changez les droits d'accès">
+                                <label class="form-label text-primary" for="access2">Access :</label>
+                                <select class="form-select bg-white text-primary" name="access2" id="access2">
+                                    <option value="1">1 : Admin</option>
+                                    <option value="2">2 : Collaborateur</option>
+                                    <option value="3">3 : Observateur</option>
+                                    <option value="4">4 : Partis</option>
+                                </select>
                                 <br>
-                                <label for="access">Jours de congés :</label>
-                                <input type="number" id="conges" name="conges"
+                                <label class="form-label text-primary" for="conges">Jours de congés :</label>
+                                <input class="text-primary form-control" type="number" id="conges" name="conges"
                                        value={{data[0].boncomms[0].boncomm.nbCongesTot}}>
                                 <br>
                                 <button name="button" class="btn btn-primary">Modifier le collaborateur
@@ -197,6 +228,18 @@
         document.formulaireDate.action = url;
 	    document.forms["formulaireDate"].submit();
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

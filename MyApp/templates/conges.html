@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <nav class="bg-light">
+    <nav class="bg-light" style="border-bottom : 2px solid blue">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_archives">Archives</a>
+                    <a class="nav-link" href="/see_archives">Données d'imputation</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                    <a class="nav-link" href="/see_data_boncomm">Activités</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_imput_global">Imputations globales</a>
@@ -22,10 +22,9 @@
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_conges">Congés</a>
                 </li>
-                {% for data in data %}
+                {% for collab in data_navbar %}
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_imput_collab/{{data.id_collab}}/{{annee}}/{{mois}}">{{data.nom}}
-                        {{data.prenom}}</a>
+                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee}}/{{mois}}">{{collab[0]}}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -41,21 +40,66 @@
 <body>
 <br>
 {% block content %}
-<table style="margin-left:10px; margin-right:10px;  text-align:center;   table-layout: fixed;" id="tableconges">
-    <tr style=" border-right:solid 1px black; border-left:solid 1px black; border-top:solid 1px black;border-bottom:solid 1px black;background-color:rgb(70,130,180);">
-        <td style=" border-right:solid 1px black;background-color:rgb(70,130,180);" width="200"></td>
-        <td style=" border-right:solid 1px black;background-color:rgb(70,130,180);" width="150">Nombre de congés</td>
-        <td style=" border-right:solid 1px black;background-color:rgb(70,130,180);" width="150">Nombre de congés posés
+<div style="text-align:center; margin-bottom: 50px" class="title"><h1 class="text-primary">- Tableau des congés
+    -</h1></div>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin-left: 20px; margin-right:20px; margin-bottom: 50px">
+    <div style="margin-left: 20px; text-align: center">
+        <h5 class="text-primary">Tableau contenant les jours de congés de chaque collaborateur, avec ceux qu'ils ont
+            déjà posé. <br>
+            Choisissez le mois et l'année, puis cliquez sur " Poser des congés " pour enregistrer les congés d'un collaborateur.</h5>
+    </div>
+</div>
+<table style=" margin-left:20px; margin-top:30px;   text-align:center;   table-layout: fixed;" id="tableconges">
+    <tr class="p-3 mb-2 bg-primary text-white" style="background-image: var(--bs-gradient);">
+        <td style="font-weight:bold; padding: 10px">Collaborateur</td>
+        <td style="border-left: 1px solid white;font-weight:bold; padding: 10px">Nombre de congés</td>
+        <td style="border-left: 1px solid white;font-weight:bold; padding: 10px">Nombre de congés posés
         </td>
-        <td style=" border-right:solid 1px black;background-color:rgb(70,130,180);" width="200"></td>
     </tr>
     {% for collab in collabs %}
     <tr style=" border-right:solid 1px black; border-left:solid 1px black; border-top:solid 1px black;border-bottom:solid 1px black;">
-        <td style=" border-right:solid 1px black;">{{collab[1].prenom}} {{collab[1].nom}}</td>
-        <td style=" border-right:solid 1px black;">{{conges[collab[0]].nbCongesTot}}</td>
-        <td style=" border-right:solid 1px black;">{{conges[collab[0]].nbCongesPose}}</td>
-        <td style=" border-right:solid 1px black;" width="200"><a style="margin-left:10px; font-weight:bold;"
-       href="/see_poser_conges/{{collab[1].id_collab}}">Poser des congés</a></td>
+        <td class="p-3 mb-2 bg-white text-primary border border-primary">{{collab[1].prenom}} {{collab[1].nom}}</td>
+        <td class="p-3 mb-2 bg-white text-primary border border-primary">{{conges[collab[0]].nbCongesTot}}</td>
+        <td class="p-3 mb-2 bg-white text-primary border border-primary">{{conges[collab[0]].nbCongesPose}}</td>
+
+        <form style="text-align:center; margin: 20px " action="/see_poser_conges/{{collab[1].id_collab}}" method="post">
+            <td class="p-3 mb-2 bg-white text-primary border border-primary" width="200">
+                <select class="form-select bg-warning" name="mois" id="mois">
+                    <option selected value="1">Janvier</option>
+                    <option value="2">Février</option>
+                    <option value="3">Mars</option>
+                    <option value="4">Avril</option>
+                    <option value="5">Mai</option>
+                    <option value="6">Juin</option>
+                    <option value="7">Juillet</option>
+                    <option value="8">Août</option>
+                    <option value="9">Septembre</option>
+                    <option value="10">Octobre</option>
+                    <option value="11">Novembre</option>
+                    <option value="12">Décembre</option>
+                </select>
+
+            </td>
+            <td class="p-3 mb-2 bg-white border border-primary" width="200">
+                <select class="form-select bg-warning" name="annee" id="annee">
+                    <option selected value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                    <option value="2031">2031</option>
+                </select>
+            </td>
+            <td class="p-3 mb-2 bg-white text-primary border border-primary" width="200">
+                <button style="font-weight:bold;" class="btn border border-white btn-warning" name="button">Poser des congés
+                </button>
+            </td>
+        </form>
     </tr>
     {% endfor %}
 </table>
