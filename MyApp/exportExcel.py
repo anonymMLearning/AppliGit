@@ -3,16 +3,16 @@ from xlsxwriter.utility import xl_col_to_name
 
 from MyApp.models import *
 from datetime import datetime
+from flask import Flask, render_template, request
 
 
 def export_excel():
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
-    moisStr = stringMois(str())
     annee = int(dateNow[:4])
-
+    das = request.form['das']
     workbook = xlsxwriter.Workbook(
-        r'C:\Users\a857591\OneDrive - Atos\Documents\ImputationsMS4-' + str(mois) + '-' + str(annee) + '.xlsx')
+        r'C:\Users\a' + das + '\Downloads\ImputationsMS4-' + str(mois) + '-' + str(annee) + '.xlsx')
     bcm = workbook.add_worksheet('BCM')
     impGlob = workbook.add_worksheet('Imp globales')
     activitesMois = workbook.add_worksheet('Activités en cours')
@@ -83,13 +83,13 @@ def export_excel():
     format_date.set_align('center')
     format_date.set_border()
 
-    """ ------------------------------------------- Feuille BCM -------------------------------------------------------- """
+    """ ----------------------------------------- Feuille BCM ------------------------------------------------------ """
     activites = db.session.query(Boncomm).filter(Boncomm.nbCongesTot == 0, Boncomm.caAtos == 0).all()
     bonsNonTri = db.session.query(Boncomm).filter(Boncomm.nbCongesTot == 0, Boncomm.nbJoursFormation == 0,
                                                   Boncomm.nbJoursAutre == 0).all()
     bonsTri = []  # Liste de listes contenant le bon de Prod et celui de Gdp
     bonTot = []
-    for bon in bonsNonTri:  # On va mettre les part Prod et Gdp ensemble pour calculer les valeurs totales sur tout le bon
+    for bon in bonsNonTri:  # On va mettre les part Prod et Gdp ensemble pour calculer les valeurs totales sur le bon
         if bon.activite[0:4] != "CP -":
             bonTot.append(bon)
         elif bon.activite[0:4] == "CP -":
@@ -201,9 +201,9 @@ def export_excel():
     bcm.write('K5', '', format_entete)
     bcm.write('L5', '', format_entete)
 
-    """ ---------------------------------------------------------------------------------------------------------------- """
+    """ ------------------------------------------------------------------------------------------------------------ """
 
-    """ --------------------------------------- Feuille Imp globales --------------------------------------------------- """
+    """ ------------------------------------- Feuille Imp globales ------------------------------------------------- """
 
     collabs = db.session.query(Collab).all()
 
@@ -338,9 +338,9 @@ def export_excel():
             impGlob.write(xl_col_to_name(col + 2) + str(row + 2), rafGDP, format_bon)
             col += 3
         row += 3
-    """ ---------------------------------------------------------------------------------------------------------------- """
+    """ ------------------------------------------------------------------------------------------------------------ """
 
-    """ ------------------------------------ Feuille Activités en cours ------------------------------------------------ """
+    """ ---------------------------------- Feuille Activités en cours ---------------------------------------------- """
 
     activitesECMois = db.session.query(Boncomm).filter(Boncomm.nbCongesTot == 0, Boncomm.caAtos == 0,
                                                        Boncomm.etat != "TE").all()
@@ -420,9 +420,9 @@ def export_excel():
     activitesMois.write_formula('H5', '=SUM(H6:H' + str(row - 1) + ')', format_entete)
     activitesMois.write('I5', '', format_entete)
 
-    """ ---------------------------------------------------------------------------------------------------------------- """
+    """ ------------------------------------------------------------------------------------------------------------ """
 
-    """ ----------------------------------------- Feuille Absences ----------------------------------------------------- """
+    """ --------------------------------------- Feuille Absences --------------------------------------------------- """
     dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
     collabsActifs = db.session.query(Collab).filter(Collab.access != 4).all()
 
@@ -466,13 +466,12 @@ def export_excel():
             col += 1
         absences.write('C' + str(row), joursPoses, format_entete)
         row += 1
-    """----------------------------------------------------------------------------------------------------------------- """
+    """------------------------------------------------------------------------------------------------------------- """
 
-    """ ----------------------------------------- Feuille Collabs ------------------------------------------------------ """
+    """ --------------------------------------- Feuille Collabs ---------------------------------------------------- """
     columns = columnMois(mois, annee)
-    nbSemaines = len(columns)
     for collab in collabsActifs:
-        feuilleCollab = workbook.add_worksheet(collab.nom)
+        feuilleCollab = workbook.add_worksheet(collab.abreviation())
         feuilleCollab.set_tab_color('#305496')
 
         """ ---------- Format et tailles des cellules ---------- """

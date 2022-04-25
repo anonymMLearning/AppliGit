@@ -62,6 +62,9 @@ class Collab(db.Model):
             -------
             __init__(self, nom, prenom, access)
                 constructeur de la classe
+
+            abreviation(self)
+                permet d'avoir l'abréviation du nom et prénom du collaborateur
             """
     id_collab = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(30), nullable=False)

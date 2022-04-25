@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
@@ -77,7 +78,7 @@
         </td>
         <td class="border-white"
             style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="80">Avancement
+            width="80">Avcmt
         </td>
         <td class="border-white"
             style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
@@ -96,16 +97,8 @@
         <td class="border-white"
             style="font-weight:bold; border-right: 1px solid white;border-bottom: 1px solid white; padding: 1px;"
             width="300">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">{{collab.nom}}</div>
-                    <div class="row">
-                        <div class="col-4">All</div>
-                        <div class="col-4">Cons</div>
-                        <div class="col-4">RAF</div>
-                    </div>
-                </div>
-            </div>
+            <div>{{collab.nom}}</div>
+            <div>A/C/RAF</div>
         </td>
         {% endfor %}
     </tr>
@@ -115,7 +108,7 @@
         <td style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
             width="160">{{boncomm[1].num}}
         </td>
-        <td  style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
             width="160">{{boncomm[1].poste}}
         </td>
         <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
@@ -127,13 +120,13 @@
         <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
             width="160">{{boncomm[1].jourThq + boncomm[2].jourThq}}
         </td>
-        <td  style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
             width="160"></td>
-        <td  style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
             width="160">{{valeursBoncomms[boncomm[0]][3] +
             valeursBoncommsGDP[boncomm[0]][3]}}
         </td>
-        <td  style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
             width="160">{{valeursBoncomms[boncomm[0]][4] +
             valeursBoncommsGDP[boncomm[0]][4]}}
         </td>
@@ -142,7 +135,7 @@
             valeursBoncommsGDP[boncomm[0]][5]}}
         </td>
         {% for i in range(nbCollab) %}
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;" width="300">
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black;" width="300">
             <div class="container">
                 <div class="row">
                     <div class="col-4"></div>
@@ -159,7 +152,9 @@
         <td width="160" style="border-left:solid 1px black;">{{boncomm[1].projet}}</td>
         <td width="160" style="border-left:solid 1px black;">{{boncomm[1].activite}}</td>
         <td width="160" style="border-left:solid 1px black;">{{boncomm[1].jourThq}}</td>
-        <td id="avanc{{boncomm[0]}}" width="160" style="border-left:solid 1px black;">{{valeursBoncomms[boncomm[0]][2]}} %</td>
+        <td id="avanc{{boncomm[0]}}" width="160" style="border-left:solid 1px black;">{{valeursBoncomms[boncomm[0]][2]}}
+            %
+        </td>
         <td width="160" style="border-left:solid 1px black;">{{valeursBoncomms[boncomm[0]][3]}}</td>
         <td width="160" style="border-left:solid 1px black;">{{valeursBoncomms[boncomm[0]][4]}}</td>
         <td width="160" style="border-left:solid 1px black;border-right:solid 1px black">
@@ -169,8 +164,8 @@
         <td style="border-right:solid 1px black;" width="300">
             <div class="container">
                 <div class="row">
-                    <div class="col-4" style=" border-right:solid 1px black;">{{data_bon[boncomm[0]][i][0]}}</div>
-                    <div class="col-4" style=" border-right:solid 1px black;">{{data_bon[boncomm[0]][i][1]}}</div>
+                    <div class="col-4" style="border-right:solid 1px black;">{{data_bon[boncomm[0]][i][0]}}</div>
+                    <div class="col-4" style="border-right:solid 1px black;">{{data_bon[boncomm[0]][i][1]}}</div>
                     <div class="col-4">{{data_bon[boncomm[0]][i][2]}}</div>
                 </div>
             </div>
@@ -183,7 +178,9 @@
         <td width="160" style="border-left:solid 1px black">{{boncomm[2].projet}}</td>
         <td width="160" style="border-left:solid 1px black">{{boncomm[2].activite}}</td>
         <td width="160" style="border-left:solid 1px black">{{boncomm[2].jourThq}}</td>
-        <td id="avancGDP{{boncomm[0]}}" width="160" style="border-left:solid 1px black">{{valeursBoncommsGDP[boncomm[0]][2]}} %</td>
+        <td id="avancGDP{{boncomm[0]}}" width="160" style="border-left:solid 1px black">
+            {{valeursBoncommsGDP[boncomm[0]][2]}} %
+        </td>
         <td width="160" style="border-left:solid 1px black">{{valeursBoncommsGDP[boncomm[0]][3]}}</td>
         <td width="160" style="border-left:solid 1px black">{{valeursBoncommsGDP[boncomm[0]][4]}}</td>
         <td width="160" style="border-left:solid 1px black;border-right:solid 1px black">
@@ -227,6 +224,7 @@
             document.getElementById(idGDP).style.color = "white";
         }
     }
+
 </script>
 </body>
 {% endblock content %}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="shortcut icon" href="C:\Users\a857591\Documents\Projet PyCharm\MyApp\static\atos.png"/>
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
@@ -53,6 +53,7 @@
             question.
             <h5 class="text-danger">Attention : La suppression d'une activité entraine la suppression des imputations
                 des collaborateurs liés à ce bon !</h5></h5>
+            <h5 class="text-warning"> H-P : pour les formations, si hors-projet ou non</h5>
     </div>
 </div>
 <h5 style="margin-left: 20px; margin-top: 20px;margin-bottom: 20px" class="text-primary font-italic">Pour enregistrer
@@ -283,13 +284,13 @@
             Etat
         </td>
         <td style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
-            Hors-Projet <br>(formations)
+            H-P
         </td>
         <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
             Com
         </td>
         <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
-            Annee Tarif
+            Annee <br>Tarif
         </td>
         <td width="130" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">CA
             Atos
@@ -600,10 +601,6 @@
                                 <label for="jourThq">Jours alloués théoriques :</label>
                                 <input class="text-primary form-control" type="number" id="jourThq" name="jourThq"
                                        value={{activite[0].jourThq}}>
-                                <br>
-                                <label for="partGDP">Part GdP :</label>
-                                <input class="text-primary form-control" type="number" id="partGDP" name="partGDP"
-                                       value={{activite[0].partGDP}}>
                                 <br>
                                 <label for="delais">Délais :</label>
                                 <input class="text-primary form-control" type="number" id="delais" name="delais"

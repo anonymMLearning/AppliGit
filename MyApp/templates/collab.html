@@ -128,7 +128,7 @@
 
         <td class="p-3 mb-2 bg-white text-primary border border-primary"
             style="font-size: 20px;background-image: var(--bs-gradient);">
-            {% for boncomm in data[1] %} {{boncomm.activite}} <br> {% endfor %}
+            {% for boncomm in data[1] %} - {{boncomm.activite}} - {% endfor %}
 
         </td>
         <td class="p-3 mb-2 text-secondary border border-primary" width="150"
@@ -189,6 +189,7 @@
                                 <br>
                                 <label class="form-label text-primary" for="access2">Access :</label>
                                 <select class="form-select bg-white text-primary" name="access2" id="access2">
+                                    <option selected value="{{data[0].access}}">{{data[0].access}} : Actuel</option>
                                     <option value="1">1 : Admin</option>
                                     <option value="2">2 : Collaborateur</option>
                                     <option value="3">3 : Observateur</option>
@@ -228,6 +229,7 @@
         document.formulaireDate.action = url;
 	    document.forms["formulaireDate"].submit();
     }
+
 
 
 

@@ -58,24 +58,48 @@
 
         <div>
             <a id="link" class="btn btn-primary" href="/init_db"
-               style="margin-left:10px; font-weight:bold;text-align:center;">
+               style="margin-left:10px; font-weight:bold;text-align:center;background-image: var(--bs-gradient);">
                 Vider la BDD</a>
         </div>
         <br>
         <div>
             <a id="creationdate" class="btn btn-warning" href="/init_date" style="margin-left:10px; font-weight:bold;
-                    text-align:center;">Créer le calendrier</a>
+                    text-align:center;background-image: var(--bs-gradient);">Créer le calendrier</a>
         </div>
         <br>
         <div>
-            <a class="btn btn-primary" style="margin-left:10px; font-weight:bold; text-align:center; "
+            <a class="btn btn-primary"
+               style="margin-left:10px; font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
                href="/see_data_date">Voir
                 les dates</a>
         </div>
         <br>
-        <div>
-            <a class="btn btn-warning" style="margin-left:10px; font-weight:bold; text-align:center; "
-               href="/export_excel">Exporter sur Excel</a>
+        <button style="font-weight:bold; text-align:center;background-image: var(--bs-gradient);" type="button"
+                class="btn btn-warning" data-bs-toggle="modal"
+                data-bs-target="#exportexcel">
+            Exporter sur excel
+        </button>
+        <div class="modal fade" id="exportexcel" tabindex="-1" aria-hidden="true"
+             aria-labelledby="exportExcel">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h5 class="modal-title">Renseignez votre DAS</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5 class="text-danger">Ne renseignez que les chiffres du DAS</h5>
+                        <form action="/export_excel" method="post">
+                            <label class="form-label" for="das">DAS :</label>
+                            <input class="text-primary form-control" type="text" id="das" name="das">
+                            <br>
+                            <button name="button" style="font-weight:bold;" class="btn btn-warning">Exporter sur excel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -88,6 +112,11 @@
                             var jAllouesThq= caAtos / tjm;
                             document.getElementById("formulaire").elements["jourThq"].value=jAllouesThq;
                             document.getElementById("formulaire").elements["partGDP"].value = jAllouesThq*0.2;}
+
+
+
+
+
 
 
 

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
     <nav class="bg-light" style="border-bottom : 2px solid blue">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
@@ -24,7 +25,8 @@
                 </li>
                 {% for collab in data_navbar %}
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee}}/{{mois}}">{{collab[0]}}</a>
+                    <a class="nav-link"
+                       href="/see_imput_collab/{{collab[1].id_collab}}/{{annee_courant}}/{{mois_courant}}">{{collab[0]}}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -47,21 +49,24 @@
     <div style="margin-left: 20px; text-align: center">
         <h5 class="text-primary">Tableau contenant les jours de congés de chaque collaborateur, avec ceux qu'ils ont
             déjà posé. <br>
-            Choisissez le mois et l'année, puis cliquez sur " Poser des congés " pour enregistrer les congés d'un collaborateur.</h5>
+            Choisissez le mois et l'année, puis cliquez sur " Poser des congés " pour enregistrer les congés d'un
+            collaborateur.</h5>
     </div>
 </div>
 <table style=" margin-left:20px; margin-top:30px;   text-align:center;   table-layout: fixed;" id="tableconges">
     <tr class="p-3 mb-2 bg-primary text-white" style="background-image: var(--bs-gradient);">
         <td style="font-weight:bold; padding: 10px">Collaborateur</td>
         <td style="border-left: 1px solid white;font-weight:bold; padding: 10px">Nombre de congés</td>
-        <td style="border-left: 1px solid white;font-weight:bold; padding: 10px">Nombre de congés posés
+        <td style="border-left: 1px solid white;font-weight:bold; padding: 10px">Nombre de congés posés <br>(sur l'année
+            en
+            cours)
         </td>
     </tr>
     {% for collab in collabs %}
     <tr style=" border-right:solid 1px black; border-left:solid 1px black; border-top:solid 1px black;border-bottom:solid 1px black;">
         <td class="p-3 mb-2 bg-white text-primary border border-primary">{{collab[1].prenom}} {{collab[1].nom}}</td>
         <td class="p-3 mb-2 bg-white text-primary border border-primary">{{conges[collab[0]].nbCongesTot}}</td>
-        <td class="p-3 mb-2 bg-white text-primary border border-primary">{{conges[collab[0]].nbCongesPose}}</td>
+        <td class="p-3 mb-2 bg-white text-primary border border-primary">{{collab[2]}}</td>
 
         <form style="text-align:center; margin: 20px " action="/see_poser_conges/{{collab[1].id_collab}}" method="post">
             <td class="p-3 mb-2 bg-white text-primary border border-primary" width="200">
@@ -96,7 +101,8 @@
                 </select>
             </td>
             <td class="p-3 mb-2 bg-white text-primary border border-primary" width="200">
-                <button style="font-weight:bold;" class="btn border border-white btn-warning" name="button">Poser des congés
+                <button style="font-weight:bold;" class="btn border border-white btn-warning" name="button">Poser des
+                    congés
                 </button>
             </td>
         </form>

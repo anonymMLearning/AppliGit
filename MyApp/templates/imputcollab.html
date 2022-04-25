@@ -130,9 +130,14 @@
 <script>
     function validImput(id){
         var joursImput = parseFloat(document.getElementById("formulaire").elements[id].value);
+        console.log(joursImput);
         if (joursImput < 0){
             document.getElementById("formulaire").elements[id].value = 0;
             alert("Saisissez un nombre entre 0 et le nombre de jours disponibles");
+        }
+        if (isNaN(joursImput)){
+            document.getElementById("formulaire").elements[id].value = 0;
+            alert("Saisissez un nombre");
         }
         const str = id;
         var i=0;
