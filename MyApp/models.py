@@ -162,7 +162,7 @@ class Boncomm(db.Model):
                 part d'EGIS sur le chiffre d'affaire du bon de commande.
             num : str
                 numéro du bon de commande.
-            num : poste
+            poste : str
                 poste du bon de commande.
             projet : str
                 projet du bon de commande.

@@ -858,8 +858,8 @@ def save_bonComm():
                            data_navbar=data_navbar, mois=mois, annee=annee)
 
 
-@app.route('/modif_activite/<idb>', methods=['GET', 'POST'])
-def modif_activite(idb):
+@app.route('/modif_boncomm/<idb>', methods=['GET', 'POST'])
+def modif_boncomm(idb):
     """
         Permet de modifier les attributs d'une activité.
 
@@ -919,6 +919,86 @@ def modif_activite(idb):
         else:
             data = db.session.query(Collab).get(idc)
             assoc2 = AssociationBoncommCollab(joursAllouesBC=joursAllouesBon)
+            assoc2.collab = data
+            assoc2.boncomm = data_to_change
+            data_to_change.collabs.append(assoc2)
+            # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates
+            dates = db.session.query(Date).all()
+            for date in dates:
+                imp = Imputation(data_to_change.id_acti, idc, date.id_date, 0)
+                db.session.add(imp)
+    db.session.commit()
+    boncomms = db.session.query(Boncomm).all()
+    data_boncomm = []
+    data_reste = []
+    for i in range(len(boncomms)):
+        boncomm = boncomms[i]
+        if boncomm.activite[0:4] != "CP -":
+            if boncomm.caAtos != 0:  # c'est un BC, et non pas une formation ou autre
+                collabs = boncomm.collabs
+                # Dans l'ordre, si c'est un BC, il y a forcément ensuite sa partie GDP
+                collabsGDP = boncomms[i + 1].collabs
+                data_boncomm.append([boncomm, collabs, boncomms[i + 1], collabsGDP])
+            elif boncomm.nbCongesTot == 0:  # Autres activités, sauf les congés
+                collabs = boncomm.collabs
+                data_reste.append([boncomm, collabs])
+    collabs = db.session.query(Collab).all()
+    collaborateurs = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collaborateur in collaborateurs:
+        data_navbar.append([collaborateur.abreviation(), collaborateur])
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    return render_template('activite.html', data_boncomm=data_boncomm, data_reste=data_reste, collabs=collabs,
+                           data_navbar=data_navbar, mois=mois, annee=annee)
+
+
+@app.route('/modif_activite/<idb>', methods=['GET', 'POST'])
+def modif_activite(idb):
+    """
+        Permet de modifier les attributs d'une activité.
+
+        Parameters
+        ----------
+        idb
+            id du bon de commande à modifier.
+        Returns
+        -------
+        render_template
+            renvoie la page HTML avec la liste des bons de commandes, avec cette liste actualisée.
+    """
+    activite = request.form['activite']
+    com = request.form['com']
+    anneeTarif = request.form['anneeTarif']
+    jourThq = request.form['jourThq']
+    horsProjet = request.form['horsProjet']
+    data_to_change = db.session.query(Boncomm).get(idb)
+    if data_to_change.nbJoursFormation == 0:
+        if data_to_change.nbJoursAutre != jourThq:
+            data_to_change.nbJoursAutre = jourThq
+            data_to_change.jourThq = jourThq
+    else:
+        if data_to_change.nbJoursFormation != jourThq:
+            data_to_change.nbJoursFormation = jourThq
+            data_to_change.jourThq = jourThq
+    if activite != "":
+        data_to_change.activite = activite
+    if com != "":
+        data_to_change.com = com
+    if horsProjet != "":
+        data_to_change.horsProjet = horsProjet
+    if anneeTarif != data_to_change.anneeTarif:
+        data_to_change.anneeTarif = anneeTarif
+    ids = request.form.getlist('collabs')
+    for idc in ids:  # On va modifier les attributions des jours à imputer pour les collabs sélectionnés
+        assoc = db.session.query(AssociationBoncommCollab).filter(AssociationBoncommCollab.collab_id == idc,
+                                                                  AssociationBoncommCollab.boncomm_id == idb).all()
+        if assoc != []:  # Si le collab imputait déjà sur ce bon
+            assoc[0].joursAllouesBC = jourThq
+        else:
+            data = db.session.query(Collab).get(idc)
+            assoc2 = AssociationBoncommCollab(joursAllouesBC=jourThq)
             assoc2.collab = data
             assoc2.boncomm = data_to_change
             data_to_change.collabs.append(assoc2)

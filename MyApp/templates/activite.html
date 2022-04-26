@@ -53,7 +53,7 @@
             question.
             <h5 class="text-danger">Attention : La suppression d'une activité entraine la suppression des imputations
                 des collaborateurs liés à ce bon !</h5></h5>
-            <h5 class="text-warning"> H-P : pour les formations, si hors-projet ou non</h5>
+        <h5 class="text-warning"> H-P : pour les formations, si hors-projet ou non</h5>
     </div>
 </div>
 <h5 style="margin-left: 20px; margin-top: 20px;margin-bottom: 20px" class="text-primary font-italic">Pour enregistrer
@@ -88,7 +88,7 @@
                                 <input class="text-primary form-control" type="text" id="comBC" name="comBC">
                                 <br>
                                 <label class="form-label text-primary" for="anneeTarifBC">Année tarifaire :</label>
-                                <input class="text-primary form-control" type="number" id="anneeTarifBC"
+                                <input class="text-primary form-control" value="{{annee}}" type="number" id="anneeTarifBC"
                                        name="anneeTarifBC" required="required">
                                 <br>
                                 <label class="form-label text-primary" for="caAtosBC">CA Atos :</label>
@@ -194,7 +194,7 @@
                                 <input class="text-primary form-control" type="text" id="com2" name="com2">
                                 <br>
                                 <label class="form-label text-primary" for="anneeTarif2">Année :</label>
-                                <input class="text-primary form-control" type="number" id="anneeTarif2"
+                                <input class="text-primary form-control" value="{{annee}}" type="number" id="anneeTarif2"
                                        name="anneeTarif2" required="required">
                                 <br>
                                 <label class="form-label text-primary" for="hprojet">Formation hors projet :</label>
@@ -249,7 +249,7 @@
                                 <input class="text-primary form-control" type="text" id="com3" name="com3">
                                 <br>
                                 <label class="form-label text-primary" for="anneeTarif3">Année :</label>
-                                <input class="text-primary form-control" type="number" id="anneeTarif3"
+                                <input class="text-primary form-control" value="{{annee}}" type="number" id="anneeTarif3"
                                        name="anneeTarif3" required="required">
                                 <br>
                                 <label class="form-label text-primary" for="nbjoursautre">Nombre de jours :</label>
@@ -414,6 +414,54 @@
         <td class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                    data-bs-target="#modifActivite{{activite[0].id_acti}}">Modifier
+            </button>
+            <div id="modifActivite{{activite[0].id_acti}}" class="modal fade" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="modifBoncomm">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Modifier l'activité</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/modif_activite/{{activite[0].id_acti}}" method="post">
+                                <label for="activite">Activité :</label>
+                                <input class="text-primary form-control" type="text" name="activite">
+                                <br>
+                                <label>Hors Projet : (pour les formations)</label>
+                                <select class="form-select bg-white text-primary" name="horsProjet" id="horsProjet">
+                                    <option value="{{activite[0].horsProjet}}">Valeur actuellement sélectionné : {{activite[0].horsProjet}}</option>
+                                    <option value="Oui">Oui</option>
+                                    <option value="Non">Non</option>
+                                </select>
+                                <br>
+                                <label for="com">Commentaire :</label>
+                                <input class="text-primary form-control" type="text" name="com">
+                                <br>
+                                <label for="anneeTarif">Année tarifaire :</label>
+                                <input class="text-primary form-control" type="number" name="anneeTarif"
+                                       value={{activite[0].anneeTarif}}>
+                                <br>
+                                <label for="jourThq">Jours alloués à l'activité :</label>
+                                <input class="text-primary form-control" type="number" name="jourThq"
+                                       value={{activite[0].jourThq}}>
+                                <br>
+                                <select class="form-select bg-white text-primary" multiple name="collabs">
+                                    {% for collab in collabs %}
+                                    <option value={{collab.id_collab}}>{{collab.nom}}</option>
+                                    {% endfor %}
+                                </select><br>
+                                <button name="button" class="btn btn-primary">Modifier le bon</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                     data-bs-target="#effacer{{activite[0].id_acti}}">
                 Effacer
             </button>
@@ -539,39 +587,6 @@
         <td class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                    data-bs-target="#effacerBC{{activite[0].id_acti}}">
-                Effacer
-            </button>
-            <div class="modal fade" id="effacerBC{{activite[0].id_acti}}" tabindex="-1" aria-hidden="true"
-                 aria-labelledby="effacerBC">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title">Effacer le BC</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <label>Voulez-vous vraiment supprimer ce BC ?</label>
-                            <br>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <a href="/deleteactivite/{{activite[0].id_acti}}">Oui</a>
-                                    </div>
-                                    <div class="col-6">
-                                        <a href="/see_data_boncomm">Non</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </td>
-        <td class="p-3 mb-2 bg-white text-primary border border-primary"
-            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                     data-bs-target="#modifBC{{activite[0].id_acti}}">Modifier
             </button>
             <div class="modal fade" id="modifBC{{activite[0].id_acti}}" tabindex="-1" aria-hidden="true"
@@ -583,7 +598,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="/modif_activite/{{activite[0].id_acti}}" method="post">
+                            <form action="/modif_boncomm/{{activite[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
                                 <input class="text-primary form-control" type="text" id="activite" name="activite">
                                 <br>
@@ -650,6 +665,39 @@
                 </div>
             </div>
         </td>
+        <td class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                    data-bs-target="#effacerBC{{activite[0].id_acti}}">
+                Effacer
+            </button>
+            <div class="modal fade" id="effacerBC{{activite[0].id_acti}}" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="effacerBC">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Effacer le BC</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label>Voulez-vous vraiment supprimer ce BC ?</label>
+                            <br>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a href="/deleteactivite/{{activite[0].id_acti}}">Oui</a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="/see_data_boncomm">Non</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
     </tr>
     <tr>
         <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
@@ -707,8 +755,9 @@
             {% for collabs in
             activite[3] %} {{collabs.collab.nom}} <br> {% endfor %}
         </td>
-        <td class="p-3 mb-2 bg-white text-primary border border-primary"
-            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+        <td style="border-bottom: 1px solid #0d6efd;"></td>
+        <td class="p-3 mb-2 bg-white text-primary"
+            style="color: rgb(82,82,82) ;border-bottom: 1px solid #0d6efd;border-left: 1px solid white;vertical-align: middle; border-right:1px solid white;padding:15px;">
             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                     data-bs-target="#modifGDP{{activite[2].id_acti}}">Modifier
             </button>
@@ -795,6 +844,7 @@
                 </div>
             </div>
         </td>
+        <td style="border-right: 1px solid #0d6efd;border-bottom: 1px solid #0d6efd;"></td>
     </tr>
     {% endfor %}
 </table>
@@ -815,6 +865,8 @@
             var joursAllouables = joursThq - partGDP;
             alert("Il y a " +joursAllouables+" jours à répartir");
             }
+
+
 
 
 

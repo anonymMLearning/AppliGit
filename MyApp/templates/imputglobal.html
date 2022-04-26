@@ -54,88 +54,69 @@
     </div>
 </div>
 <table id="tableau"
-       style=" margin-left:20px; margin-right:20px; margin-top:50px;   text-align:center;   table-layout: fixed;">
-    <tr style="background-image: var(--bs-gradient);height:40px;" class="p-3 mb-2 bg-primary text-white">
+       style="margin-top:50px;   text-align:center;   table-layout: auto;">
+    <tr style="background-image: var(--bs-gradient);" class="bg-primary text-white">
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="40">N°
+            style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;">N°
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="40">Poste
+            style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;"width="10000px">Poste
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="40">Projet
+            style="font-weight:bold; border-right: 1px solid white;border-bottom: 1px solid white;"width="10000px">Projet
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="80">Tâche
+            style="font-weight:bold; border-right: 1px solid white;border-bottom: 1px solid white;" width="10000px">Tâche
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="40">Jours Alloués
+            style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;">Jours
+            Alloués
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="80">Avcmt
+            style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;">
+            Progrés
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="160">RAF
+            style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;">RAF
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="100">Conso
-        </td>
-        <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; padding: 1px;border-bottom: 1px solid white;"
-            width="160">Ecart Alloués - (RAF +
-            Conso)
+            style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;">Conso
         </td>
         {% for collab in collabs %}
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white;border-bottom: 1px solid white; padding: 1px;"
-            width="300">
-            <div>{{collab.nom}}</div>
-            <div>A/C/RAF</div>
+            style="font-weight:bold; border-right: 1px solid white;border-bottom: 1px solid white;" width="10000px">
+            <div width="10000px">{{collab.nom}}</div>
+            <div width="10000px">A/C/RAF</div>
         </td>
         {% endfor %}
     </tr>
 
     {% for boncomm in boncomms %}
     <tr class="bg-warning" style="background-image: var(--bs-gradient);">
-        <td style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
-            width="160">{{boncomm[1].num}}
+        <td style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;" class="w-auto">
+            {{boncomm[1].num}}
         </td>
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
-            width="160">{{boncomm[1].poste}}
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;">{{boncomm[1].poste}}
         </td>
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
-            width="160">{{boncomm[1].projet}}
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;">{{boncomm[1].projet}}
         </td>
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
-            width="160">commande - {{boncomm[1].activite}}
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;">commande -
+            {{boncomm[1].activite}}
         </td>
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
-            width="160">{{boncomm[1].jourThq + boncomm[2].jourThq}}
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;">{{boncomm[1].jourThq +
+            boncomm[2].jourThq}}
         </td>
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
-            width="160"></td>
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
-            width="160">{{valeursBoncomms[boncomm[0]][3] +
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"></td>
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;">
+            {{valeursBoncomms[boncomm[0]][3] +
             valeursBoncommsGDP[boncomm[0]][3]}}
         </td>
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
-            width="160">{{valeursBoncomms[boncomm[0]][4] +
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;">
+            {{valeursBoncomms[boncomm[0]][4] +
             valeursBoncommsGDP[boncomm[0]][4]}}
         </td>
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
-            width="160">{{valeursBoncomms[boncomm[0]][5] +
-            valeursBoncommsGDP[boncomm[0]][5]}}
-        </td>
         {% for i in range(nbCollab) %}
-        <td style="border-right: 1px solid black;border-bottom: 1px solid black;" width="300">
+        <td style="border-right: 1px solid black;border-bottom: 1px solid black;" width="10000px">
             <div class="container">
                 <div class="row">
                     <div class="col-4"></div>
@@ -147,52 +128,46 @@
         {% endfor %}
     </tr>
     <tr class="text-primary" style="border-bottom: 1px solid black">
-        <td width="160" style="border-left:solid 1px black">{{boncomm[1].num}}</td>
-        <td width="160" style="border-left:solid 1px black;">{{boncomm[1].poste}}</td>
-        <td width="160" style="border-left:solid 1px black;">{{boncomm[1].projet}}</td>
-        <td width="160" style="border-left:solid 1px black;">{{boncomm[1].activite}}</td>
-        <td width="160" style="border-left:solid 1px black;">{{boncomm[1].jourThq}}</td>
-        <td id="avanc{{boncomm[0]}}" width="160" style="border-left:solid 1px black;">{{valeursBoncomms[boncomm[0]][2]}}
+        <td style="border-left:solid 1px black">{{boncomm[1].num}}</td>
+        <td style="border-left:solid 1px black;">{{boncomm[1].poste}}</td>
+        <td style="border-left:solid 1px black;">{{boncomm[1].projet}}</td>
+        <td style="border-left:solid 1px black;">{{boncomm[1].activite}}</td>
+        <td style="border-left:solid 1px black;">{{boncomm[1].jourThq}}</td>
+        <td id="avanc{{boncomm[0]}}" style="border-left:solid 1px black;">{{valeursBoncomms[boncomm[0]][2]}}
             %
         </td>
-        <td width="160" style="border-left:solid 1px black;">{{valeursBoncomms[boncomm[0]][3]}}</td>
-        <td width="160" style="border-left:solid 1px black;">{{valeursBoncomms[boncomm[0]][4]}}</td>
-        <td width="160" style="border-left:solid 1px black;border-right:solid 1px black">
-            {{valeursBoncomms[boncomm[0]][5]}}
-        </td>
+        <td style="border-left:solid 1px black;">{{valeursBoncomms[boncomm[0]][3]}}</td>
+        <td style="border-left:solid 1px black;border-right:solid 1px black">{{valeursBoncomms[boncomm[0]][4]}}</td>
         {% for i in range(nbCollab) %}
-        <td style="border-right:solid 1px black;" width="300">
+        <td style="border-right:solid 1px black;">
             <div class="container">
                 <div class="row">
-                    <div class="col-4" style="border-right:solid 1px black;">{{data_bon[boncomm[0]][i][0]}}</div>
-                    <div class="col-4" style="border-right:solid 1px black;">{{data_bon[boncomm[0]][i][1]}}</div>
-                    <div class="col-4">{{data_bon[boncomm[0]][i][2]}}</div>
+                    <div class="col-4" style="border-right:solid 1px black; padding-left:3px;">{{data_bon[boncomm[0]][i][0]}}</div>
+                    <div class="col-4" style="border-right:solid 1px black;padding-left:3px;">{{data_bon[boncomm[0]][i][1]}}</div>
+                    <div class="col-4" style="padding-left:3px;">{{data_bon[boncomm[0]][i][2]}}</div>
                 </div>
             </div>
         </td>
         {% endfor %}
     </tr>
     <tr class="text-primary" style="border-bottom:solid 1px black">
-        <td width="160" style="border-left:solid 1px black">{{boncomm[2].num}}</td>
-        <td width="160" style="border-left:solid 1px black">{{boncomm[2].poste}}</td>
-        <td width="160" style="border-left:solid 1px black">{{boncomm[2].projet}}</td>
-        <td width="160" style="border-left:solid 1px black">{{boncomm[2].activite}}</td>
-        <td width="160" style="border-left:solid 1px black">{{boncomm[2].jourThq}}</td>
-        <td id="avancGDP{{boncomm[0]}}" width="160" style="border-left:solid 1px black">
+        <td style="border-left:solid 1px black">{{boncomm[2].num}}</td>
+        <td style="border-left:solid 1px black">{{boncomm[2].poste}}</td>
+        <td style="border-left:solid 1px black">{{boncomm[2].projet}}</td>
+        <td style="border-left:solid 1px black">{{boncomm[2].activite}}</td>
+        <td style="border-left:solid 1px black">{{boncomm[2].jourThq}}</td>
+        <td id="avancGDP{{boncomm[0]}}" style="border-left:solid 1px black">
             {{valeursBoncommsGDP[boncomm[0]][2]}} %
         </td>
-        <td width="160" style="border-left:solid 1px black">{{valeursBoncommsGDP[boncomm[0]][3]}}</td>
-        <td width="160" style="border-left:solid 1px black">{{valeursBoncommsGDP[boncomm[0]][4]}}</td>
-        <td width="160" style="border-left:solid 1px black;border-right:solid 1px black">
-            {{valeursBoncomms[boncomm[0]][5]}}
-        </td>
+        <td style="border-left:solid 1px black">{{valeursBoncommsGDP[boncomm[0]][3]}}</td>
+        <td style="border-left:solid 1px black;border-right:solid 1px black">{{valeursBoncommsGDP[boncomm[0]][4]}}</td>
         {% for i in range(nbCollab) %}
-        <td style="border-right:solid 1px black;" width="300">
+        <td style="border-right:solid 1px black;">
             <div class="container">
                 <div class="row">
-                    <div class="col-4" style=" border-right:solid 1px black;">{{data_bonGDP[boncomm[0]][i][0]}}</div>
-                    <div class="col-4" style=" border-right:solid 1px black;">{{data_bonGDP[boncomm[0]][i][1]}}</div>
-                    <div class="col-4">{{data_bonGDP[boncomm[0]][i][2]}}</div>
+                    <div class="col-4" style=" border-right:solid 1px black;padding-left:3px;">{{data_bonGDP[boncomm[0]][i][0]}}</div>
+                    <div class="col-4" style=" border-right:solid 1px black;padding-left:3px;">{{data_bonGDP[boncomm[0]][i][1]}}</div>
+                    <div class="col-4" style="padding-left:3px;">{{data_bonGDP[boncomm[0]][i][2]}}</div>
                 </div>
             </div>
         </td>
@@ -224,6 +199,11 @@
             document.getElementById(idGDP).style.color = "white";
         }
     }
+
+
+
+
+
 
 </script>
 </body>
