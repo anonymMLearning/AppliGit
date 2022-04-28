@@ -37,6 +37,58 @@ class AssociationBoncommCollab(db.Model):
     boncomm = db.relationship("Boncomm", back_populates="collabs")
 
 
+class AssoDateBoncomm(db.Model):
+    """
+            Réprésente l'association entre une date et une activité.
+
+            ...
+
+            Attributs
+            ----------
+            date_id : int
+                id de la date, clé primaire.
+            boncomm_id : int
+                id de l'activité, clé primaire.
+            descriptionDate : str
+                description de la date : début, fin, prévue ou réelle.
+            date :
+                lien d'association à la date.
+            boncomm :
+                lien d'association à l'activité.
+    """
+    boncomm_id = db.Column('boncomm_id', db.Integer, db.ForeignKey('boncomm.id_acti'), primary_key=True)
+    date_id = db.Column('date_id', db.Integer, db.ForeignKey('date.id_date'), primary_key=True)
+    descriptionDate = db.Column(db.String(100), nullable=False)
+    date = db.relationship("Date", back_populates="boncomms")
+    boncomm = db.relationship("Boncomm", back_populates="dates")
+
+
+class AssoCollabFonction(db.Model):
+    """
+            Réprésente l'association entre une fonction et un collaborateur.
+
+            ...
+
+            Attributs
+            ----------
+            collab_id : int
+                id du collaborateur, clé primaire.
+            fonction_id : int
+                id de la fonction, clé primaire.
+            affectation : float
+                pourcentage, représentant la part du temps de travail du collaborateur sur cette fonction.
+            collab :
+                lien d'association au collaborateur.
+            fonction :
+                lien d'association à la fonction.
+    """
+    collab_id = db.Column('collab_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True)
+    fonction_id = db.Column('fonction_id', db.Integer, db.ForeignKey('fonction.id_fonction'), primary_key=True)
+    affectation = db.Column(db.Float, nullable=False)
+    collab = db.relationship("Collab", back_populates="fonctions")
+    fonction = db.relationship("Fonction", back_populates="collabs")
+
+
 class Collab(db.Model):
     """
             Réprésente un collaborateur de l'équipe.
@@ -53,6 +105,8 @@ class Collab(db.Model):
                 prénom du collaborateur.
             access : int
                 niveau d'accès du collaborateur.
+            entreprise : str
+                entreprise du collaborateur.
             imputations : list d'Imputation
                ensemble des imputations associées au collaborateur, venant de l'association entre la classe Collab et Imputation.
             boncomms : list de Boncomm
@@ -60,7 +114,7 @@ class Collab(db.Model):
 
             Méthodes
             -------
-            __init__(self, nom, prenom, access)
+            __init__(self, nom, prenom, access, entreprise)
                 constructeur de la classe
 
             abreviation(self)
@@ -70,20 +124,55 @@ class Collab(db.Model):
     nom = db.Column(db.String(30), nullable=False)
     prenom = db.Column(db.String(30), nullable=False)
     access = db.Column(db.Integer, nullable=False)
+    entreprise = db.Column(db.String(30), nullable=False)
     imputations = db.relationship('Imputation', backref='collab', uselist=False)
     boncomms = db.relationship('AssociationBoncommCollab', back_populates="collab")
+    fonctions = db.relationship('AssoCollabFonction', back_populates="collab")
 
-    def __init__(self, nom, prenom, access):
+    def __init__(self, nom, prenom, access, entreprise):
         self.nom = nom
         self.prenom = prenom
         self.access = access
+        self.entreprise = entreprise
 
     def abreviation(self):
         prenom = self.prenom[0]
         nomDebut = self.nom[0]
         nomFin = self.nom[-1]
-        abrev = (prenom+nomDebut+nomFin).upper()
+        abrev = (prenom + nomDebut + nomFin).upper()
         return abrev
+
+
+class Fonction(db.Model):
+    """
+        Réprésente une fonction que peut remplir un collaborateur.
+
+        ...
+
+        Attributs
+        ----------
+        id_fonction : int
+            id de la fonction, clé primaire.
+        nom : str
+            nom de la fonction.
+        tjm : float
+            tjm de la fonction.
+        collabs : list de Collab
+            ensemble des colaborateurs assurant cette fonction, venant de l'association plusieurs-à-plusieurs entre Collab et Fonction.
+
+        Méthodes
+        -------
+        __init__(self, nom, tjm)
+            constructeur de la classe
+    """
+    id_fonction = db.Column(db.Integer, primary_key=True)
+    nom = db.Column(db.String(50), nullable=False)
+    tjm = db.Column(db.Float, nullable=False)
+    collabs = db.relationship('AssoCollabFonction', back_populates="fonction")
+
+    def __init__(self, nom, tjm):
+        self.nom = nom
+        self.tjm = tjm
 
 
 class Imputation(db.Model):
@@ -170,8 +259,10 @@ class Boncomm(db.Model):
                 taux journalier moyen appliqué à ce commande.
             imputations : list d'Imputation
                 ensemble des imputations associées au bon de commande, venant de l'association entre la classe Imputation et Boncomm.
-            collabs ; list de Collab
+            collabs : list de Collab
                 ensemble des collaborateurs qui imputent sur ce bon de commande, venant de l'association plusieurs_à_plusieurs entre Boncomm et Collab.
+            dates : list de Date
+                ensemble des dates décrivants l'activité, venant de l'association plusieurs_à_plusieurs entre Boncomm et Date.
 
             Méthodes
             -------
@@ -192,6 +283,9 @@ class Boncomm(db.Model):
     poste = db.Column(db.String(100))
     projet = db.Column(db.String(30))
     tjm = db.Column(db.Float)
+    notification = db.Column(db.String(30))
+    facturation = db.Column(db.String(30))
+    prodOuGdp = db.Column(db.String(30))
     horsProjet = db.Column(db.String(10))
     nbJoursFormation = db.Column(db.Float)
     nbCongesTot = db.Column(db.Float)
@@ -199,9 +293,10 @@ class Boncomm(db.Model):
     nbJoursAutre = db.Column(db.Float)
     imputations = db.relationship('Imputation', backref='boncomm', uselist=False)
     collabs = db.relationship('AssociationBoncommCollab', back_populates="boncomm")
+    dates = db.relationship('AssoDateBoncomm', back_populates="boncomm")
 
     def __init__(self, activite, etat, com, anneeTarif, caAtos, jourThq, delais, montantHT, partEGIS, num, poste,
-                 projet, tjm, horsProjet, nbJoursFormation, nbCongesTot, nbCongesPose, nbJoursAutre):
+                 projet, tjm,notification, facturation,prodOuGdp,horsProjet, nbJoursFormation, nbCongesTot, nbCongesPose, nbJoursAutre):
         self.activite = activite
         self.etat = etat
         self.com = com
@@ -215,6 +310,9 @@ class Boncomm(db.Model):
         self.poste = poste
         self.projet = projet
         self.tjm = tjm
+        self.notification = notification
+        self.facturation = facturation
+        self.prodOuGdp = prodOuGdp
         self.horsProjet = horsProjet
         self.nbJoursFormation = nbJoursFormation
         self.nbCongesTot = nbCongesTot
@@ -238,12 +336,14 @@ class Date(db.Model):
                 mois de la date.
             annee : int
                 annee de la date.
+            pourcentAn : float
+                pourcentage sur l'année pour calculs des prix UO et TJM.
             imputations : list d'Imputation
                 ensemble des imputations associées a la date, venant de l'association entre la classe Date et Imputation.
 
             Méthodes
             -------
-            __init__(self, jour, mois, annee)
+            __init__(self, jour, mois, annee, pourcentAn)
                 constructeur de la classe.
             transfoDate(self)
                 transforme la date au format jj-mm-aaa.
@@ -258,12 +358,15 @@ class Date(db.Model):
     jour = db.Column(db.Integer, nullable=False)
     mois = db.Column(db.Integer, nullable=False)
     annee = db.Column(db.Integer, nullable=False)
+    pourcentAn = db.Column(db.Float, nullable=False)
     imputations = db.relationship('Imputation', backref='date', uselist=False)
+    boncomms = db.relationship('AssoDateBoncomm', back_populates="date")
 
-    def __init__(self, jour, mois, annee):
+    def __init__(self, jour, mois, annee, pourcentAn):
         self.jour = jour
         self.mois = mois
         self.annee = annee
+        self.pourcentAn = pourcentAn
 
     def transfoDate(self):
         date = datetime.date(self.annee, self.mois, self.jour)
@@ -284,6 +387,43 @@ class Date(db.Model):
 
     def jourSemaine(self):
         return self.transfoDate().weekday()
+
+
+class UO(db.Model):
+    """
+            Réprésente une UO.
+
+            ...
+
+            Attributs
+            ----------
+            id_uo : int
+                id de l'uo, clé primaire.
+            charges : float
+                charges de l'uo.
+            num : str
+                numéro de l'uo.
+            description : str
+                description de l'uo.
+            prix : float
+                prix de base de l'uo sur l'année de sa création.
+
+            Méthodes
+            -------
+            __init__(self, charges, num, description, prix)
+                constructeur de la classe.
+            """
+    id_uo = db.Column(db.Integer, primary_key=True)
+    charges = db.Column(db.Float, nullable=False)
+    num = db.Column(db.String(30), nullable=False)
+    description = db.Column(db.String(100), nullable=False)
+    prix = db.Column(db.Float, nullable=False)
+
+    def __init__(self, charges, num, description, prix):
+        self.charges = charges
+        self.num = num
+        self.description = description
+        self.prix = prix
 
 
 """
@@ -434,6 +574,33 @@ def stringMois(mois):
         return "Décembre"
     else:
         return ""
+
+
+def prixUoAn(uo, annee):  # Applique le pourcentgae de l'année au prix de l'année précédente, fonction récursive
+    if annee == 2022:
+        return uo.prix
+    prixPrec = prixUoAn(uo, annee - 1)
+    pourcentAn = db.session.query(Date).filter(Date.annee == annee).all()[0].pourcentAn
+    return round(prixPrec * (1 + (pourcentAn / 100)), 2)
+
+
+def tjmCollab(collab):
+    tjm = 0
+    fonctions = db.session.query(Fonction).all()
+    assoFonctions = collab.fonctions  # listes de mêmes longueurs
+    for i in range(len(fonctions)):
+        affectation = assoFonctions[i].affectation
+        tjm += (affectation/100) * fonctions[i].tjm
+    return tjm
+
+
+def prixTjmCollab(collab, annee):
+    tjm2022 = tjmCollab(collab)
+    if annee == 2022:
+        return tjm2022
+    tjmPrec = prixTjmCollab(collab, annee - 1)
+    pourcentAn = db.session.query(Date).filter(Date.annee == annee).all()[0].pourcentAn
+    return round(tjmPrec * (1 + (pourcentAn / 100)), 2)
 
 
 db.create_all()

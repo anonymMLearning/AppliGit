@@ -42,6 +42,7 @@
         <td style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">Jour</td>
         <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Mois</td>
         <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Annee</td>
+        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Pourcentage</td>
     </tr>
 
     {% for data3 in data3%}
@@ -50,7 +51,7 @@
         <td style=" border-right:solid 1px black;">{{data3.jour}}</td>
         <td style="border-right:solid 1px black;">{{data3.mois}}</td>
         <td style="" ...>{{data3.annee}}</td>
-
+        <td style="" ...>{{data3.pourcentAn}}</td>
         {% endfor %}
 </table>
 {% endblock content %}

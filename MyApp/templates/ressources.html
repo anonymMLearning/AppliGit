@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <title>Ressources</title>
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_uo">UO</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_ressources">Ressources</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</head>
+<body>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Tableau des Ressources
+    -</h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau regroupant les ressources avec
+            leurs affectations aux différents rôles.
+        </h5>
+    </div>
+</div>
+<div align="center">
+    <h5 class="text-primary">Pour modifier le TJM d'une fonction, cliquez ici : </h5>
+    <button style="background-image: var(--bs-gradient);" type="button"
+            class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modiftjm">
+        Modifier un TJM
+    </button>
+    <div class="modal fade" id="modiftjm" tabindex="-1" aria-hidden="true"
+         aria-labelledby="saveUo">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Modifier un TJM</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/modif_tjm" method="post">
+                        <label class="form-label text-primary" for="fonction">Fonction :</label>
+                        <select class="form-select bg-white text-primary" name="fonction" id="fonction">
+                            {% for fonction in fonctions %}
+                            <option value="{{fonction.id_fonction}}">{{fonction.nom}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <label class="form-label text-primary" for="tjm">Nouveau TJM :</label>
+                        <input class="text-primary form-control" type="number" step="0.1" id="tjm" name="tjm">
+                        <button style="margin-top: 15px;" name="button" class="btn btn-primary">Modifier le TJM</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="margin-top: 30px; text-align:center;">
+    <table align="center">
+        <tr>
+            <td></td>
+            {% for fonction in fonctions %}
+            <td class="bg-warning border border-warning"
+                style="font-weight:bold; margin-left: 20px; margin-right: 20px; padding: 5px;">
+                {{fonction.nom}}
+            </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td class="bg-warning border border-warning" style="font-weight:bold; padding: 5px;">TJM</td>
+            {% for fonction in fonctions %}
+            <td style="margin-left: 20px; margin-right: 20px; border: 1px solid #ffc107; padding: 5px;">
+                {{fonction.tjm}}
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+
+<table id="tableau" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2 bg-primary text-white" style="background-image: var(--bs-gradient);">
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Abrév.
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Nom
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding:5px;">
+            Prénom
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Entreprise
+        </td>
+        {% for pourcentage in pourcentages %}
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            {{pourcentage[0]}} <br> {{pourcentage[1]}} %
+        </td>
+        {% endfor %}
+        {% for fonction in fonctions %}
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            {{fonction.nom}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% for collab in collabs %}
+    <tr style="border-bottom : 1px solid#0d6efd">
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{collab[0]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{collab[1].nom}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{collab[1].prenom}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{collab[1].entreprise}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 10px;">{{collab[2][0]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 10px;">{{collab[2][1]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 10px;">{{collab[2][2]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 10px;">{{collab[2][3]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 10px;">{{collab[2][4]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 10px;">{{collab[2][5]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 10px;">{{collab[2][6]}}</td>
+        {% for affectFonction in collab[3] %}
+        <td class="text-primary" style="border-right: 1px solid #0d6efd;border-left: 1px solid #0d6efd; padding: 20px;">
+            {{affectFonction}} %
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</html>
