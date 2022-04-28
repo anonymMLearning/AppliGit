@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <title>UO</title>
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_uo">UO</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_ressources">Ressources</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</head>
+<body>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Tableau des UO -</h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau regroupant les UOs<br>Vous pouvez
+            ajouter une nouvelle UO en cliquant sur le bouton de création.
+        </h5>
+    </div>
+</div>
+<div style="text-align:center">
+    <button style="background-image: var(--bs-gradient);" type="button"
+            class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#saveuo">
+        Ajouter une UO
+    </button>
+    <div class="modal fade" id="saveuo" tabindex="-1" aria-hidden="true"
+         aria-labelledby="saveUo">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Ajouter une UO</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/save_uo" method="post">
+                        <label class="form-label text-primary" for="charges">Charges :</label>
+                        <input class="text-primary form-control" type="number" step="0.1" id="charges" name="charges">
+                        <br>
+                        <label class="form-label text-primary" for="num">Numéro de l'UO :</label>
+                        <input class="text-primary form-control" type="text" id="num" name="num">
+                        <br>
+                        <label class="form-label text-primary" for="description">Description de l'UO :</label>
+                        <input class="text-primary form-control" type="text" id="description" name="description">
+                        <br>
+                        <label class="form-label text-primary" for="prix">Montant (sur l'année en cours):</label>
+                        <input class="text-primary form-control" type="text" id="prix" name="prix">
+                        <br>
+                        <button name="button" class="btn btn-primary">Ajouter cette UO</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="tableau"
+       style=" margin-left:20px; margin-top:20px; margin-bottom:20px;  text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2 bg-primary text-white" style="background-image: var(--bs-gradient);">
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 1px;">
+            UO
+        </td>
+        <td style="font-weight:bold; border-right: 1px solid white; padding: 1px;">Description</td>
+        {% for data_an in pourcentages %}
+        <td style="font-weight:bold; border-right: 1px solid white; padding: 1px;">{{data_an[0]}}<br>{{data_an[1]}} %
+        </td>
+        {% endfor %}
+        <td style="font-weight:bold; border-right: 1px solid #0d6efd;padding: 1px;">Charges</td>
+    </tr>
+    {% for uo in data_uos %}
+    <tr style="border-bottom : 1px solid#0d6efd">
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{uo[0].num}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{uo[0].description}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{uo[0].prix}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{uo[1]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{uo[2]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{uo[3]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{uo[4]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{uo[5]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{uo[6]}}</td>
+        <td class="text-primary" style="border-right: 1px solid #0d6efd; border-left: 1px solid #0d6efd;padding: 20px;">
+            {{uo[0].charges}}
+        </td>
+        <td style="border-top: 1px solid #0d6efd;border-right: 1px solid #0d6efd; border-left: 1px solid #0d6efd;padding: 20px;">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                    data-bs-target="#modif{{uo[0].id_uo}}">
+                Modifier
+            </button>
+            <div class="modal fade" id="modif{{uo[0].id_uo}}" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="modifUo">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning">
+                            <h5 class="modal-title">Modifier l'UO</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/modif_uo/{{uo[0].id_uo}}" method="post">
+                                <label class="form-label text-warning" for="num">Numéro :</label>
+                                <input class="form-control" type="text" id="numModif" name="num"
+                                       value="{{uo[0].num}}">
+                                <br>
+                                <label class="form-label text-warning" for="descriptionModif">Description :</label>
+                                <input class="form-control" type="text" id="descriptionModif"
+                                       name="description"
+                                       value="{{uo[0].description}}">
+                                <br>
+                                <label class="form-label text-warning" for="chargesModif">Charges :</label>
+                                <input class="form-control" type="text" id="chargesModif"
+                                       name="charges"
+                                       value="{{uo[0].charges}}">
+                                <br>
+                                <label class="form-label text-warning" for="prixModif">Montant :</label>
+                                <input class="form-control" type="number" id="prixModif" name="prix"
+                                       value="{{uo[0].prix}}">
+                                <br>
+                                <button name="button" class="btn btn-warning">Modifier l'UO</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td style="border-top: 1px solid #0d6efd;border-right: 1px solid #0d6efd; border-left: 1px solid #0d6efd;padding: 20px;">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                    data-bs-target="#delete{{uo[0].id_uo}}">
+                Effacer
+            </button>
+            <div class="modal fade" id="delete{{uo[0].id_uo}}" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="deleteUo">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning">
+                            <h5 class="modal-title">Effacer l'UO</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a class="text-warning" href="/delete_uo/{{uo[0].id_uo}}">Oui</a>
+                                    </div>
+                                    <div class="col-6 text-warning">
+                                        <a class="text-warning" href="/see_uo">Non</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</html>
