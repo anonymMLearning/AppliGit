@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <title>PdC</title>
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_uo">UO</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_ressources">Ressources</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoBC">Chrono BC</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoFD">Chrono FD</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_pdc">PdC</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_CRA">CRA Marché</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</head>
+<body>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- PdC -</h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Texte ici : fkjhgiuqguiezguzvifzeu
+        </h5>
+    </div>
+</div>
+
+<table id="tableau" align="center"
+       style="margin-bottom:20px;  text-align:center;   table-layout: fixed;">
+    <tr style="background-image: var(--bs-gradient);">
+        <td class="p-3 mb-2 bg-primary text-white"
+            style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white;border-top: 1px solid #0d6efd; border-left: 1px solid #0d6efd;padding: 5px;">
+            Budget HT €
+        </td>
+        <td class="p-3 mb-2 bg-primary text-white"
+            style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; border-top: 1px solid #0d6efd;padding: 5px;">
+            Collaborateurs
+        </td>
+        <td class="p-3 mb-2 bg-primary text-white"
+            style="font-weight:bold; margin-left: 20px; margin-right: 20px; padding: 5px;border-top: 1px solid #0d6efd;border-right: 1px solid white;">
+            Jours <br> Alloués
+        </td>
+        <td class="p-3 mb-2 bg-primary text-white"
+            style="font-weight:bold; margin-left: 20px; margin-right: 20px; padding: 5px;border-top: 1px solid #0d6efd;border-right: 1px solid black;">
+            RAF
+        </td>
+        {% for mois in moisToShow %}
+        <td class="bg-warning"
+            style="font-weight:bold; border-top: 1px solid black;border-right:1px solid black; padding:5px;">
+            {{mois[0]}}/{{mois[1]}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% for projet in data %}
+    <tr>
+        <td class="text-primary"
+            style="border-left: 1px solid #0d6efd; padding: 20px;border-bottom : 1px solid #0d6efd;">{{projet[0]}}
+        </td>
+        <td class="text-primary"
+            style="border-right: 1px solid #0d6efd;border-left: 1px solid #0d6efd; padding: 20px;border-bottom : 1px solid #0d6efd;">
+            {% for collab in projet[1:] %}
+            {{collab[0]}}
+            <br>
+            {% endfor %}
+        </td>
+        <td class="text-primary"
+            style="border-right: 1px solid #0d6efd;border-left: 1px solid #0d6efd; padding: 20px;border-bottom : 1px solid #0d6efd;">
+            {% for collab in projet[1:] %}
+            {{collab[2]}}
+            <br>
+            {% endfor %}
+        </td>
+        <td class="text-primary"
+            style="border-right: 1px solid black;border-left: 1px solid #0d6efd; padding: 20px;border-bottom : 1px solid #0d6efd;">
+            {% for collab in projet[1:] %}
+            {{collab[3]}}
+            <br>
+            {% endfor %}
+        </td>
+        {% for i in range(nbMois) %}
+        <td class="bg-light"
+            style="border-right: 1px solid black;border-left: 1px solid #0d6efd; padding: 20px;border-bottom : 1px solid black;">
+            {% for collab in projet[1:] %}
+            {{collab[1][i]}}
+            <br>
+            {% endfor %}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<h5 class="text-primary" style="text-align:center;margin-bottom:20px;">Avancement global du projet :</h5>
+<table align="center" style="margin-bottom: 30px;">
+    <tr>
+        <td></td>
+        {% for data in dataTotMois %}
+        <td class="bg-primary text-white"
+            style="font-weight:bold; border-left: 1px solid white; border-bottom: 1px solid white;padding: 5px;">
+            {{data[0]}}
+        </td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td class="bg-primary text-white"
+            style="text-align:center; font-weight:bold;padding : 5px; border-bottom: 1px solid white">Jours consommés ce
+            mois
+        </td>
+        {% for data in dataTotMois %}
+        <td class="border border-primary text-primary" style="text-align:center;">
+            {{data[1]}}
+        </td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td class="bg-primary text-white" style="text-align:center;font-weight:bold; padding : 5px;">Avancement global
+        </td>
+        {% for data in dataTotMois %}
+        <td class="border border-primary text-primary" style="text-align:center;">
+            {{data[2]}} %
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+<br>
+<h5 style="text-align:center; margin-bottom:20px;">Projection équipe AMOA :</h5>
+
+<table align="center" style="margin-bottom: 30px;">
+    <tr>
+        <td></td>
+        {% for data in dataTotMois %}
+        <td class="bg-warning"
+            style="font-weight:bold; border: 1px solid black; padding: 5px;">
+            {{data[0]}}
+        </td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td class="bg-warning border border-dark"
+            style="text-align:center; font-weight:bold;padding : 5px;">prod nbre d'OTP par mois
+        </td>
+        {% for data in dataTotMois %}
+        <td class="border border-dark bg-light" style="text-align:center;">
+            {{data[3]}}
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</html>

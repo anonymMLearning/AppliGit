@@ -6,8 +6,7 @@ import requests as requests
 from urllib import request
 from models import *
 
-data_to_change = db.session.query(Collab).get(1)
-assoFonctions = data_to_change.fonctions
-for assoFonction in assoFonctions:
-    fonction = assoFonction.fonction
-    print(fonction.nom, fonction.tjm)
+date = db.session.query(Date).get(3653)
+print(date)
+#print(date.jour,date.mois,date.annee)
+

@@ -4,7 +4,6 @@ from sqlalchemy import ForeignKey, Integer, Column
 from MyApp.views import app
 
 import datetime
-
 from jours_feries_france import JoursFeries
 
 # Create database connection object
@@ -37,32 +36,6 @@ class AssociationBoncommCollab(db.Model):
     boncomm = db.relationship("Boncomm", back_populates="collabs")
 
 
-class AssoDateBoncomm(db.Model):
-    """
-            Réprésente l'association entre une date et une activité.
-
-            ...
-
-            Attributs
-            ----------
-            date_id : int
-                id de la date, clé primaire.
-            boncomm_id : int
-                id de l'activité, clé primaire.
-            descriptionDate : str
-                description de la date : début, fin, prévue ou réelle.
-            date :
-                lien d'association à la date.
-            boncomm :
-                lien d'association à l'activité.
-    """
-    boncomm_id = db.Column('boncomm_id', db.Integer, db.ForeignKey('boncomm.id_acti'), primary_key=True)
-    date_id = db.Column('date_id', db.Integer, db.ForeignKey('date.id_date'), primary_key=True)
-    descriptionDate = db.Column(db.String(100), nullable=False)
-    date = db.relationship("Date", back_populates="boncomms")
-    boncomm = db.relationship("Boncomm", back_populates="dates")
-
-
 class AssoCollabFonction(db.Model):
     """
             Réprésente l'association entre une fonction et un collaborateur.
@@ -87,6 +60,32 @@ class AssoCollabFonction(db.Model):
     affectation = db.Column(db.Float, nullable=False)
     collab = db.relationship("Collab", back_populates="fonctions")
     fonction = db.relationship("Fonction", back_populates="collabs")
+
+
+class AssoUoBoncomm(db.Model):
+    """
+        Réprésente l'association entre une UO et un bon de commande.
+
+        ...
+
+        Attributs
+        ----------
+        uo_id : int
+            id de l'UO, clé primaire.
+        boncomm_id : int
+            id du bon de commande, clé primaire.
+        facteur : int
+            facteur multiplicatif de l'UO dans le BC.
+        uo :
+            lien d'association à l'uo.
+        boncomm :
+            lien d'association à la fonction.
+    """
+    uo_id = db.Column('uo_id', db.Integer, db.ForeignKey('UO.id_uo'), primary_key=True)
+    boncomm_id = db.Column('boncomm_id', db.Integer, db.ForeignKey('boncomm.id_acti'), primary_key=True)
+    facteur = db.Column(db.Integer, nullable=False)
+    uo = db.relationship("UO", back_populates="boncomms")
+    boncomm = db.relationship("Boncomm", back_populates="uos")
 
 
 class Collab(db.Model):
@@ -261,8 +260,8 @@ class Boncomm(db.Model):
                 ensemble des imputations associées au bon de commande, venant de l'association entre la classe Imputation et Boncomm.
             collabs : list de Collab
                 ensemble des collaborateurs qui imputent sur ce bon de commande, venant de l'association plusieurs_à_plusieurs entre Boncomm et Collab.
-            dates : list de Date
-                ensemble des dates décrivants l'activité, venant de l'association plusieurs_à_plusieurs entre Boncomm et Date.
+            uos : list d'UO
+                ensemble des UOs liées à ce BC, venant de l'association plusieurs_à_plusieurs entre Boncomm et UO.
 
             Méthodes
             -------
@@ -285,7 +284,11 @@ class Boncomm(db.Model):
     tjm = db.Column(db.Float)
     notification = db.Column(db.String(30))
     facturation = db.Column(db.String(30))
-    prodOuGdp = db.Column(db.String(30))
+    prodGdpOuFd = db.Column(db.String(30))
+    dateDebut = db.Column(db.String(30))
+    dateFinPrev = db.Column(db.String(30))
+    dateNotif = db.Column(db.String(30))
+    dateFinOp = db.Column(db.String(30))
     horsProjet = db.Column(db.String(10))
     nbJoursFormation = db.Column(db.Float)
     nbCongesTot = db.Column(db.Float)
@@ -293,10 +296,11 @@ class Boncomm(db.Model):
     nbJoursAutre = db.Column(db.Float)
     imputations = db.relationship('Imputation', backref='boncomm', uselist=False)
     collabs = db.relationship('AssociationBoncommCollab', back_populates="boncomm")
-    dates = db.relationship('AssoDateBoncomm', back_populates="boncomm")
+    uos = db.relationship('AssoUoBoncomm', back_populates="boncomm")
 
     def __init__(self, activite, etat, com, anneeTarif, caAtos, jourThq, delais, montantHT, partEGIS, num, poste,
-                 projet, tjm,notification, facturation,prodOuGdp,horsProjet, nbJoursFormation, nbCongesTot, nbCongesPose, nbJoursAutre):
+                 projet, tjm, notification, facturation, prodGdpOuFd, dateDebut, dateFinPrev, dateNotif, dateFinOp,
+                 horsProjet, nbJoursFormation, nbCongesTot, nbCongesPose, nbJoursAutre):
         self.activite = activite
         self.etat = etat
         self.com = com
@@ -312,7 +316,11 @@ class Boncomm(db.Model):
         self.tjm = tjm
         self.notification = notification
         self.facturation = facturation
-        self.prodOuGdp = prodOuGdp
+        self.prodGdpOuFd = prodGdpOuFd
+        self.dateDebut = dateDebut
+        self.dateFinPrev = dateFinPrev
+        self.dateNotif = dateNotif
+        self.dateFinOp = dateFinOp
         self.horsProjet = horsProjet
         self.nbJoursFormation = nbJoursFormation
         self.nbCongesTot = nbCongesTot
@@ -360,7 +368,6 @@ class Date(db.Model):
     annee = db.Column(db.Integer, nullable=False)
     pourcentAn = db.Column(db.Float, nullable=False)
     imputations = db.relationship('Imputation', backref='date', uselist=False)
-    boncomms = db.relationship('AssoDateBoncomm', back_populates="date")
 
     def __init__(self, jour, mois, annee, pourcentAn):
         self.jour = jour
@@ -407,6 +414,8 @@ class UO(db.Model):
                 description de l'uo.
             prix : float
                 prix de base de l'uo sur l'année de sa création.
+            boncomms : list
+                liste de bon de commande venant de l'association AssoUoBoncomm.
 
             Méthodes
             -------
@@ -418,6 +427,7 @@ class UO(db.Model):
     num = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(100), nullable=False)
     prix = db.Column(db.Float, nullable=False)
+    boncomms = db.relationship('AssoUoBoncomm', back_populates="uo")
 
     def __init__(self, charges, num, description, prix):
         self.charges = charges
@@ -590,7 +600,7 @@ def tjmCollab(collab):
     assoFonctions = collab.fonctions  # listes de mêmes longueurs
     for i in range(len(fonctions)):
         affectation = assoFonctions[i].affectation
-        tjm += (affectation/100) * fonctions[i].tjm
+        tjm += (affectation / 100) * fonctions[i].tjm
     return tjm
 
 
@@ -601,6 +611,48 @@ def prixTjmCollab(collab, annee):
     tjmPrec = prixTjmCollab(collab, annee - 1)
     pourcentAn = db.session.query(Date).filter(Date.annee == annee).all()[0].pourcentAn
     return round(tjmPrec * (1 + (pourcentAn / 100)), 2)
+
+
+def calculerTotUo(boncomm):
+    assoUos = boncomm.uos
+    total = 0
+    for assoUo in assoUos:
+        uo = assoUo.uo
+        facteur = assoUo.facteur
+        total += float(facteur) * uo.prix
+    return total
+
+
+def collabsProjet(projet):
+    collabs = []
+    bons = db.session.query(Boncomm).filter(Boncomm.projet == projet, Boncomm.prodGdpOuFd != "Fd").all()
+    for bon in bons:
+        assos = bon.collabs
+        for asso in assos:
+            if asso.collab not in collabs:
+                collabs.append(asso.collab)
+    return collabs
+
+
+def moisVisibles(mois ,annee):
+
+    if mois == 12:
+        moisSuivant = 1
+        anneeSuivante = annee + 1
+    else:
+        moisSuivant = mois + 1
+        anneeSuivante = annee
+    moisVisibles = [[moisSuivant, anneeSuivante], [mois, annee]]  # Mois que l'on montrera dans le tableau
+    for i in range(8):
+        if mois == 1:
+            mois = 12
+            annee = annee - 1
+            moisVisibles.append([mois, annee])
+        else:
+            mois = mois - 1
+            moisVisibles.append([mois, annee])
+    moisVisibles.reverse()
+    return moisVisibles
 
 
 db.create_all()

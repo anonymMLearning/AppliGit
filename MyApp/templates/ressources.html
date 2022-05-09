@@ -18,6 +18,18 @@
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_ressources">Ressources</a>
                 </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoBC">Chrono BC</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoFD">Chrono FD</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_pdc">PdC</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_CRA">CRA Marché</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -72,16 +84,16 @@
         <tr>
             <td></td>
             {% for fonction in fonctions %}
-            <td class="bg-warning border border-warning"
+            <td class="bg-warning border border-dark"
                 style="font-weight:bold; margin-left: 20px; margin-right: 20px; padding: 5px;">
                 {{fonction.nom}}
             </td>
             {% endfor %}
         </tr>
         <tr>
-            <td class="bg-warning border border-warning" style="font-weight:bold; padding: 5px;">TJM</td>
+            <td class="bg-warning border border-dark" style="font-weight:bold; padding: 5px;">TJM</td>
             {% for fonction in fonctions %}
-            <td style="margin-left: 20px; margin-right: 20px; border: 1px solid #ffc107; padding: 5px;">
+            <td class="bg-light" style="margin-left: 20px; margin-right: 20px; border: 1px solid black; padding: 5px;">
                 {{fonction.tjm}}
             </td>
             {% endfor %}

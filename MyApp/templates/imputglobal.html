@@ -60,13 +60,16 @@
             style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;">N°
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;"width="10000px">Poste
+            style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;" width="10000px">
+            Poste
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white;border-bottom: 1px solid white;"width="10000px">Projet
+            style="font-weight:bold; border-right: 1px solid white;border-bottom: 1px solid white;" width="10000px">
+            Projet
         </td>
         <td class="border-white"
-            style="font-weight:bold; border-right: 1px solid white;border-bottom: 1px solid white;" width="10000px">Tâche
+            style="font-weight:bold; border-right: 1px solid white;border-bottom: 1px solid white;" width="10000px">
+            Tâche
         </td>
         <td class="border-white"
             style="font-weight:bold; border-right: 1px solid white; border-bottom: 1px solid white;">Jours
@@ -93,7 +96,8 @@
 
     {% for boncomm in boncomms %}
     <tr class="bg-warning" style="background-image: var(--bs-gradient);">
-        <td style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;" class="w-auto">
+        <td style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;"
+            class="w-auto">
             {{boncomm[1].num}}
         </td>
         <td style="border-right: 1px solid black;border-bottom: 1px solid black; padding: 1px;">{{boncomm[1].poste}}
@@ -142,8 +146,12 @@
         <td style="border-right:solid 1px black;">
             <div class="container">
                 <div class="row">
-                    <div class="col-4" style="border-right:solid 1px black; padding-left:3px;">{{data_bon[boncomm[0]][i][0]}}</div>
-                    <div class="col-4" style="border-right:solid 1px black;padding-left:3px;">{{data_bon[boncomm[0]][i][1]}}</div>
+                    <div class="col-4" style="border-right:solid 1px black; padding-left:3px;">
+                        {{data_bon[boncomm[0]][i][0]}}
+                    </div>
+                    <div class="col-4" style="border-right:solid 1px black;padding-left:3px;">
+                        {{data_bon[boncomm[0]][i][1]}}
+                    </div>
                     <div class="col-4" style="padding-left:3px;">{{data_bon[boncomm[0]][i][2]}}</div>
                 </div>
             </div>
@@ -165,8 +173,12 @@
         <td style="border-right:solid 1px black;">
             <div class="container">
                 <div class="row">
-                    <div class="col-4" style=" border-right:solid 1px black;padding-left:3px;">{{data_bonGDP[boncomm[0]][i][0]}}</div>
-                    <div class="col-4" style=" border-right:solid 1px black;padding-left:3px;">{{data_bonGDP[boncomm[0]][i][1]}}</div>
+                    <div class="col-4" style=" border-right:solid 1px black;padding-left:3px;">
+                        {{data_bonGDP[boncomm[0]][i][0]}}
+                    </div>
+                    <div class="col-4" style=" border-right:solid 1px black;padding-left:3px;">
+                        {{data_bonGDP[boncomm[0]][i][1]}}
+                    </div>
                     <div class="col-4" style="padding-left:3px;">{{data_bonGDP[boncomm[0]][i][2]}}</div>
                 </div>
             </div>
@@ -199,11 +211,6 @@
             document.getElementById(idGDP).style.color = "white";
         }
     }
-
-
-
-
-
 
 </script>
 </body>

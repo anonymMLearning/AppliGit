@@ -56,17 +56,7 @@
         </div>
         <br>
         <br>
-        <div>
-            <a id="creationdate" class="btn btn-warning" href="/init_date" style="margin-left:10px; font-weight:bold;
-                    text-align:center;background-image: var(--bs-gradient);">Créer le calendrier</a>
-        </div>
-        <br>
-        <div>
-            <a class="btn btn-primary"
-               style="margin-left:10px; font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-               href="/see_data_date">Voir
-                les dates</a>
-        </div>
+
         <br>
         <button style="font-weight:bold; text-align:center;background-image: var(--bs-gradient);" type="button"
                 class="btn btn-warning" data-bs-toggle="modal"
@@ -86,7 +76,7 @@
                         <h5 class="text-danger">Ne renseignez que les chiffres du DAS</h5>
                         <form action="/export_excel" method="post">
                             <label class="form-label" for="das">DAS :</label>
-                            <input class="text-primary form-control" type="text" id="das" name="das">
+                            <input class="form-control" type="text" id="das" name="das">
                             <br>
                             <button name="button" style="font-weight:bold;" class="btn btn-warning">Exporter sur excel
                             </button>

@@ -7,6 +7,89 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <meta charset="UTF-8">
     <title>Accueil</title>
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/accueil_imputation">Imputations MS4</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/accueil_marcheMS4">Marché MS4</a>
+                </li>
+                <li class="list-inline-item">
+                    <a data-bs-toggle="modal" data-bs-target="#horsMs4" class="nav-link" href="/">Imputations hors
+                        MS4</a>
+                </li>
+                <div class="modal fade" id="horsMs4" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="horsMS4">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white">Choisissez le collaborateur</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form style="text-align:center; margin: 20px " action="/see_archives_collab"
+                                      method="post">
+                                    <label class="form-label text-primary" style="font-weight:bold;" for="collab">Collaborateur
+                                        :</label>
+                                    <select class="form-select bg-light text-primary" name="collab" id="collab"
+                                            style="">
+                                        <{% for collab in collabs %}
+                                        <option name="{{collab.id_collab}}" value="{{collab.id_collab}}">
+                                            {{collab.nom}}
+                                        </option>
+                                        {% endfor %}>
+                                    </select>
+                                    <br>
+                                    <label class="form-label text-primary" style="font-weight:bold;" for="mois">Mois
+                                        :</label>
+                                    <select class="form-select bg-light text-primary" name="mois" id="mois">
+                                        <option selected value="1">Janvier</option>
+                                        <option value="2">Février</option>
+                                        <option value="3">Mars</option>
+                                        <option value="4">Avril</option>
+                                        <option value="5">Mai</option>
+                                        <option value="6">Juin</option>
+                                        <option value="7">Juillet</option>
+                                        <option value="8">Août</option>
+                                        <option value="9">Septembre</option>
+                                        <option value="10">Octobre</option>
+                                        <option value="11">Novembre</option>
+                                        <option value="12">Décembre</option>
+                                    </select>
+                                    <br>
+                                    <label class="form-label text-primary" style="font-weight:bold;" for="anneeCollab">Année
+                                        :</label>
+                                    <select class="form-select bg-light text-primary" name="annee" id="anneeCollab">
+                                        <option value="2021">2021</option>
+                                        <option selected value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                        <option value="2029">2029</option>
+                                        <option value="2030">2030</option>
+
+                                    </select>
+                                    <br>
+                                    <button style="font-weight:bold;" class="btn border border-white btn-primary"
+                                            name="button">Accéder à cette
+                                        imputation
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </nav>
 </head>
 <body>
 <h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Accueil : MS4 SUPV -</h1>
@@ -19,16 +102,15 @@
     </div>
 </div>
 <div style="text-align:center">
-    <a class="btn btn-warning"
-       style="margin-left:10px; font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-       href="/accueil_imputation">Accéder aux imputations</a>
-    <a class="btn btn-warning"
-       style="margin-left:10px; font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-       href="/accueil_marcheMS4">Accéder au Marché MS4</a>
     <a id="link" class="btn btn-primary" href="/init_db"
        style="margin-left:10px; font-weight:bold;text-align:center;background-image: var(--bs-gradient);">
         Vider la BDD</a>
-    <button style="background-image: var(--bs-gradient); font-weight:bold;" type="button"
+    <br>
+    <a class="btn btn-warning"
+       style="margin-left:10px; margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
+       href="/create_fonctions">Créer les fonctions</a>
+    <br>
+    <button style="margin-top:20px; background-image: var(--bs-gradient); font-weight:bold;" type="button"
             class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#modifpourcent">
         Modifier le pourcentage d'une année
@@ -46,6 +128,7 @@
                     <form action="/modif_pourcent" method="post">
                         <label for="annee">Année :</label>
                         <select class="form-select bg-warning" name="annee" id="annee">
+                            <option value="2021">2021</option>
                             <option selected value="2022">2022</option>
                             <option value="2023">2023</option>
                             <option value="2024">2024</option>
@@ -55,11 +138,11 @@
                             <option value="2028">2028</option>
                             <option value="2029">2029</option>
                             <option value="2030">2030</option>
-                            <option value="2031">2031</option>
+
                         </select>
                         <br>
                         <label for="pourcentage">Pourcentage à appliquer :</label>
-                        <input class="form-control bg-warning" type="number" step="0.01" id="pourcentage"
+                        <input value="0.0" class="form-control bg-warning" type="number" step="0.01" id="pourcentage"
                                name="pourcentage">
                         <br>
                         <button name="button" class="btn btn-warning">Valider</button>
@@ -68,9 +151,18 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-warning"
-       style="margin-left:10px; font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-       href="/create_fonctions">Créer les fonctions</a>
+    <br>
+    <div>
+        <a id="creationdate" class="btn btn-warning" href="/init_date" style="margin-top:20px;margin-left:10px; font-weight:bold;
+                    text-align:center;background-image: var(--bs-gradient);">Créer le calendrier</a>
+    </div>
+    <br>
+    <div>
+        <a class="btn btn-primary"
+           style="margin-left:10px; font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
+           href="/see_data_date">Voir
+            les dates</a>
+    </div>
 </div>
 
 

@@ -18,6 +18,18 @@
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_ressources">Ressources</a>
                 </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoBC">Chrono BC</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoFD">Chrono FD</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_pdc">PdC</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_CRA">CRA Marché</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -72,7 +84,7 @@
 <table id="tableau"
        style=" margin-left:20px; margin-top:20px; margin-bottom:20px;  text-align:center;   table-layout: fixed;">
     <tr class="p-3 mb-2 bg-primary text-white" style="background-image: var(--bs-gradient);">
-        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 1px;">
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-right: 1px solid white; padding: 1px;">
             UO
         </td>
         <td style="font-weight:bold; border-right: 1px solid white; padding: 1px;">Description</td>
@@ -155,10 +167,10 @@
                             <div class="container">
                                 <div class="row">
                                     <div class="col-6">
-                                        <a class="text-warning" href="/delete_uo/{{uo[0].id_uo}}">Oui</a>
+                                        <a class="text-dark" href="/delete_uo/{{uo[0].id_uo}}">Oui</a>
                                     </div>
                                     <div class="col-6 text-warning">
-                                        <a class="text-warning" href="/see_uo">Non</a>
+                                        <a class="text-dark" href="/see_uo">Non</a>
                                     </div>
                                 </div>
                             </div>

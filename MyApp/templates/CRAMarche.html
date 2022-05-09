@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CRA Marché</title>
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_uo">UO</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_ressources">Ressources</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoBC">Chrono BC</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoFD">Chrono FD</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_pdc">PdC</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_CRA">CRA Marché</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</head>
+<body>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- CRA Marché -</h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">CRA Marché AMOA MS4 SUPV, texte :
+            qjsdguiqsdgfiuqsgyqsiguqsu
+        </h5>
+    </div>
+</div>
+
+<table id="tableau" align="center"
+       style="margin-bottom:20px; text-align:center; table-layout: fixed;">
+    <tr class="p-3 mb-2 bg-primary text-white" style="background-image: var(--bs-gradient);">
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white;border-left: 1px solid #0d6efd; padding: 5px;">
+            BC
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Poste
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Libellé du poste
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Date <br>Début
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Date Fin <br> Contrat.
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Date Fin <br> Op.
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid #0d6efd; padding: 5px;">
+            Avancement
+            <br> (Prod)
+        </td>
+    </tr>
+    {% for projet in dataBoncomms %}
+    <tr class="bg-secondary" style="font-weight: bold; text-align:center;">
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-left: 1px solid #6c757d; padding: 5px;">
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px;  padding: 5px;">
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px;  padding: 5px;">
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px;  padding: 5px;">
+            {{projet[0]}}
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px;  padding: 5px;">
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px;  padding: 5px;">
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+        </td>
+        <td class="bg-primary text-white"
+            style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Jours alloués au bon
+        </td>
+        <td class="bg-primary text-white"
+            style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid #0d6efd; padding: 5px;">
+            Jours conso. <br>sur tous les bons du projet
+        </td>
+    </tr>
+    {% for bon in projet[1:] %}
+    <tr class="text-primary" style="border-bottom: 1px solid #0d6efd;">
+        <td style="text-align:center; padding: 5px; border-left: 1px solid #0d6efd;">
+            {{bon[0].num}}
+        </td>
+        <td style="text-align:center; padding: 5px; border-left: 1px solid #0d6efd;">
+            {{bon[0].poste}}
+        </td>
+        <td style="text-align:center; padding: 5px; border-left: 1px solid #0d6efd;">
+            {{bon[0].activite}}
+        </td>
+        <td style="text-align:center; padding: 5px; border-left: 1px solid #0d6efd;">
+            {{bon[0].dateDebut}}
+        </td>
+        <td style="text-align:center; padding: 5px; border-left: 1px solid #0d6efd;">
+            {{bon[0].dateFinPrev}}
+        </td>
+        <td style="text-align:center; padding: 5px; border-left: 1px solid #0d6efd;">
+            {{bon[0].dateFinOp}}
+        </td>
+        <td style="text-align:center; padding: 5px; border-left: 1px solid #0d6efd;">
+            {{bon[1]}} %
+        </td>
+        <td style="text-align:center; padding: 5px; border: 1px solid #0d6efd;">
+            {{bon[0].jourThq}}
+        </td>
+        <td style="text-align:center; padding: 5px; border: 1px solid #0d6efd;">
+            {{bon[2]}}
+        </td>
+        <td id="{{bon[0].id_acti}}" style="text-align:center; padding: 5px; border: 1px solid #0d6efd;">
+            <div style="text-align:center">
+                <button style="background-image: var(--bs-gradient);" type="button"
+                        class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#modifdate">
+                    Date <br> de fin op.
+                </button>
+                <div class="modal fade" id="modifdate" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="saveUo">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">Modifier la date de fin op.</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/modif_dateFinOp/{{bon[0].id_acti}}" method="post">
+                                    <label class="form-label text-primary" for="dateFinOp">Date de fin op.
+                                        :</label>
+                                    <input class="text-primary form-control" type="date" id="dateFinOp"
+                                           name="dateFinOp"
+                                           value="{{bon[0].dateFinOp}}">
+                                    <br>
+                                    <button name="button" class="btn btn-primary">Modifier la date</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+</html>

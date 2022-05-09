@@ -84,9 +84,10 @@ def export_excel():
     format_date.set_border()
 
     """ ----------------------------------------- Feuille BCM ------------------------------------------------------ """
-    activites = db.session.query(Boncomm).filter(Boncomm.nbCongesTot == 0, Boncomm.caAtos == 0).all()
+    activites = db.session.query(Boncomm).filter(Boncomm.nbCongesTot == 0, Boncomm.caAtos == 0,
+                                                 Boncomm.prodGdpOuFd != "Fd").all()
     bonsNonTri = db.session.query(Boncomm).filter(Boncomm.nbCongesTot == 0, Boncomm.nbJoursFormation == 0,
-                                                  Boncomm.nbJoursAutre == 0).all()
+                                                  Boncomm.nbJoursAutre == 0, Boncomm.prodGdpOuFd != "Fd").all()
     bonsTri = []  # Liste de listes contenant le bon de Prod et celui de Gdp
     bonTot = []
     for bon in bonsNonTri:  # On va mettre les part Prod et Gdp ensemble pour calculer les valeurs totales sur le bon
@@ -205,7 +206,7 @@ def export_excel():
 
     """ ------------------------------------- Feuille Imp globales ------------------------------------------------- """
 
-    collabs = db.session.query(Collab).all()
+    collabs = db.session.query(Collab).filter(Collab.access != 3).all()
 
     """ ---------- Format et tailles des cellules ---------- """
     """----- Taille lignes et colonnes -----"""
@@ -343,9 +344,10 @@ def export_excel():
     """ ---------------------------------- Feuille Activités en cours ---------------------------------------------- """
 
     activitesECMois = db.session.query(Boncomm).filter(Boncomm.nbCongesTot == 0, Boncomm.caAtos == 0,
-                                                       Boncomm.etat != "TE").all()
+                                                       Boncomm.etat != "TE", Boncomm.prodGdpOuFd != "Fd").all()
     bonsNonTriMois = db.session.query(Boncomm).filter(Boncomm.nbCongesTot == 0, Boncomm.nbJoursFormation == 0,
-                                                      Boncomm.nbJoursAutre == 0, Boncomm.etat != "TE").all()
+                                                      Boncomm.nbJoursAutre == 0, Boncomm.etat != "TE",
+                                                      Boncomm.prodGdpOuFd != "Fd").all()
     bonsTriMois = []  # Liste de listes contenant le bon de Prod et celui de Gdp
     bonTot = []
     for bon in bonsNonTriMois:  # On va mettre les part Prod et Gdp ensemble pour calculer les valeurs totales sur
@@ -424,7 +426,7 @@ def export_excel():
 
     """ --------------------------------------- Feuille Absences --------------------------------------------------- """
     dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
-    collabsActifs = db.session.query(Collab).filter(Collab.access != 4).all()
+    collabsActifs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
 
     """ ---------- Format et tailles des cellules ---------- """
     """----- Taille lignes et colonnes -----"""
@@ -480,7 +482,7 @@ def export_excel():
         feuilleCollab.set_column_pixels('B:B', 300)
         feuilleCollab.set_column_pixels('C:C', 115)
         feuilleCollab.set_column_pixels('I:I', 90)
-        feuilleCollab.set_column_pixels('J:J', 50)
+        feuilleCollab.set_column_pixels('J:J', 95)
         feuilleCollab.set_row_pixels(0, 10)
 
         """ ---------- Création des lignes ---------- """
