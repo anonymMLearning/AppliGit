@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <title>Chrono des BC</title>
+    <title>Répartition UO</title>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
@@ -232,194 +232,33 @@
                     </div>
                 </div>
             </ul>
-            </ul>
         </div>
     </nav>
 </head>
 <body>
-<div align="center">
-    <h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Chrono des BC -</h1>
-    <div class="bg-light border border-3 border-primary rounded mt-2"
-         style="margin: 20px; margin-right:20px; margin-bottom: 30px">
-        <div style="margin-left: 20px">
-            <h5 style="margin-top: 5px; text-align: center" class="text-primary">Texte ici :
-                vsgvziugfvqiuogvqsduifgbqsdgfqius
-            </h5>
-        </div>
-    </div>
-</div>
-<div align="center">
-    <table id="tableau"
-           style="margin-left:20px; margin-right:20px;margin-top:20px; margin-bottom:20px;  text-align:center;   table-layout: fixed;">
-        <tr class="p-3 mb-2 bg-primary text-white" style="background-image: var(--bs-gradient);">
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; border-left: 1px solid #0d6efd;padding: 10px;">
-                Projet
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 1px;">
-                BC
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 1px;">
-                Activité
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 10px;">
-                Poste
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 10px;">
-                Notif
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 10px;">
-                Part <br>ATOS
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 10px;">
-                Part <br>EGIS
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 1px;">
-                Total
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 1px;">
-                Date <br>de <br>notif
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 1px;">
-                Date <br>de<br> début
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 10px;">
-                Délais
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 1px;">
-                Date<br> de <br>fin prévue
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 1px;">
-                Date<br> de <br>fin opérationnelle
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 10px;">
-                Facturation
-            </td>
-            <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; border-right: 1px solid #0d6efd;padding: 10px;">
-                Total obtenu par les UO
-            </td>
-        </tr>
-        {% for i in range(nbBons) %}
-        <tr class="p-3 mb-2 text-primary" style="background-image: var(--bs-gradient);">
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].projet}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].num}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].activite}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].poste}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].notification}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].caAtos}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].partEGIS}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;"
-                id="total{{i}}">
-                {{data_boncomms[i][0].montantHT}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].dateNotif}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].dateDebut}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].delais}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].dateFinPrev}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].dateFinOp}}
-            </td>
-            <td style="margin-left: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; border-right: 1px solid #0d6efd; padding: 10px;">
-                {{data_boncomms[i][0].facturation}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; border-right: 1px solid #0d6efd; padding: 10px;">
-                <div class="container">
-                    <div class="row">
-                        <div id="totalUO{{i}}" class="col-6">
-                            {{data_boncomms[i][1]}}
-                        </div>
-                        <div class="col-6">
-                            <a style="margin-right:15px;" class="btn btn-primary" data-bs-toggle="modal"
-                               data-bs-target="#calcUo{{data_boncomms[i][0].id_acti}}" class="nav-link">Calculer</a>
-                            <div class="modal fade" id="calcUo{{data_boncomms[i][0].id_acti}}" tabindex="-1" aria-hidden="true"
-                                 aria-labelledby="calcUo{{data_boncomms[i][0].id_acti}}">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-primary">
-                                            <h5 class="modal-title text-white">Choisissez les UO</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form style="text-align:center; margin: 20px "
-                                                  action="/see_repartitionUoBC/{{data_boncomms[i][0].id_acti}}"
-                                                  method="post">
-                                                <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="uos">UO :</label>
-                                                <select multiple class="form-select bg-light text-primary"
-                                                        name="uos"
-                                                        id="uos">
-                                                    {% for uo in uos %}
-                                                    <option value="{{uo.id_uo}}">{{uo.num}}</option>
-                                                    {% endfor %}
-                                                </select>
-                                                <br>
-                                                <button style="font-weight:bold;" align="center"
-                                                        class="btn border border-white btn-primary"
-                                                        name="button">Calculer le total
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
+<h1 style="margin-top:20px;margin-bottom:20px;" class="text-primary" align="center">- Montant du bon par les UO -<br>
+    {{boncomm.activite}}</h1>
+<div class="border border-3 border-primary rounded bg-light"
+     style="margin-bottom:20px; background-image: var(--bs-gradient); margin-left : 30%; margin-right : 30%">
+    <form style="text-align:center; margin: 20px " action="/repartition_uoFd/{{boncomm.id_acti}}" method="post">
+        {% for uo in data_uos %}
+        <label class="form-label text-primary" style="font-weight:bold;" for="facteur{{uo[0].id_uo}}">{{uo[0].num}}
+            :</label>
+        <input class="bg-light text-primary " type="number" step="1" name="facteur{{uo[0].id_uo}}"
+               id="facteur{{uo[0].id_uo}}" style="margin-top:10px;" value="{{uo[1].facteur}}">
+        <br>
         {% endfor %}
-    </table>
+        {% for uo in uosToHide %}
+        <input class="bg-light text-primary " type="number" step="1" value="0" name="facteur{{uo.id_uo}}"
+               style="margin-top:10px; display:none;">
+        {% endfor %}
+        <button style="font-weight:bold; margin-top: 20px;" class="btn border border-white btn-primary" name="button">
+            Calculer le total
+        </button>
+    </form>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-<script>
-    var tr = document.getElementById("tableau").getElementsByTagName("tr");
-    var nbBon = (tr.length - 1);
-    for(let i =0; i < nbBon; i++){
-        var id = "total"+i;
-        var idUo = "totalUO"+i;
-        var total = parseInt(document.getElementById(id).innerHTML);
-        var totalUo = parseInt(document.getElementById(idUo).innerHTML);
-        console.log(total);
-        console.log(totalUo);
-        if (total != totalUo){
-            document.getElementById(id).style.backgroundColor = "#A90000";
-            document.getElementById(id).style.color = "white";
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-</script>
 </html>

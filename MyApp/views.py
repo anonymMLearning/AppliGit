@@ -274,7 +274,24 @@ def seeChronoBC():
         assocs = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti).all()
         data_boncomms.append([boncomm, calculerTotUo(boncomm), assocs])
     nbBons = len(data_boncomms)
-    return render_template('chronoBC.html', data_boncomms=data_boncomms, nbBons=nbBons)
+    uos = db.session.query(UO).all()
+    return render_template('chronoBC.html', data_boncomms=data_boncomms, nbBons=nbBons, uos=uos)
+
+
+@app.route('/see_repartitionUoBC/<idb>', methods=['GET', 'POST'])
+def seeRepartitionUoBC(idb):
+    boncomm = db.session.query(Boncomm).get(idb)
+    data_uos = []
+    uosToHide = db.session.query(UO).all()
+    idUos = request.form.getlist('uos')
+    for i in range(len(idUos)):
+        iduo = idUos[i]
+        uo = db.session.query(UO).get(iduo)
+        assoc = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti,
+                                                       AssoUoBoncomm.uo_id == iduo).all()[0]
+        data_uos.append([uo, assoc])
+        del uosToHide[int(iduo) - i - 1]
+    return render_template('repartitionUoBC.html', data_uos=data_uos, boncomm=boncomm, uosToHide=uosToHide)
 
 
 @app.route('/repartition_uoBC/<idb>', methods=['GET', 'POST'])
@@ -300,7 +317,8 @@ def repartitionUo(idb):
         assocs = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti).all()
         data_boncomms.append([boncomm, calculerTotUo(boncomm), assocs])
     nbBons = len(data_boncomms)
-    return render_template('chronoBC.html', data_boncomms=data_boncomms, nbBons=nbBons)
+    uos = db.session.query(UO).all()
+    return render_template('chronoBC.html', data_boncomms=data_boncomms, nbBons=nbBons, uos=uos)
 
 
 """ --- Partie Chrono FD --- """
@@ -314,10 +332,28 @@ def seeChronoFd():
     for boncomm in boncomms:
         assocs = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti).all()
         data_fds.append([boncomm, calculerTotUo(boncomm), assocs])
-    return render_template('chronoFD.html', data_fds=data_fds)
+    nbBons = len(data_fds)
+    uos = db.session.query(UO).all()
+    return render_template('chronoFD.html', data_fds=data_fds, nbBons=nbBons, uos=uos)
 
 
-@app.route('/repartition_uoFD/<idb>', methods=['GET', 'POST'])
+@app.route('/see_repartitionUoFd/<idb>', methods=['GET', 'POST'])
+def seeRepartitionUoFd(idb):
+    boncomm = db.session.query(Boncomm).get(idb)
+    data_uos = []
+    uosToHide = db.session.query(UO).all()
+    idUos = request.form.getlist('uos')
+    for i in range(len(idUos)):
+        iduo = idUos[i]
+        uo = db.session.query(UO).get(iduo)
+        assoc = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti,
+                                                       AssoUoBoncomm.uo_id == iduo).all()[0]
+        data_uos.append([uo, assoc])
+        del uosToHide[int(iduo) - i - 1]
+    return render_template('repartitionUoFd.html', data_uos=data_uos, boncomm=boncomm, uosToHide=uosToHide)
+
+
+@app.route('/repartition_uoFd/<idb>', methods=['GET', 'POST'])
 def repartitionUoFD(idb):
     boncomm = db.session.query(Boncomm).get(idb)
     uos = db.session.query(UO).all()
@@ -332,26 +368,35 @@ def repartitionUoFD(idb):
             assoc2.uo = uo
             assoc2.boncomm = boncomm
             boncomm.uos.append(assoc2)
+    db.session.commit()
     boncomms = db.session.query(Boncomm).filter(Boncomm.nbJoursFormation == 0, Boncomm.nbJoursAutre == 0,
                                                 Boncomm.nbCongesTot == 0, Boncomm.prodGdpOuFd == "Fd").all()
-    db.session.commit()
     data_fds = []
     for boncomm in boncomms:
         assocs = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti).all()
         data_fds.append([boncomm, calculerTotUo(boncomm), assocs])
-    return render_template('chronoFD.html', data_fds=data_fds)
+    nbBons = len(data_fds)
+    uos = db.session.query(UO).all()
+    return render_template('chronoFD.html', data_fds=data_fds, nbBons=nbBons, uos=uos)
 
 
 """ --- Partie PdC --- """
 
 
-@app.route('/see_pdc')
+@app.route('/see_pdc', methods=['GET', 'POST'])
 def seePdc():
-    dateNow = str(datetime.now())
-    mois = int(dateNow[5:7])
-    annee = int(dateNow[:4])
+    moisDebut, anneeDebut = request.form['moisD'], request.form['anneeD']
+    moisFin, anneeFin = request.form['moisF'], request.form['anneeF']
+    if anneeDebut == anneeFin:
+        moisToShow = [[int(moisDebut) + i, anneeDebut] for i in range(int(moisFin) - int(moisDebut) + 1)]
+    else:
+        moisToShow = [[int(moisDebut) + i, anneeDebut] for i in range(12 - int(moisDebut) + 1)]
+        for i in range(int(anneeFin) - int(anneeDebut) - 1):
+            for j in range(12):
+                moisToShow.append([j + 1, int(anneeDebut) + i + 1])
+        for j in range(int(moisFin)):
+            moisToShow.append([j + 1, anneeFin])
     budgetTotJours = 0
-    moisToShow = moisVisibles(mois, annee)
     nbMois = len(moisToShow)
     dataTotMois = [[str(mois[0]) + "/" + str(mois[1]), 0.0, 0.0, 0.0] for mois in moisToShow]
     boncomms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod").all()
@@ -371,8 +416,8 @@ def seePdc():
                 budgetTotAtos += bon.caAtos
                 budgetTotEgis += bon.partEGIS
                 budgetTotJours += bon.caAtos + bon.partEGIS
-            dataProjetAtos = [budgetTotAtos]
-            dataProjetEgis = [budgetTotEgis]
+            dataProjetAtos = [budgetTotAtos, projet + " Atos"]
+            dataProjetEgis = [budgetTotEgis, projet + " EGIS"]
 
             for collab in collabs:
                 if collab.entreprise == "Atos":
@@ -434,7 +479,7 @@ def seePdc():
             for bon in bonsProjet:
                 budgetTot += bon.caAtos
                 budgetTotJours += bon.caAtos
-            dataProjet = [budgetTot]
+            dataProjet = [budgetTot, projet]
 
             for collab in collabs:
                 dataCollab = [collab.abreviation(), [0 for i in range(nbMois)]]
@@ -472,11 +517,77 @@ def seePdc():
     return render_template('PdC.html', moisToShow=moisToShow, data=data, nbMois=nbMois, dataTotMois=dataTotMois)
 
 
-""" --- Partie PdC --- """
+""" --- Partie CRA Marché --- """
 
 
-@app.route('/see_CRA')
+@app.route('/see_CRA', methods=['GET', 'POST'])
 def seeCRA():
+    moisDebut, anneeDebut = request.form['moisD'], request.form['anneeD']
+    moisFin, anneeFin = request.form['moisF'], request.form['anneeF']
+    if anneeDebut == anneeFin:
+        dates = db.session.query(Date).filter(Date.annee == anneeDebut, Date.mois <= moisFin, Date.mois >= moisDebut)
+    else:
+        dates = [db.session.query(Date).filter(Date.annee == anneeDebut, Date.mois >= moisDebut)]
+        for i in range(int(anneeFin) - int(anneeDebut) - 1):
+            dates.append(db.session.query(Date).filter(Date.annee == anneeDebut + i + 1))
+        dates.append(db.session.query(Date).filter(Date.annee == anneeFin, Date.mois <= moisFin))
+    boncomms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod").all()
+    projets = []  # Contiendra tous les différents projets en cours
+    for boncomm in boncomms:
+        projet = boncomm.projet
+        if projet not in projets:
+            projets.append(projet)
+
+    dataBoncomms = [["CAUTRA"]]
+    for projet in projets:
+        if projet == "ATM1" or projet == "ATM2" or projet == "ATM1-2":
+            dataBonProjet = dataBoncomms[0]
+        else:
+            if projet == "APP":
+                dataBonProjet = ["APPROCHES"]
+            elif projet == "TRANS":
+                dataBonProjet = ["TRANSERVE"]
+            else:
+                dataBonProjet = [projet]
+        # On va récupérer le nombre de jours total imputés sur ce projet :
+        joursImput = 0
+        bonsProjet = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod", Boncomm.projet == projet).all()
+        for i in range(len(bonsProjet)):
+            bon = bonsProjet[i]
+            dataBonProjet.append([bon, valeursGlobales(bon)[2]])
+            assoCollabs = bon.collabs
+            for asso in assoCollabs:
+                collab = asso.collab
+                if anneeDebut != anneeFin:
+                    for annee in dates:
+                        for jour in annee:
+                            imput = db.session.query(Imputation).filter(Imputation.acti_id == bon.id_acti,
+                                                                        Imputation.collab_id == collab.id_collab,
+                                                                        Imputation.date_id == jour.id_date).all()[0]
+                            joursImput += imput.joursAllouesTache
+                else:
+                    for jour in dates:
+                        imput = db.session.query(Imputation).filter(Imputation.acti_id == bon.id_acti,
+                                                                    Imputation.collab_id == collab.id_collab,
+                                                                    Imputation.date_id == jour.id_date).all()[0]
+                        joursImput += imput.joursAllouesTache
+        dataBonProjet[1].append(joursImput)
+        for i in range(len(dataBonProjet) - 2):  # elt 0 est la str du projet
+            dataBonProjet[i + 2].append(dataBonProjet[i + 1][2] - dataBonProjet[i + 1][0].jourThq)
+        if projet != "ATM1" and projet != "ATM2" and projet != "ATM1-2":
+            dataBoncomms.append(dataBonProjet)
+    return render_template('CRAMarche.html', dataBoncomms=dataBoncomms)
+
+
+@app.route('/modif_dateFinOp/<idb>', methods=['GET', 'POST'])
+def modifdateFinOp(idb):
+    date = request.form['dateFinOp']
+    bonAModif = db.session.query(Boncomm).get(idb)
+    if bonAModif.prodGdpOuFd == "Prod":
+        bonGDP = db.session.query(Boncomm).get(str(int(idb) + 1))
+        bonGDP.dateFinOp = date
+    bonAModif.dateFinOp = date
+    db.session.commit()
     boncomms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod").all()
     projets = []  # Contiendra tous les différents projets en cours
     for boncomm in boncomms:
@@ -517,14 +628,14 @@ def seeCRA():
     return render_template('CRAMarche.html', dataBoncomms=dataBoncomms)
 
 
-@app.route('/modif_dateFinOp/<idb>', methods=['GET', 'POST'])
-def modifdateFinOp(idb):
-    date = request.form['dateFinOp']
+@app.route('/modif_dateDebutOp/<idb>', methods=['GET', 'POST'])
+def modifdateDebutOp(idb):
+    date = request.form['dateDebutOp']
     bonAModif = db.session.query(Boncomm).get(idb)
     if bonAModif.prodGdpOuFd == "Prod":
         bonGDP = db.session.query(Boncomm).get(str(int(idb) + 1))
-        bonGDP.dateFinOp = date
-    bonAModif.dateFinOp = date
+        bonGDP.dateDebut = date
+    bonAModif.dateDebut = date
     db.session.commit()
     boncomms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod").all()
     projets = []  # Contiendra tous les différents projets en cours
@@ -533,9 +644,17 @@ def modifdateFinOp(idb):
         if projet not in projets:
             projets.append(projet)
 
-    dataBoncomms = []
+    dataBoncomms = [["CAUTRA"]]
     for projet in projets:
-        dataBonProjet = [projet]
+        if projet == "ATM1" or projet == "ATM2" or projet == "ATM1-2":
+            dataBonProjet = dataBoncomms[0]
+        else:
+            if projet == "APP":
+                dataBonProjet = ["APPROCHES"]
+            elif projet == "TRANS":
+                dataBonProjet = ["TRANSERVE"]
+            else:
+                dataBonProjet = [projet]
         # On va récupérer le nombre de jours total imputés sur ce projet :
         joursImput = 0
         bonsProjet = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod", Boncomm.projet == projet).all()
@@ -553,7 +672,8 @@ def modifdateFinOp(idb):
         dataBonProjet[1].append(joursImput)
         for i in range(len(dataBonProjet) - 2):  # elt 0 est la str du projet
             dataBonProjet[i + 2].append(dataBonProjet[i + 1][2] - dataBonProjet[i + 1][0].jourThq)
-        dataBoncomms.append(dataBonProjet)
+        if projet != "ATM1" and projet != "ATM2" and projet != "ATM1-2":
+            dataBoncomms.append(dataBonProjet)
     return render_template('CRAMarche.html', dataBoncomms=dataBoncomms)
 
 
@@ -1366,10 +1486,10 @@ def save_bonComm():
     notification = request.form['notification']
     facturation = request.form['facturation']
     bon = Boncomm(activite, "", com, anneeTarif, caAtos, float(jourThq) - float(partGDP), delais, montantHT, partEGIS,
-                  num, poste, projet, tjm, notification, facturation, "Prod", dateNotif, dateFinPrev, dateNotif,
+                  num, poste, projet, tjm, notification, facturation, "Prod", "OS", dateFinPrev, dateNotif,
                   "", "", 0, 0, 0, 0)
     bonGDP = Boncomm('CP - ' + activite, "", com, anneeTarif, caAtos, partGDP, delais, montantHT, partEGIS, num,
-                     poste, projet, tjm, notification, facturation, "Gdp", dateNotif, dateFinPrev, dateNotif,
+                     poste, projet, tjm, notification, facturation, "Gdp", "OS", dateFinPrev, dateNotif,
                      "", "", 0, 0, 0, 0)
     # Association aux UO
     uos = db.session.query(UO).all()

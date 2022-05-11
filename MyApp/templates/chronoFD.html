@@ -19,17 +19,218 @@
                     <a class="nav-link" href="/see_ressources">Ressources</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_chronoBC">Chrono BC</a>
+                    <a class="nav-link" href="/see_chronoBC">Chrono BC Prod</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_chronoFD">Chrono FD</a>
+                    <a class="nav-link" href="/see_chronoFD">Chrono BC FD</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_pdc">PdC</a>
+                    <a data-bs-toggle="modal" data-bs-target="#pdc" class="nav-link" href="/">PdC</a>
                 </li>
+                <div class="modal fade" id="pdc" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="pdc">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white">Choisissez les mois à afficher</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h5 align="center" class="text-danger">Ne pas afficher plus de 10 mois pour garder la
+                                    lisibilité de la
+                                    page !</h5>
+                                <form style="text-align:center; margin: 20px " action="/see_pdc" method="post">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="moisD">Mois début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisD"
+                                                        id="moisD">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="anneeD">Année début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeD"
+                                                        id="anneeD">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+
+                                                </select>
+                                                <br>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="moisF">Mois fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisF"
+                                                        id="moisF">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="anneeF">Année fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeF"
+                                                        id="anneeF">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+                                                </select>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button style="font-weight:bold;" align="center"
+                                            class="btn border border-white btn-primary"
+                                            name="button">Accéder au PdC
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_CRA">CRA Marché</a>
+                    <a data-bs-toggle="modal" data-bs-target="#marche" class="nav-link" href="/">CRA Marché</a>
                 </li>
+                <div class="modal fade" id="marche" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="marche">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white">Choisissez les mois à compter</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form style="text-align:center; margin: 20px " action="/see_CRA" method="post">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;">Mois
+                                                    début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisD">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                                <label class="form-label text-primary" style="font-weight:bold;">Année
+                                                    début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeD">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+
+                                                </select>
+                                                <br>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;">Mois
+                                                    fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisF">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                                <label class="form-label text-primary" style="font-weight:bold;">Année
+                                                    fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeF">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+                                                </select>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button style="font-weight:bold;" align="center"
+                                            class="btn border border-white btn-primary"
+                                            name="button">Accéder au CRA Marché
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </ul>
             </ul>
         </div>
@@ -97,90 +298,86 @@
                 Total obtenu par les UO
             </td>
         </tr>
-        {% for fd in data_fds %}
+        {% for i in range(nbBons) %}
         <tr class="p-3 mb-2 text-primary" style="background-image: var(--bs-gradient);">
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].projet}}
+                {{data_fds[i][0].projet}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].num}}
+                {{data_fds[i][0].num}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].activite}}
+                {{data_fds[i][0].activite}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].poste}}
+                {{data_fds[i][0].poste}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].notification}}
+                {{data_fds[i][0].notification}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].caAtos}}
+                {{data_fds[i][0].caAtos}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].partEGIS}}
+                {{data_fds[i][0].partEGIS}}
+            </td>
+            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;" id="total{{i}}">
+                {{data_fds[i][0].montantHT}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].montantHT}}
+                {{data_fds[i][0].dateNotif}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].dateNotif}}
+                {{data_fds[i][0].dateDebut}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].dateDebut}}
+                {{data_fds[i][0].delais}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].delais}}
+                {{data_fds[i][0].dateFinPrev}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].dateFinPrev}}
-            </td>
-            <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].dateFinOp}}
+                {{data_fds[i][0].dateFinOp}}
             </td>
             <td style="margin-left: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; border-right: 1px solid #0d6efd; padding: 10px;">
-                {{fd[0].facturation}}
+                {{data_fds[i][0].facturation}}
             </td>
             <td style="margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd; border-right: 1px solid #0d6efd; padding: 10px;">
                 <div class="container">
                     <div class="row">
-                        <div class="col-6">
-                            {{fd[1]}}
+                        <div id="totalUO{{i}}" class="col-6">
+                            {{data_fds[i][1]}}
                         </div>
                         <div class="col-6">
-                            <button style="background-image: var(--bs-gradient);" type="button"
-                                    class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#repartition{{fd[0].id_acti}}">
-                                Calculer
-                            </button>
-                            <div class="modal fade" id="repartition{{fd[0].id_acti}}" tabindex="-1"
-                                 aria-hidden="true"
-                                 aria-labelledby="calculerTot">
+                            <a style="margin-right:15px;" class="btn btn-primary" data-bs-toggle="modal"
+                               data-bs-target="#calcUo{{data_fds[i][0].id_acti}}" class="nav-link">Calculer</a>
+                            <div class="modal fade" id="calcUo{{data_fds[i][0].id_acti}}" tabindex="-1" aria-hidden="true"
+                                 aria-labelledby="calcUo{{data_fds[i][0].id_acti}}">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
-                                        <div class="modal-header bg-primary text-white">
-                                            <h5 class="modal-title">Calculer le total par les UO</h5>
+                                        <div class="modal-header bg-primary">
+                                            <h5 class="modal-title text-white">Choisissez les UO</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/repartition_uoFD/{{fd[0].id_acti}}" method="post">
-                                                <table align="center" style="margin-bottom:20px;">
-                                                    {% for asso in fd[2] %}
-                                                    <tr>
-                                                        <td class="bg-primary text-white">
-                                                            {{asso.uo.description}}
-                                                        </td>
-                                                        <td class="border border-primary">
-                                                            <input class="text-primary" type="number" step="1"
-                                                                   style="text-align:center;"
-                                                                   name="facteur{{asso.uo.id_uo}}"
-                                                                   value="{{asso.facteur}}">
-                                                        </td>
-                                                    </tr>
+                                            <form style="text-align:center; margin: 20px "
+                                                  action="/see_repartitionUoFd/{{data_fds[i][0].id_acti}}"
+                                                  method="post">
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="uos">UO :</label>
+                                                <select multiple class="form-select bg-light text-primary"
+                                                        name="uos"
+                                                        id="uos">
+                                                    {% for uo in uos %}
+                                                    <option value="{{uo.id_uo}}">{{uo.num}}</option>
                                                     {% endfor %}
-                                                </table>
-                                                <button name="button" class="btn btn-primary">Calculer le total</button>
+                                                </select>
+                                                <br>
+                                                <button style="font-weight:bold;" align="center"
+                                                        class="btn border border-white btn-primary"
+                                                        name="button">Calculer le total
+                                                </button>
                                             </form>
                                         </div>
                                     </div>
@@ -198,4 +395,20 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script>
+    var tr = document.getElementById("tableau").getElementsByTagName("tr");
+    var nbBon = (tr.length - 1);
+    for(let i =0; i < nbBon; i++){
+        var id = "total"+i;
+        var idUo = "totalUO"+i;
+        var total = parseInt(document.getElementById(id).innerHTML);
+        var totalUo = parseInt(document.getElementById(idUo).innerHTML);
+        console.log(total);
+        console.log(totalUo);
+        if (total != totalUo){
+            document.getElementById(id).style.backgroundColor = "#A90000";
+            document.getElementById(id).style.color = "white";
+        }
+    }
+</script>
 </html>

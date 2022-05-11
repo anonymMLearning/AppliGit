@@ -6,7 +6,6 @@ import requests as requests
 from urllib import request
 from models import *
 
-date = db.session.query(Date).get(3653)
-print(date)
-#print(date.jour,date.mois,date.annee)
-
+dates = db.session.query(Date).filter(Date.annee < 2024, Date.annee > 2021, Date.mois < 6, Date. mois > 1).all()
+for date in dates:
+    print(date.annee, date.mois)
