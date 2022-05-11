@@ -999,7 +999,7 @@ def see_archives_collab():
     boncomms = []
     for i in range(len(assos)):  # On va séparer les congés des autres activités
         boncomm = assos[i].boncomm
-        if boncomm.nbCongesTot == 0:
+        if boncomm.nbCongesTot == 0 and boncomm.prodGdpOuFd != "Fd" and assos[i].joursAllouesBC and boncomm.etat == "":
             boncomms.append(boncomm)
         elif boncomm.nbCongesTot != 0:
             conges = boncomm

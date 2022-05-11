@@ -5,7 +5,7 @@
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
-                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_archives">Données d'imputation</a>
@@ -73,10 +73,10 @@
             <div class="modal-body">
                 <form action="/save_collab" method="post">
                     <label class="form-label text-primary" for="nom_save">Nom :</label>
-                    <input class="text-primary form-control" type="text" id="nom_save" name="nom_save">
+                    <input required="required" class="text-primary form-control" type="text" id="nom_save" name="nom_save">
                     <br>
                     <label class="form-label text-primary" for="prenom_save">Prénom :</label>
-                    <input class="text-primary form-control" type="text" id="prenom_save"
+                    <input required="required" class="text-primary form-control" type="text" id="prenom_save"
                            name="prenom_save">
                     <br>
                     <label class="form-label text-primary" for="access_save">Access :</label>
@@ -94,7 +94,7 @@
                     </select>
                     <br>
                     <label class="form-label text-primary" for="conges_save">Jours de congés :</label>
-                    <input class="text-primary form-control" type="number" id="conges_save"
+                    <input required="required" class="text-primary form-control" type="number" id="conges_save"
                            name="conges_save">
                     <br>
                     <label class="form-label text-primary">Répartition de ses fonctions (en %) :</label>

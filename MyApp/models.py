@@ -87,6 +87,41 @@ class AssoUoBoncomm(db.Model):
     uo = db.relationship("UO", back_populates="boncomms")
     boncomm = db.relationship("Boncomm", back_populates="uos")
 
+"""
+class GCM(db.Model):
+        #
+        Réprésente un code GCM.
+
+        ...
+
+        Attributs
+        ----------
+        id_gcm : int
+            id du GCM, clé primaire.
+        code : str
+            code GCM.
+        tjm : float
+            tjm associé à ce GCM.
+        collabs : list
+            ensemble des collaborateurs ayant ce code GCM.  
+        fonctions : list
+           ensemble des fonctions associées à ce GCM.
+
+        Méthodes
+        -------
+        __init__(self, code, tjm)
+            constructeur de la classe
+        #
+        
+        id_gcm = db.Column(db.Integer, primary_key=True)
+        code = db.Column(db.String(30), nullable=False)
+        tjm = db.Column(db.Float, nullable=False)
+        
+        def __init__(self, code, tjm):
+            self.code = code
+            self.tjm = tjm
+"""
+
 
 class Collab(db.Model):
     """
@@ -634,8 +669,7 @@ def collabsProjet(projet):
     return collabs
 
 
-def moisVisibles(mois ,annee):
-
+def moisVisibles(mois, annee):
     if mois == 12:
         moisSuivant = 1
         anneeSuivante = annee + 1

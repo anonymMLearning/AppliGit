@@ -10,7 +10,7 @@
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
-                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_uo">UO</a>
@@ -263,16 +263,16 @@
                 <div class="modal-body">
                     <form action="/save_uo" method="post">
                         <label class="form-label text-primary" for="charges">Charges :</label>
-                        <input class="text-primary form-control" type="number" step="0.1" id="charges" name="charges">
+                        <input required="required" class="text-primary form-control" type="number" step="0.1" id="charges" name="charges">
                         <br>
                         <label class="form-label text-primary" for="num">Numéro de l'UO :</label>
-                        <input class="text-primary form-control" type="text" id="num" name="num">
+                        <input required="required" class="text-primary form-control" type="text" id="num" name="num">
                         <br>
                         <label class="form-label text-primary" for="description">Description de l'UO :</label>
-                        <input class="text-primary form-control" type="text" id="description" name="description">
+                        <input required="required" class="text-primary form-control" type="text" id="description" name="description">
                         <br>
                         <label class="form-label text-primary" for="prix">Montant (sur l'année en cours):</label>
-                        <input class="text-primary form-control" type="text" id="prix" name="prix">
+                        <input required="required" class="text-primary form-control" type="text" id="prix" name="prix">
                         <br>
                         <button name="button" class="btn btn-primary">Ajouter cette UO</button>
                     </form>

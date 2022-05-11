@@ -5,7 +5,7 @@
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
-                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_archives">Données d'imputation</a>
@@ -104,11 +104,13 @@
                                 <br>
                                 <label class="form-label text-primary" for="jourThqBC">Jours théoriques alloués
                                     :</label>
-                                <input class="text-primary form-control" type="number" step="0.5" id="jourThqBC" name="jourThqBC"
+                                <input class="text-primary form-control" type="number" step="0.5" id="jourThqBC"
+                                       name="jourThqBC"
                                        required="required">
                                 <br>
                                 <label class="form-label text-primary" for="partGDPBC">Part Gestion de Projet :</label>
-                                <input class="text-primary form-control" type="number" step="0.5" id="partGDPBC" name="partGDPBC"
+                                <input class="text-primary form-control" type="number" step="0.5" id="partGDPBC"
+                                       name="partGDPBC"
                                        required="required">
                                 <br>
                                 <label class="form-label text-primary" for="delaisBC">Délais :</label>
@@ -144,16 +146,19 @@
                                 </select>
                                 <br>
                                 <label class="form-label text-primary">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" id="dateNotifBC" name="dateNotif"
+                                <input required="required" class="text-primary form-control" type="date"
+                                       id="dateNotifBC" name="dateNotif"
                                        value="2022-04-01">
                                 <br>
                                 <label class="form-label text-primary" for="dateFinPrevBC">Date de fin prévue :</label>
-                                <input class="text-primary form-control" type="date" id="dateFinPrevBC"
+                                <input required="required" class="text-primary form-control" type="date"
+                                       id="dateFinPrevBC"
                                        name="dateFinPrev"
                                        value="2022-04-01">
                                 <br>
                                 <label class="form-label text-primary" for="notification">Bon notifié :</label>
-                                <select class="form-select bg-white text-primary" name="notification"
+                                <select required="required" class="form-select bg-white text-primary"
+                                        name="notification"
                                         id="notification">
                                     <option value="O">Oui</option>
                                     <option value="N">Non</option>
@@ -186,7 +191,8 @@
                                 <br>
                                 {% for collab in collabs %}
                                 <label class="form-label text-primary">{{collab.nom}}</label>
-                                <input class="text-primary form-control" onclick="nbJoursAllouables()" type="number"
+                                <input class="text-primary form-control" value="0" onclick="nbJoursAllouables()"
+                                       type="number"
                                        step="0.5"
                                        id="joursBC{{collab.id_collab}}"
                                        name="joursBC{{collab.id_collab}}">
@@ -204,7 +210,9 @@
                                 <input class="text-primary form-control" type="number"
                                        step="0.5"
                                        name="joursGDPCDE" value="0">
-                                <button style="margin-top: 15px;" class="btn btn-primary" name="button">Enregistrer le BC</button>
+                                <button style="margin-top: 15px;" class="btn btn-primary" name="button">Enregistrer le
+                                    BC
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -265,11 +273,13 @@
                                        required="required">
                                 <br>
                                 <label class="form-label text-primary">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" id="dateNotifFD" name="dateNotif"
+                                <input required="required" class="text-primary form-control" type="date"
+                                       id="dateNotifFD" name="dateNotif"
                                        value="2022-04-01">
                                 <br>
                                 <label class="form-label text-primary" for="dateFinPrevFD">Date de fin prévue :</label>
-                                <input class="text-primary form-control" type="date" id="dateFinPrevFD"
+                                <input required="required" class="text-primary form-control" type="date"
+                                       id="dateFinPrevFD"
                                        name="dateFinPrev"
                                        value="2022-04-01">
                                 <br>
@@ -351,13 +361,13 @@
                                 <br>
                                 <label class="form-label text-primary">Date de notification :</label>
                                 <input class="text-primary form-control" type="date" id="dateNotifForm" name="dateNotif"
-                                       value="2022-04-01">
+                                       required="required" value="2022-04-01">
                                 <br>
                                 <label class="form-label text-primary" for="dateFinPrevForm">Date de fin prévue
                                     :</label>
                                 <input class="text-primary form-control" type="date" id="dateFinPrevForm"
                                        name="dateFinPrev"
-                                       value="2022-04-01">
+                                       required="required" value="2022-04-01">
                                 <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs2"
                                         id="collabs2">
@@ -417,13 +427,15 @@
                                 </select>
                                 <br>
                                 <label class="form-label text-primary">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" id="dateNotifAutre"
+                                <input required="required" class="text-primary form-control" type="date"
+                                       id="dateNotifAutre"
                                        name="dateNotif"
                                        value="2022-04-01">
                                 <br>
                                 <label class="form-label text-primary" for="dateFinPrevAutre">Date de fin prévue
                                     :</label>
-                                <input class="text-primary form-control" type="date" id="dateFinPrevAutre"
+                                <input required="required" class="text-primary form-control" type="date"
+                                       id="dateFinPrevAutre"
                                        name="dateFinPrev"
                                        value="2022-04-01">
                                 <br>
@@ -567,6 +579,9 @@
                                 <label style="text-align: center; margin-bottom : 10px">Modifier l'état de l'activité
                                     :</label>
                                 <select class="form-select bg-white text-primary" name="etat" id="etat">
+                                    <option value="{{activite[0].etat}}">Actuellement sélectionné
+                                        :{{activite[0].etat}}
+                                    </option>
                                     <option value="TE">Clôturé</option>
                                     <option value="">En cours</option>
                                 </select>
@@ -617,7 +632,7 @@
                                        value={{activite[0].anneeTarif}}>
                                 <br>
                                 <label for="jourThq">Jours alloués à l'activité :</label>
-                                <input class="text-primary form-control" type="number" name="jourThq"
+                                <input  class="text-primary form-control" type="number" name="jourThq"
                                        value={{activite[0].jourThq}}>
                                 <br>
                                 <label class="form-label text-primary" for="dateNotifModifForm">Date de notification
@@ -758,6 +773,7 @@
                             <form action="/modif_etat/{{activite[0].id_acti}}" method="post">
                                 <label style="text-align: center">Modifier l'état de l'activité :</label>
                                 <select class="form-select bg-white text-primary" name="etat" id="etatBC">
+                                    <option value="{{activite[0].etat}}">Actuellement sélectionné : {{activite[0].etat}}</option>
                                     <option value="TE">Clôturé</option>
                                     <option value="">En cours</option>
                                 </select>
@@ -1099,6 +1115,7 @@
             var joursAllouables = joursThq - partGDP;
             alert("Il y a " +joursAllouables+" jours à répartir");
             }
+
 
 
 
