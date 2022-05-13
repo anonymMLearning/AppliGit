@@ -92,10 +92,9 @@
                                        id="anneeTarifBC"
                                        name="anneeTarifBC" required="required">
                                 <br>
-                                <label class="form-label text-primary" for="caAtosBC">CA Atos :</label>
-                                <input class="text-primary form-control" type="number" id="caAtosBC" name="caAtosBC"
-                                       required="required"
-                                       onblur="calculjoursthq()">
+                                <label class="form-label text-primary" for="montantHTBC">Montant HT :</label>
+                                <input class="text-primary form-control" type="number" id="montantHTBC"
+                                       name="montantHTBC" required="required" onblur="calculjoursthq()">
                                 <br>
                                 <label class="form-label text-primary" for="tjmBC">Taux Journalier Moyen :</label>
                                 <input class="text-primary form-control" type="number" id="tjmBC" name="tjmBC"
@@ -116,10 +115,11 @@
                                 <input class="text-primary form-control" type="number" id="delaisBC" name="delaisBC"
                                        required="required">
                                 <br>
-                                <label class="form-label text-primary" for="montantHTBC">Montant HT :</label>
-                                <input class="text-primary form-control" type="number" id="montantHTBC"
-                                       name="montantHTBC" required="required">
+                                <label class="form-label text-primary" for="caAtosBC">CA Atos :</label>
+                                <input class="text-primary form-control" type="number" id="caAtosBC" name="caAtosBC"
+                                       required="required">
                                 <br>
+
                                 <label class="form-label text-primary" for="partEGISBC">Part EGIS :</label>
                                 <input class="text-primary form-control" type="number" id="partEGISBC" name="partEGISBC"
                                        required="required">
@@ -135,14 +135,6 @@
                                 <label class="form-label text-primary" for="projetBC">Projet :</label>
                                 <input class="text-primary form-control" type="text" id="projetBC" name="projetBC"
                                        required="required">
-                                <br>
-                                <label class="form-label text-primary" for="dateNotif">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" id="dateNotifBC" name="dateNotif"
-                                       value="2022-04-01">
-                                <br>
-                                <label class="form-label text-primary" for="dateFinPrevBC">Date de fin prévue :</label>
-                                <input class="text-primary form-control" type="date" id="dateFinPrevBC" name="dateFinPrev"
-                                       value="2022-04-01">
                                 <br>
                                 <label class="form-label text-primary" for="collabsBC">Liste des collaborateurs
                                     concernés :</label>
@@ -218,14 +210,6 @@
                                        name="nbjoursformation"
                                        required="required">
                                 <br>
-                                <label class="form-label text-primary" for="dateNotif">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" id="dateNotifForm" name="dateNotif"
-                                       value="2022-04-01">
-                                <br>
-                                <label class="form-label text-primary" for="dateFinPrevForm">Date de fin prévue :</label>
-                                <input class="text-primary form-control" type="date" id="dateFinPrevForm" name="dateFinPrev"
-                                       value="2022-04-01">
-                                <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs2"
                                         id="collabs2">
                                     {% for collab in collabs %}
@@ -274,14 +258,6 @@
                                 <label class="form-label text-primary" for="nbjoursautre">Nombre de jours :</label>
                                 <input class="text-primary form-control" type="number" id="nbjoursautre"
                                        name="nbjoursautre" required="required">
-                                <br>
-                                <label class="form-label text-primary" for="dateNotif">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" id="dateNotifAutre" name="dateNotif"
-                                       value="2022-04-01">
-                                <br>
-                                <label class="form-label text-primary" for="dateFinPrevAutre">Date de fin prévue :</label>
-                                <input class="text-primary form-control" type="date" id="dateFinPrevAutre" name="dateFinPrev"
-                                       value="2022-04-01">
                                 <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs3"
                                         id="collabs3">
@@ -454,7 +430,8 @@
                         <div class="modal-body">
                             <form action="/modif_activite/{{activite[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
-                                <input class="text-primary form-control" type="text" name="activite">
+                                <input class="text-primary form-control" type="text" name="activite"
+                                       value="{{activite[0].activite}}">
                                 <br>
                                 <label>Hors Projet : (pour les formations)</label>
                                 <select class="form-select bg-white text-primary" name="horsProjet" id="horsProjet">
@@ -475,14 +452,6 @@
                                 <label for="jourThq">Jours alloués à l'activité :</label>
                                 <input class="text-primary form-control" type="number" name="jourThq"
                                        value={{activite[0].jourThq}}>
-                                <br>
-                                <label class="form-label text-primary" for="dateNotifModifForm">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" id="dateNotifModifForm" name="dateNotif"
-                                       value="2022-04-01">
-                                <br>
-                                <label class="form-label text-primary" for="dateFinPrevModifForm">Date de fin prévue :</label>
-                                <input class="text-primary form-control" type="date" id="dateFinPrevModifForm" name="dateFinPrev"
-                                       value="2022-04-01">
                                 <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs">
                                     {% for collab in collabs %}
@@ -614,6 +583,10 @@
                                     <option value="">En cours</option>
                                 </select>
                                 <br>
+                                <div class="text-danger" style="margin-bottom : 20px">Attention : ne passer le bon en TE
+                                    qu'après avoir exporter les
+                                    données du mois pour le voir apparaitre sur celles-ci !
+                                </div>
                                 <button name="button" class="btn btn-primary">Modifier l'état</button>
                             </form>
                         </div>
@@ -637,7 +610,8 @@
                         <div class="modal-body">
                             <form action="/modif_boncomm/{{activite[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
-                                <input class="text-primary form-control" type="text" id="activite" name="activite">
+                                <input class="text-primary form-control" type="text" id="activite" name="activite"
+                                       value={{activite[0].activite}}>
                                 <br>
                                 <label for="com">Commentaire :</label>
                                 <input class="text-primary form-control" type="text" id="com" name="com">
@@ -667,25 +641,18 @@
                                        value={{activite[0].partEGIS}}>
                                 <br>
                                 <label for="num">Numéro :</label>
-                                <input class="text-primary form-control" type="text" id="num" name="num">
+                                <input class="text-primary form-control" type="text" id="num" name="num"
+                                       value={{activite[0].num}}>
                                 <br>
                                 <label for="poste">Poste :</label>
-                                <input class="text-primary form-control" type="text" id="poste" name="poste">
+                                <input class="text-primary form-control" type="text" id="poste" name="poste"value={{activite[0].poste}}>
                                 <br>
                                 <label for="projet">Projet :</label>
-                                <input class="text-primary form-control" type="text" id="projet" name="projet">
+                                <input class="text-primary form-control" type="text" id="projet" name="projet" value={{activite[0].projet}}>
                                 <br>
                                 <label for="tjm">TJM :</label>
                                 <input class="text-primary form-control" type="number" id="tjm" name="tjm"
                                        value={{activite[0].tjm}}>
-                                <br>
-                                <label class="form-label text-primary" for="dateNotif">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" id="dateNotif" name="dateNotif"
-                                       value="2022-04-01">
-                                <br>
-                                <label class="form-label text-primary" for="dateFinPrevModif">Date de fin prévue :</label>
-                                <input class="text-primary form-control" type="date" id="dateFinPrevModif" name="dateFinPrev"
-                                       value="2022-04-01">
                                 <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs" id="collabs">
                                     {% for collab in collabs %}
@@ -836,7 +803,7 @@
                                 <input class="text-primary form-control" type="number" id="jourThqGDP" name="jourThq"
                                        value={{activite[2].jourThq}}>
                                 <br>
-                                <label for="partGDPGDP">Part GdP :</label>
+                                <label for="partGDP">Part GdP :</label>
                                 <input class="text-primary form-control" type="number" id="partGDPGDP" name="partGDP">
                                 <br>
                                 <label for="delais">Délais :</label>
@@ -865,7 +832,6 @@
                                 <input class="text-primary form-control" type="number" id="tjmGDP" name="tjm"
                                        value={{activite[2].tjm}}>
                                 <br>
-
                                 <select class="form-select bg-white text-primary" multiple name="collabs"
                                         id="collabsGDP">
                                     {% for collab in collabs %}
@@ -899,9 +865,9 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 <script>function calculjoursthq(){
-                            var caAtos = parseFloat(document.getElementById("formulaire").elements["caAtosBC"].value);
+                            var montantHT = parseFloat(document.getElementById("formulaire").elements["montantHTBC"].value);
                             var tjm = parseFloat(document.getElementById("formulaire").elements["tjmBC"].value);
-                            var jAllouesThq= caAtos / tjm;
+                            var jAllouesThq= montantHT / tjm;
                             document.getElementById("formulaire").elements["jourThqBC"].value=jAllouesThq;
                             document.getElementById("formulaire").elements["partGDPBC"].value = jAllouesThq*0.2;}
 
@@ -911,6 +877,9 @@
             var joursAllouables = joursThq - partGDP;
             alert("Il y a " +joursAllouables+" jours à répartir");
             }
+
+
+
 
 
 
