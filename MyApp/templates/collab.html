@@ -73,22 +73,31 @@
             <div class="modal-body">
                 <form action="/save_collab" method="post">
                     <label class="form-label text-primary" for="nom_save">Nom :</label>
-                    <input required="required" class="text-primary form-control" type="text" id="nom_save" name="nom_save">
+                    <input required="required" class="text-primary form-control" type="text" id="nom_save"
+                           name="nom_save">
                     <br>
                     <label class="form-label text-primary" for="prenom_save">Prénom :</label>
                     <input required="required" class="text-primary form-control" type="text" id="prenom_save"
                            name="prenom_save">
                     <br>
                     <label class="form-label text-primary" for="access_save">Access :</label>
-                    <select class="form-select bg-white text-primary" name="access_save" id="access_save">
+                    <select required="required" class="form-select bg-white text-primary" name="access_save"
+                            id="access_save">
                         <option value="1">1 : Admin</option>
                         <option value="2">2 : Collaborateur MS4</option>
                         <option value="3">3 : Collaborateur hors MS4</option>
                         <option value="4">4 : Partis</option>
                     </select>
                     <br>
+                    <label class="form-label text-primary" for="gcm_save">Access :</label>
+                    <select required="required" class="form-select bg-white text-primary" name="gcm" id="gcm_save">
+                        {% for gcm in gcms %}
+                        <option value="{{gcm.id_gcm}}">{{gcm.code}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
                     <label class="form-label text-primary">Entreprise :</label>
-                    <select class="form-select bg-white text-primary" name="entreprise_save">
+                    <select required="required" class="form-select bg-white text-primary" name="entreprise_save">
                         <option value="Atos">Atos</option>
                         <option value="EGIS">EGIS</option>
                     </select>
@@ -97,18 +106,6 @@
                     <input required="required" class="text-primary form-control" type="number" id="conges_save"
                            name="conges_save">
                     <br>
-                    <label class="form-label text-primary">Répartition de ses fonctions (en %) :</label>
-                    <table style="margin-left:auto; margin-right:auto;margin-top:10px; margin-bottom:10px;  text-align:center;   table-layout: fixed;">
-                        {% for fonction in fonctions %}
-                        <tr class="bg-primary text-white"
-                            style="background-image: var(--bs-gradient);">
-                            <td width="50">{{fonction.nom}}</td>
-                            <td width="50"><input class="text-primary" width="50" type="number" step="0.1"
-                                                  id="saveFonction{{fonction.id_fonction}}"
-                                                  name="fonction{{fonction.id_fonction}}" value="0"></td>
-                        </tr>
-                        {% endfor %}
-                    </table>
                     <button name="button" class="btn btn-primary">Ajouter ce collaborateur</button>
                 </form>
             </div>
@@ -197,14 +194,15 @@
                             <form action="/modif_collab/{{data[0].id_collab}}" method="post">
                                 <label class="form-label text-dark" for="nom2">Nom :</label>
                                 <input class="text-dark form-control" type="text" id="nom2" name="nom2"
-                                       value="{{data[0].nom}}">
+                                       value="{{data[0].nom}}" required="required">
                                 <br>
                                 <label class="form-label text-dark" for="prenom2">Prénom :</label>
                                 <input class="text-dark form-control" type="text" id="prenom2" name="prenom2"
-                                       value="{{data[0].prenom}}">
+                                       value="{{data[0].prenom}}" required="required">
                                 <br>
                                 <label class="form-label text-dark" for="access2">Access :</label>
-                                <select class="form-select bg-white text-dark" name="access2" id="access2">
+                                <select required="required" class="form-select bg-white text-dark" name="access2"
+                                        id="access2">
                                     <option selected value="{{data[0].access}}">Valeur actuellement sélectionné :
                                         {{data[0].access}}
                                     </option>
@@ -214,9 +212,20 @@
                                     <option value="4">4 : Partis</option>
                                 </select>
                                 <br>
+                                <label class="form-label text-dark" for="modifgcm">GCM :</label>
+                                <select required="required" class="form-select bg-white text-dark" name="gcm"
+                                        id="modifgcm">
+                                    <option selected value="{{data[2].id_gcm}}">GCM actuellement sélectionné :
+                                        {{data[2].code}}
+                                    </option>
+                                    {% for gcm in gcms %}
+                                    <option value="{{gcm.id_gcm}}">{{gcm.code}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
                                 <label class="form-label text-dark">Entreprise :</label>
-                                <select class="form-select bg-white text-dark" name="entreprise_save">
-                                    <option value="{{data[0].entreprise}}">Actuellement sélectionné :
+                                <select required="required" class="form-select bg-white text-dark" name="entreprise2">
+                                    <option value="{{data[0].entreprise}}">Entreprise actuellement sélectionnée :
                                         {{data[0].entreprise}}
                                     </option>
                                     <option value="Atos">Atos</option>
@@ -224,22 +233,10 @@
                                 </select>
                                 <br>
                                 <label class="form-label text-dark" for="conges">Jours de congés :</label>
-                                <input class="text-dark form-control" type="number" id="conges" name="conges"
-                                       value={{data[0].boncomms[0].boncomm.nbCongesTot}}>
+                                <input required="required" class="text-dark form-control" type="number" id="conges"
+                                       name="conges"
+                                       value="{{data[0].boncomms[0].boncomm.nbCongesTot}}">
                                 <br>
-                                <label class="form-label text-dark">Répartition de ses fonctions (en %) :</label>
-                                <table style="margin-left:auto; margin-right:auto;margin-top:10px; margin-bottom:10px;  text-align:center;   table-layout: fixed;">
-                                    {% for assoFonction in data[2] %}
-                                    <tr class="bg-warning"
-                                        style="background-image: var(--bs-gradient);">
-                                        <td class="text-dark" width="50">{{assoFonction.fonction.nom}}</td>
-                                        <td width="50"><input class="text-dark bg-light" width="50" type="number" step="0.1"
-                                                              id="fonction{{assoFonction.fonction.id_fonction}}"
-                                                              name="fonction{{assoFonction.fonction.id_fonction}}"
-                                                              value="{{assoFonction.affectation}}"></td>
-                                    </tr>
-                                    {% endfor %}
-                                </table>
                                 <button name="button" class="btn btn-warning">Modifier le collaborateur
                                 </button>
                             </form>
@@ -269,6 +266,8 @@
         document.formulaireDate.action = url;
 	    document.forms["formulaireDate"].submit();
     }
+
+
 
 
 

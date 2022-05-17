@@ -176,7 +176,8 @@
                                 <label class="form-label text-primary" for="collabsBC">Liste des collaborateurs
                                     concernés :</label>
                                 <br>
-                                <select class="form-select bg-white text-primary" multiple name="collabsBC"
+                                <select required="required" class="form-select bg-white text-primary" multiple
+                                        name="collabsBC"
                                         id="collabsBC">
                                     {% for collab in collabs %}
                                     <option name="{{collab.id_collab}}" value={{collab.id_collab}}>
@@ -293,7 +294,8 @@
                                 <label class="form-label text-primary" for="collabsFD">Liste des collaborateurs
                                     concernés :</label>
                                 <br>
-                                <select class="form-select bg-white text-primary" multiple name="collabs"
+                                <select required="required" class="form-select bg-white text-primary" multiple
+                                        name="collabs"
                                         id="collabsFD">
                                     {% for collab in collabs %}
                                     <option name="{{collab.id_collab}}" value={{collab.id_collab}}>
@@ -341,7 +343,8 @@
                                        name="anneeTarif2" required="required">
                                 <br>
                                 <label class="form-label text-primary" for="hprojet">Formation hors projet :</label>
-                                <select class="form-select bg-white text-primary" name="hprojet" id="hprojet">
+                                <select required="required" class="form-select bg-white text-primary" name="hprojet"
+                                        id="hprojet">
                                     <option value="Oui">Oui</option>
                                     <option value="Non">Non</option>
                                 </select>
@@ -353,7 +356,8 @@
                                 <br>
                                 <label class="form-label text-primary" for="notificationForm">Formation notifiée
                                     :</label>
-                                <select class="form-select bg-white text-primary" name="notification"
+                                <select required="required" class="form-select bg-white text-primary"
+                                        name="notification"
                                         id="notificationForm">
                                     <option value="O">Oui</option>
                                     <option value="N">Non</option>
@@ -369,7 +373,8 @@
                                        name="dateFinPrev"
                                        required="required" value="2022-04-01">
                                 <br>
-                                <select class="form-select bg-white text-primary" multiple name="collabs2"
+                                <select required="required" class="form-select bg-white text-primary" multiple
+                                        name="collabs2"
                                         id="collabs2">
                                     {% for collab in collabs %}
                                     <option value={{collab.id_collab}}>{{collab.nom}}</option>
@@ -420,7 +425,8 @@
                                 <br>
                                 <label class="form-label text-primary" for="notificationAutre">Activité notifiée
                                     :</label>
-                                <select class="form-select bg-white text-primary" name="notification"
+                                <select required="required" class="form-select bg-white text-primary"
+                                        name="notification"
                                         id="notificationAutre">
                                     <option value="O">Oui</option>
                                     <option value="N">Non</option>
@@ -439,7 +445,8 @@
                                        name="dateFinPrev"
                                        value="2022-04-01">
                                 <br>
-                                <select class="form-select bg-white text-primary" multiple name="collabs3"
+                                <select required="required" class="form-select bg-white text-primary" multiple
+                                        name="collabs3"
                                         id="collabs3">
                                     {% for collab in collabs %}
                                     <option value={{collab.id_collab}}>{{collab.nom}}</option>
@@ -613,10 +620,12 @@
                         <div class="modal-body">
                             <form action="/modif_activite/{{activite[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
-                                <input class="text-primary form-control" type="text" name="activite">
+                                <input class="text-primary form-control" type="text" name="activite" required="required"
+                                       value="{{activite[0].activite}}">
                                 <br>
                                 <label>Hors Projet : (pour les formations)</label>
-                                <select class="form-select bg-white text-primary" name="horsProjet" id="horsProjet">
+                                <select required="required" class="form-select bg-white text-primary" name="horsProjet"
+                                        id="horsProjet">
                                     <option value="{{activite[0].horsProjet}}">Valeur actuellement sélectionné :
                                         {{activite[0].horsProjet}}
                                     </option>
@@ -629,23 +638,23 @@
                                 <br>
                                 <label for="anneeTarif">Année tarifaire :</label>
                                 <input class="text-primary form-control" type="number" name="anneeTarif"
-                                       value={{activite[0].anneeTarif}}>
+                                       required="required" value="{{activite[0].anneeTarif}}">
                                 <br>
                                 <label for="jourThq">Jours alloués à l'activité :</label>
-                                <input  class="text-primary form-control" type="number" name="jourThq"
-                                       value={{activite[0].jourThq}}>
+                                <input class="text-primary form-control" type="number" name="jourThq"
+                                       required="required" value="{{activite[0].jourThq}}">
                                 <br>
                                 <label class="form-label text-primary" for="dateNotifModifForm">Date de notification
                                     :</label>
                                 <input class="text-primary form-control" type="date" id="dateNotifModifForm"
                                        name="dateNotif"
-                                       value="2022-04-01">
+                                       required="required" value="{{activite[0].dateNotif}}">
                                 <br>
                                 <label class="form-label text-primary" for="dateFinPrevModifForm">Date de fin prévue
                                     :</label>
                                 <input class="text-primary form-control" type="date" id="dateFinPrevModifForm"
                                        name="dateFinPrev"
-                                       value="2022-04-01">
+                                       required="required" value="{{activite[0].dateFinPrev}}">
                                 <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs">
                                     {% for collab in collabs %}
@@ -773,7 +782,9 @@
                             <form action="/modif_etat/{{activite[0].id_acti}}" method="post">
                                 <label style="text-align: center">Modifier l'état de l'activité :</label>
                                 <select class="form-select bg-white text-primary" name="etat" id="etatBC">
-                                    <option value="{{activite[0].etat}}">Actuellement sélectionné : {{activite[0].etat}}</option>
+                                    <option value="{{activite[0].etat}}">Actuellement sélectionné :
+                                        {{activite[0].etat}}
+                                    </option>
                                     <option value="TE">Clôturé</option>
                                     <option value="">En cours</option>
                                 </select>
@@ -801,34 +812,35 @@
                         <div class="modal-body">
                             <form action="/modif_boncomm/{{activite[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
-                                <input class="text-primary form-control" type="text" id="activite" name="activite">
+                                <input class="text-primary form-control" type="text" id="activite" name="activite"
+                                       required="required" value="{{activite[0].activite}}">
                                 <br>
                                 <label for="com">Commentaire :</label>
                                 <input class="text-primary form-control" type="text" id="com" name="com">
                                 <br>
                                 <label for="anneeTarif">Année tarifaire :</label>
                                 <input class="text-primary form-control" type="number" id="anneeTarif" name="anneeTarif"
-                                       value={{activite[0].anneeTarif}}>
+                                       required="required" value="{{activite[0].anneeTarif}}">
                                 <br>
                                 <label for="caAtos">CA Atos :</label>
                                 <input class="text-primary form-control" type="number" id="caAtos" name="caAtos"
-                                       value={{activite[0].caAtos}}>
+                                       required="required" value="{{activite[0].caAtos}}">
                                 <br>
                                 <label for="jourThq">Jours alloués théoriques :</label>
                                 <input class="text-primary form-control" type="number" id="jourThq" name="jourThq"
-                                       value={{activite[0].jourThq}}>
+                                       required="required" value="{{activite[0].jourThq}}">
                                 <br>
                                 <label for="delais">Délais :</label>
                                 <input class="text-primary form-control" type="number" id="delais" name="delais"
-                                       value={{activite[0].delais}}>
+                                       required="required" value="{{activite[0].delais}}">
                                 <br>
                                 <label for="montantHT">Montant HT :</label>
                                 <input class="text-primary form-control" type="number" id="montantHT" name="montantHT"
-                                       value={{activite[0].montantHT}}>
+                                       required="required" value="{{activite[0].montantHT}}">
                                 <br>
                                 <label for="partEGIS">Part EGIS :</label>
                                 <input class="text-primary form-control" type="number" id="partEGIS" name="partEGIS"
-                                       value="{{activite[0].partEGIS}}">
+                                       required="required" value="{{activite[0].partEGIS}}">
                                 <br>
                                 <label class="form-label text-primary" for="notification">Bon notifié :</label>
                                 <select class="form-select bg-white text-primary" name="notification">
@@ -851,10 +863,12 @@
                                 </select>
                                 <br>
                                 <label for="num">Numéro :</label>
-                                <input class="text-primary form-control" type="text" id="num" name="num">
+                                <input class="text-primary form-control" type="text" id="num" name="num"
+                                       required="required" value="{{activite[0].num}}">
                                 <br>
                                 <label for="poste">Poste :</label>
-                                <input class="text-primary form-control" type="text" id="poste" name="poste">
+                                <input class="text-primary form-control" type="text" id="poste" name="poste"
+                                       required="required" value="{{activite[0].poste}}">
                                 <br>
                                 <label>Projet :</label>
                                 <select class="form-select bg-white text-primary" name="projet">
@@ -872,22 +886,26 @@
                                 <br>
                                 <label for="tjm">TJM :</label>
                                 <input class="text-primary form-control" type="number" id="tjm" name="tjm"
-                                       value={{activite[0].tjm}}>
+                                       required="required" value="{{activite[0].tjm}}">
                                 <br>
                                 <label class="form-label text-primary">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" value="{{activite[0].dateNotif}}"
+                                <input class="text-primary form-control" type="date" required="required"
+                                       value="{{activite[0].dateNotif}}"
                                        name="dateNotif">
                                 <br>
                                 <label class="form-label text-primary">Date de début :</label>
-                                <input class="text-primary form-control" type="date" value="{{activite[0].dateDebut}}"
+                                <input class="text-primary form-control" type="date" required="required"
+                                       value="{{activite[0].dateDebut}}"
                                        name="dateDebut">
                                 <br>
                                 <label class="form-label text-primary">Date de fin prévue :</label>
-                                <input class="text-primary form-control" type="date" value="{{activite[0].dateFinPrev}}"
+                                <input class="text-primary form-control" type="date" required="required"
+                                       value="{{activite[0].dateFinPrev}}"
                                        name="dateFinPrev">
                                 <br>
                                 <label class="form-label text-primary">Date de notification :</label>
-                                <input class="text-primary form-control" type="date" value="{{activite[0].dateFinOp}}"
+                                <input class="text-primary form-control" type="date" required="required"
+                                       value="{{activite[0].dateFinOp}}"
                                        name="dateFinOp">
                                 <br>
 
@@ -1021,53 +1039,64 @@
                         <div class="modal-body">
                             <form action="/modif_activite/{{activite[2].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
-                                <input class="text-primary form-control" type="text" id="activiteGDP" name="activite">
+                                <input class="text-primary form-control" type="text" id="activiteGDP" name="activite"
+                                       required="required" value="{{activite[2].activite}}">
                                 <br>
                                 <label for="com">Commentaire :</label>
                                 <input class="text-primary form-control" type="text" id="comGDP" name="com"
-                                       value={{activite[2].com}}>
+                                       value="{{activite[2].com}}">
                                 <br>
                                 <label for="anneeTarif">Année tarifaire :</label>
                                 <input class="text-primary form-control" type="number" id="anneeTarifGDP"
                                        name="anneeTarif"
-                                       value={{activite[2].anneeTarif}}>
+                                       required="required" value="{{activite[2].anneeTarif}}">
                                 <br>
                                 <label for="caAtos">CA Atos :</label>
                                 <input class="text-primary form-control" type="number" id="caAtosGDP" name="caAtos"
-                                       value={{activite[2].caAtos}}>
+                                       required="required" value="{{activite[2].caAtos}}">
                                 <br>
                                 <label for="jourThq">Jours alloués théoriques :</label>
                                 <input class="text-primary form-control" type="number" id="jourThqGDP" name="jourThq"
-                                       value={{activite[2].jourThq}}>
-                                <br>
-                                <label for="partGDPGDP">Part GdP :</label>
-                                <input class="text-primary form-control" type="number" id="partGDPGDP" name="partGDP">
+                                       required="required" value="{{activite[2].jourThq}}">
                                 <br>
                                 <label for="delais">Délais :</label>
                                 <input class="text-primary form-control" type="number" id="delaisGDP" name="delais"
-                                       value={{activite[2].delais}}>
+                                       required="required" value="{{activite[2].delais}}">
                                 <br>
                                 <label for="montantHT">Montant HT :</label>
                                 <input class="text-primary form-control" type="number" id="montantHTGDP"
                                        name="montantHT"
-                                       value={{activite[2].montantHT}}>
+                                       required="required" value="{{activite[2].montantHT}}">
                                 <br>
                                 <label for="partEGIS">Part EGIS :</label>
                                 <input class="text-primary form-control" type="number" id="partEGISGDP" name="partEGIS"
-                                       value={{activite[2].partEGIS}}>
+                                       required="required" value="{{activite[2].partEGIS}}">
                                 <br>
                                 <label for="num">Numéro :</label>
-                                <input class="text-primary form-control" type="text" id="numGDP" name="num">
+                                <input class="text-primary form-control" type="text" id="numGDP" name="num"
+                                       required="required" value="{{activite[2].num}}">
                                 <br>
                                 <label for="poste">Poste :</label>
-                                <input class="text-primary form-control" type="text" id="posteGDP" name="poste">
+                                <input class="text-primary form-control" type="text" id="posteGDP" name="poste"
+                                       required="required" value="{{activite[2].poste}}">
                                 <br>
-                                <label for="projetGDP">Projet :</label>
-                                <input class="text-primary form-control" type="text" id="projetGDP" name="projet">
+                                <label>Projet :</label>
+                                <select class="form-select bg-white text-primary" name="projet">
+                                    <option value="{{activite[2].projet}}" selected>Actuellement sélectionné :
+                                        {{activite[2].projet}}
+                                    </option>
+                                    <option value="CNS">CNS</option>
+                                    <option value="APP">APP</option>
+                                    <option value="ATM1">ATM1</option>
+                                    <option value="ATM2">ATM2</option>
+                                    <option value="ATM1-2">ATM1-2</option>
+                                    <option value="TRANS">TRANS</option>
+                                    <option value="EXP">EXP</option>
+                                </select>
                                 <br>
                                 <label for="tjm">TJM :</label>
                                 <input class="text-primary form-control" type="number" id="tjmGDP" name="tjm"
-                                       value={{activite[2].tjm}}>
+                                       required="required" value="{{activite[2].tjm}}">
                                 <br>
 
                                 <select class="form-select bg-white text-primary" multiple name="collabs"
@@ -1115,22 +1144,6 @@
             var joursAllouables = joursThq - partGDP;
             alert("Il y a " +joursAllouables+" jours à répartir");
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </script>
 </body>

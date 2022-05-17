@@ -36,30 +36,30 @@ class AssociationBoncommCollab(db.Model):
     boncomm = db.relationship("Boncomm", back_populates="collabs")
 
 
-class AssoCollabFonction(db.Model):
+class AssoGcmFonction(db.Model):
     """
-            Réprésente l'association entre une fonction et un collaborateur.
+            Réprésente l'association entre une fonction et un GCM.
 
             ...
 
             Attributs
             ----------
-            collab_id : int
-                id du collaborateur, clé primaire.
+            gcm_id : int
+                id du gcm, clé primaire.
             fonction_id : int
                 id de la fonction, clé primaire.
             affectation : float
                 pourcentage, représentant la part du temps de travail du collaborateur sur cette fonction.
-            collab :
-                lien d'association au collaborateur.
+            gcm :
+                lien d'association au gcm.
             fonction :
                 lien d'association à la fonction.
     """
-    collab_id = db.Column('collab_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True)
+    gcm_id = db.Column('gcm_id', db.Integer, db.ForeignKey('gcm.id_gcm'), primary_key=True)
     fonction_id = db.Column('fonction_id', db.Integer, db.ForeignKey('fonction.id_fonction'), primary_key=True)
     affectation = db.Column(db.Float, nullable=False)
-    collab = db.relationship("Collab", back_populates="fonctions")
-    fonction = db.relationship("Fonction", back_populates="collabs")
+    gcm = db.relationship("Gcm", back_populates="fonctions")
+    fonction = db.relationship("Fonction", back_populates="gcms")
 
 
 class AssoUoBoncomm(db.Model):
@@ -87,9 +87,9 @@ class AssoUoBoncomm(db.Model):
     uo = db.relationship("UO", back_populates="boncomms")
     boncomm = db.relationship("Boncomm", back_populates="uos")
 
-"""
-class GCM(db.Model):
-        #
+
+class Gcm(db.Model):
+    """
         Réprésente un code GCM.
 
         ...
@@ -103,7 +103,7 @@ class GCM(db.Model):
         tjm : float
             tjm associé à ce GCM.
         collabs : list
-            ensemble des collaborateurs ayant ce code GCM.  
+            ensemble des collaborateurs ayant ce code GCM.
         fonctions : list
            ensemble des fonctions associées à ce GCM.
 
@@ -111,57 +111,58 @@ class GCM(db.Model):
         -------
         __init__(self, code, tjm)
             constructeur de la classe
-        #
-        
-        id_gcm = db.Column(db.Integer, primary_key=True)
-        code = db.Column(db.String(30), nullable=False)
-        tjm = db.Column(db.Float, nullable=False)
-        
-        def __init__(self, code, tjm):
-            self.code = code
-            self.tjm = tjm
-"""
+    """
+
+    id_gcm = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(30), nullable=False)
+    tjm = db.Column(db.Float, nullable=False)
+    collabs = db.relationship('Collab', backref='gcm', uselist=False)
+    fonctions = db.relationship('AssoGcmFonction', back_populates="gcm")
+
+    def __init__(self, code, tjm):
+        self.code = code
+        self.tjm = tjm
 
 
 class Collab(db.Model):
     """
-            Réprésente un collaborateur de l'équipe.
+        Réprésente un collaborateur de l'équipe.
+        ...
 
-            ...
+        Attributs
+        ----------
+        id_collab: int
+        id du collaborateur, clé primaire.
+        nom: str
+            nom du collaborateur.
+        prenom: str
+            prénom du collaborateur.
+        access: int
+            niveau d'accès du collaborateur.
+        entreprise: str
+            entreprise du collaborateur.
+        imputations: list
+            ensemble des imputations associées au collaborateur, venant de l'association entre la classe Collab et Imputation.
+        boncomms: list
+            ensemble des bons de commande associés au collaborateur, venant de l'association plusieurs-à-plusieurs entre Collab et Boncomm.
 
-            Attributs
-            ----------
-            id_collab : int
-                id du collaborateur, clé primaire.
-            nom : str
-                nom du collaborateur.
-            prenom : str
-                prénom du collaborateur.
-            access : int
-                niveau d'accès du collaborateur.
-            entreprise : str
-                entreprise du collaborateur.
-            imputations : list d'Imputation
-               ensemble des imputations associées au collaborateur, venant de l'association entre la classe Collab et Imputation.
-            boncomms : list de Boncomm
-                ensemble des bons de commande associés au collaborateur, venant de l'association plusieurs-à-plusieurs entre Collab et Boncomm.
+        Méthodes
+        -------
+        __init__(self, nom, prenom, access, entreprise)
+            constructeur de la classe
 
-            Méthodes
-            -------
-            __init__(self, nom, prenom, access, entreprise)
-                constructeur de la classe
+        abreviation(self)
+            permet d'avoir l'abréviation du nom et prénom du collaborateur
+    """
 
-            abreviation(self)
-                permet d'avoir l'abréviation du nom et prénom du collaborateur
-            """
     id_collab = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(30), nullable=False)
     prenom = db.Column(db.String(30), nullable=False)
     access = db.Column(db.Integer, nullable=False)
     entreprise = db.Column(db.String(30), nullable=False)
+    gcm_id = db.Column(db.Integer, db.ForeignKey('gcm.id_gcm'), nullable=False)
     imputations = db.relationship('Imputation', backref='collab', uselist=False)
     boncomms = db.relationship('AssociationBoncommCollab', back_populates="collab")
-    fonctions = db.relationship('AssoCollabFonction', back_populates="collab")
 
     def __init__(self, nom, prenom, access, entreprise):
         self.nom = nom
@@ -178,65 +179,15 @@ class Collab(db.Model):
 
 
 class Fonction(db.Model):
-    """
-        Réprésente une fonction que peut remplir un collaborateur.
-
-        ...
-
-        Attributs
-        ----------
-        id_fonction : int
-            id de la fonction, clé primaire.
-        nom : str
-            nom de la fonction.
-        tjm : float
-            tjm de la fonction.
-        collabs : list de Collab
-            ensemble des colaborateurs assurant cette fonction, venant de l'association plusieurs-à-plusieurs entre Collab et Fonction.
-
-        Méthodes
-        -------
-        __init__(self, nom, tjm)
-            constructeur de la classe
-    """
     id_fonction = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(50), nullable=False)
-    tjm = db.Column(db.Float, nullable=False)
-    collabs = db.relationship('AssoCollabFonction', back_populates="fonction")
+    gcms = db.relationship('AssoGcmFonction', back_populates="fonction")
 
-    def __init__(self, nom, tjm):
+    def __init__(self, nom):
         self.nom = nom
-        self.tjm = tjm
 
 
 class Imputation(db.Model):
-    """
-            Réprésente une Imputation sur une date et un bon de commande par un collaborateur.
-
-            ...
-
-            Attributs
-            ----------
-            id_imp : int
-                id de l'imputation, clé primaire.
-            acti_id : int
-                id de l'activité liée, clé étrangère de la table Boncomm.
-            collab_id : int
-                id du collaborateur liée, clé étrangère de la table Collab.
-            date_id : int
-                id de la date liée, clé étrangère de la table Date.
-            joursAllouesTache : float
-                nombre de jours alloués sur cette activité pour cette date, par ce collaborateur.
-
-            Méthodes
-            -------
-            __init__(self, acti_id, collab_id, date_id, joursAllouesTache)
-                constructeur de la classe
-            get_jours(self)
-                méthode pour récupérer nombre de jours alloués a la tache pour ce collab, cette activité à cette date.
-                (équivalent à .joursAllouesTache)
-            """
-
     id_imp = db.Column(db.Integer, primary_key=True)
     acti_id = db.Column(db.Integer, db.ForeignKey('boncomm.id_acti'), nullable=False)
     collab_id = db.Column(db.Integer, db.ForeignKey('collab.id_collab'), nullable=False)
@@ -258,51 +209,6 @@ class Imputation(db.Model):
 
 
 class Boncomm(db.Model):
-    """
-            Réprésente un bon de commande.
-
-            ...
-
-            Attributs
-            ----------
-            id_acti : int
-                id du bon de commande, clé primaire.
-            activite : str
-                description du bon de commande.
-            etat : str
-                état, terminé ou en cours, du bon de commande.
-            com : str
-                Commentaire, si nécessaire, sur le bon de commande.
-            anneeTarif : float
-                année tarifaire du bon de commande.
-            caAtos : float
-                chiffre d'affaire du bon de commande.
-            delais : float
-                délais de réalisation du bon de commande.
-            montantHT : float
-                montant Hors Taxes du bon de commande.
-            partEGIS : float
-                part d'EGIS sur le chiffre d'affaire du bon de commande.
-            num : str
-                numéro du bon de commande.
-            poste : str
-                poste du bon de commande.
-            projet : str
-                projet du bon de commande.
-            tjm : float
-                taux journalier moyen appliqué à ce commande.
-            imputations : list d'Imputation
-                ensemble des imputations associées au bon de commande, venant de l'association entre la classe Imputation et Boncomm.
-            collabs : list de Collab
-                ensemble des collaborateurs qui imputent sur ce bon de commande, venant de l'association plusieurs_à_plusieurs entre Boncomm et Collab.
-            uos : list d'UO
-                ensemble des UOs liées à ce BC, venant de l'association plusieurs_à_plusieurs entre Boncomm et UO.
-
-            Méthodes
-            -------
-            __init__(self, activite, com, anneeTarif, caAtos, jourThq, delais, montantHT, partEGIS, num, poste, projet, tjm)
-               constructeur de la classe
-            """
     id_acti = db.Column(db.Integer, primary_key=True, autoincrement=True)
     activite = db.Column(db.String(20))
     etat = db.Column(db.String(100))
@@ -364,39 +270,6 @@ class Boncomm(db.Model):
 
 
 class Date(db.Model):
-    """
-            Réprésente une date.
-
-            ...
-
-            Attributs
-            ----------
-            id_date : int
-                id de la date, clé primaire.
-            jour : int
-                jour de la date.
-            mois : int
-                mois de la date.
-            annee : int
-                annee de la date.
-            pourcentAn : float
-                pourcentage sur l'année pour calculs des prix UO et TJM.
-            imputations : list d'Imputation
-                ensemble des imputations associées a la date, venant de l'association entre la classe Date et Imputation.
-
-            Méthodes
-            -------
-            __init__(self, jour, mois, annee, pourcentAn)
-                constructeur de la classe.
-            transfoDate(self)
-                transforme la date au format jj-mm-aaa.
-            numSemaine(self)
-                renvoie le numéro de la semaine associé à ce jour.
-            estFerie(self)
-                indique par un booléen en sortie si le jour est férié ou non.
-            jourSemaine(self)
-                indique à quel jour de la semaine la date correspond.
-            """
     id_date = db.Column(db.Integer, primary_key=True)
     jour = db.Column(db.Integer, nullable=False)
     mois = db.Column(db.Integer, nullable=False)
@@ -432,31 +305,6 @@ class Date(db.Model):
 
 
 class UO(db.Model):
-    """
-            Réprésente une UO.
-
-            ...
-
-            Attributs
-            ----------
-            id_uo : int
-                id de l'uo, clé primaire.
-            charges : float
-                charges de l'uo.
-            num : str
-                numéro de l'uo.
-            description : str
-                description de l'uo.
-            prix : float
-                prix de base de l'uo sur l'année de sa création.
-            boncomms : list
-                liste de bon de commande venant de l'association AssoUoBoncomm.
-
-            Méthodes
-            -------
-            __init__(self, charges, num, description, prix)
-                constructeur de la classe.
-            """
     id_uo = db.Column(db.Integer, primary_key=True)
     charges = db.Column(db.Float, nullable=False)
     num = db.Column(db.String(30), nullable=False)
@@ -469,12 +317,6 @@ class UO(db.Model):
         self.num = num
         self.description = description
         self.prix = prix
-
-
-"""
-    Méthode pour calculer, pour le mois voulu, le nombre de jours disponibles par semaine, sans prendre en compte le 
-    samedi et le dimanche.
-"""
 
 
 def columnMois(mois, annee):
@@ -499,15 +341,10 @@ def columnMois(mois, annee):
     return columns
 
 
-"""
-    Méthode pour calculer, pour le mois voulu, le nombre de jours disponibles par semaine, en prenant en compte le 
-    samedi et le dimanche.
-"""
-
-
 def columnMoisWeekEnd(mois, annee):
     dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
     columns = []
+    print(mois, annee)
     numSem = dates[0].numSemaine()
     joursDispo = 0
     for date in dates:
@@ -519,12 +356,6 @@ def columnMoisWeekEnd(mois, annee):
             joursDispo = 1
     columns.append([numSem, joursDispo])
     return columns
-
-
-"""
-    Méthode pour calculer l'ensemble des valeurs nécessaires pour la création des tables résumant l'avancement des 
-    activités.
-"""
 
 
 def valeursGlobales(boncomm):
@@ -555,11 +386,6 @@ def valeursGlobales(boncomm):
     return [consoCollabs, etat, avancement, raf, joursConsommes, ecart]
 
 
-"""
-    Méthode pour renvoyer le nombre de jours total dans le mois.
-"""
-
-
 def nbJoursMois(mois, annee):
     if mois == 1 or mois == 3 or mois == 5 or mois == 7 or mois == 8 or mois == 10 or mois == 12:
         return 31
@@ -572,11 +398,6 @@ def nbJoursMois(mois, annee):
         return 30
 
 
-"""
-    Méthode pour renvoyer le nombre de jours total dans le mois sans compter les week-ends.
-"""
-
-
 def nbJoursMoisSansWeekEnd(mois, annee):
     dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
     nb = 0
@@ -585,11 +406,6 @@ def nbJoursMoisSansWeekEnd(mois, annee):
         if date_format != 5 and date_format != 6:
             nb += 1
     return nb
-
-
-"""
-    Méthode pour renvoyer sous forme de str le mois voulu.
-"""
 
 
 def stringMois(mois):
@@ -639,11 +455,11 @@ def tjmCollab(collab):
     return tjm
 
 
-def prixTjmCollab(collab, annee):
-    tjm2022 = tjmCollab(collab)
-    if annee == 2022:
-        return tjm2022
-    tjmPrec = prixTjmCollab(collab, annee - 1)
+def prixTjmGcm(gcm, annee):
+    tjmInit = gcm.tjm
+    if annee == 2021:
+        return tjmInit
+    tjmPrec = prixTjmGcm(gcm, annee - 1)
     pourcentAn = db.session.query(Date).filter(Date.annee == annee).all()[0].pourcentAn
     return round(tjmPrec * (1 + (pourcentAn / 100)), 2)
 

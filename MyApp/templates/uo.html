@@ -19,6 +19,9 @@
                     <a class="nav-link" href="/see_ressources">Ressources</a>
                 </li>
                 <li class="list-inline-item">
+                    <a class="nav-link" href="/see_fonctionGcm">Fonctions et GCM</a>
+                </li>
+                <li class="list-inline-item">
                     <a class="nav-link" href="/see_chronoBC">Chrono BC Prod</a>
                 </li>
                 <li class="list-inline-item">
@@ -64,26 +67,6 @@
                                                 </select>
                                                 <br>
                                                 <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="anneeD">Année début
-                                                    :</label>
-                                                <select class="form-select bg-light text-primary" name="anneeD"
-                                                        id="anneeD">
-                                                    <option value="2021">2021</option>
-                                                    <option selected value="2022">2022</option>
-                                                    <option value="2023">2023</option>
-                                                    <option value="2024">2024</option>
-                                                    <option value="2025">2025</option>
-                                                    <option value="2026">2026</option>
-                                                    <option value="2027">2027</option>
-                                                    <option value="2028">2028</option>
-                                                    <option value="2029">2029</option>
-                                                    <option value="2030">2030</option>
-
-                                                </select>
-                                                <br>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label text-primary" style="font-weight:bold;"
                                                        for="moisF">Mois fin
                                                     :</label>
                                                 <select class="form-select bg-light text-primary" name="moisF"
@@ -102,6 +85,27 @@
                                                     <option value="12">Décembre</option>
                                                 </select>
                                                 <br>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="anneeD">Année début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeD"
+                                                        id="anneeD">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+
+                                                </select>
+                                                <br>
+
                                                 <label class="form-label text-primary" style="font-weight:bold;"
                                                        for="anneeF">Année fin
                                                     :</label>
@@ -166,25 +170,6 @@
                                                     <option value="12">Décembre</option>
                                                 </select>
                                                 <br>
-                                                <label class="form-label text-primary" style="font-weight:bold;">Année
-                                                    début
-                                                    :</label>
-                                                <select class="form-select bg-light text-primary" name="anneeD">
-                                                    <option value="2021">2021</option>
-                                                    <option selected value="2022">2022</option>
-                                                    <option value="2023">2023</option>
-                                                    <option value="2024">2024</option>
-                                                    <option value="2025">2025</option>
-                                                    <option value="2026">2026</option>
-                                                    <option value="2027">2027</option>
-                                                    <option value="2028">2028</option>
-                                                    <option value="2029">2029</option>
-                                                    <option value="2030">2030</option>
-
-                                                </select>
-                                                <br>
-                                            </div>
-                                            <div class="col-6">
                                                 <label class="form-label text-primary" style="font-weight:bold;">Mois
                                                     fin
                                                     :</label>
@@ -203,6 +188,26 @@
                                                     <option value="12">Décembre</option>
                                                 </select>
                                                 <br>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;">Année
+                                                    début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeD">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+
+                                                </select>
+                                                <br>
+
                                                 <label class="form-label text-primary" style="font-weight:bold;">Année
                                                     fin
                                                     :</label>
@@ -263,13 +268,15 @@
                 <div class="modal-body">
                     <form action="/save_uo" method="post">
                         <label class="form-label text-primary" for="charges">Charges :</label>
-                        <input required="required" class="text-primary form-control" type="number" step="0.1" id="charges" name="charges">
+                        <input required="required" class="text-primary form-control" type="number" step="0.1"
+                               id="charges" name="charges">
                         <br>
                         <label class="form-label text-primary" for="num">Numéro de l'UO :</label>
                         <input required="required" class="text-primary form-control" type="text" id="num" name="num">
                         <br>
                         <label class="form-label text-primary" for="description">Description de l'UO :</label>
-                        <input required="required" class="text-primary form-control" type="text" id="description" name="description">
+                        <input required="required" class="text-primary form-control" type="text" id="description"
+                               name="description">
                         <br>
                         <label class="form-label text-primary" for="prix">Montant (sur l'année en cours):</label>
                         <input required="required" class="text-primary form-control" type="text" id="prix" name="prix">
@@ -327,21 +334,21 @@
                             <form action="/modif_uo/{{uo[0].id_uo}}" method="post">
                                 <label class="form-label text-warning" for="num">Numéro :</label>
                                 <input class="form-control" type="text" id="numModif" name="num"
-                                       value="{{uo[0].num}}">
+                                       value="{{uo[0].num}}" required="required">
                                 <br>
                                 <label class="form-label text-warning" for="descriptionModif">Description :</label>
                                 <input class="form-control" type="text" id="descriptionModif"
                                        name="description"
-                                       value="{{uo[0].description}}">
+                                       value="{{uo[0].description}}" required="required">
                                 <br>
                                 <label class="form-label text-warning" for="chargesModif">Charges :</label>
                                 <input class="form-control" type="text" id="chargesModif"
                                        name="charges"
-                                       value="{{uo[0].charges}}">
+                                       value="{{uo[0].charges}}" required="required">
                                 <br>
                                 <label class="form-label text-warning" for="prixModif">Montant :</label>
                                 <input class="form-control" type="number" id="prixModif" name="prix"
-                                       value="{{uo[0].prix}}">
+                                       value="{{uo[0].prix}}" required="required">
                                 <br>
                                 <button name="button" class="btn btn-warning">Modifier l'UO</button>
                             </form>
