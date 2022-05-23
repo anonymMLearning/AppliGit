@@ -318,12 +318,12 @@ def poser_conges(idc, mois, annee):
             if jourPose != "":
                 imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
                                                           Imputation.collab_id == idc,
-                                                          Imputation.acti_id == conges.id_acti,
-                                                          Imputation.type == "client").all()
+                                                          Imputation.acti_id == conges.id_acti,).all()
                 if imp[0].joursAllouesTache != jourPose:
                     previousJourPose = imp[0].joursAllouesTache
                     diffJourPose = float(jourPose) - previousJourPose  # écart entre jours posés avant/après
                     imp[0].joursAllouesTache = jourPose
+                    imp[1].joursAllouesTache = jourPose
                     nbJourPose += float(diffJourPose)
     conges.nbCongesPose += nbJourPose
     db.session.commit()
@@ -584,7 +584,6 @@ def modif_collab(idc):
         data_to_change.access = access
     if newConges != prevConges:  # On ne modifie pas si l'utilisateur ne veut pas modifier les jours de congés
         data_to_change.boncomms[0].boncomm.nbCongesTot = newConges
-        data_to_change.boncomms[1].boncomm.nbCongesTot = newConges
     db.session.commit()
     collabs = db.session.query(Collab).all()
     data = []
