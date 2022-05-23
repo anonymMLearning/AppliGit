@@ -99,7 +99,7 @@
 </div>
 
 
-<table id="tableau" style=" margin-left:20px; margin-top:20px;   text-align:center;   table-layout: fixed;">
+<table id="tableau" style="margin-top:20px;   text-align:center;   table-layout: fixed;" align="center">
     <tr class="p-3 mb-2 bg-primary text-white" style="height:20px;background-image: var(--bs-gradient);">
         <!-- tr : ligne / td : colonne -->
         <td style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
@@ -107,7 +107,6 @@
         </td>
         <td style="font-weight:bold;border-right: 1px solid white;">Prénom</td>
         <td style="font-weight:bold;border-right: 1px solid white; padding:10px">Access</td>
-        <td style="font-weight:bold;">BC</td>
     </tr>
 
     {% for data in data %}
@@ -124,11 +123,6 @@
         <td class="p-3 mb-2 bg-white text-primary border border-primary"
             style="font-size: 20px;border-left: 1px solid white; vertical-align: middle;border-right:1px solid white;padding:15px;">
             {{data[0].access}}
-        </td>
-
-        <td class="p-3 mb-2 bg-white text-primary border border-primary"
-            style="font-size: 20px;background-image: var(--bs-gradient);">
-            {% for boncomm in data[1] %} - {{boncomm.activite}} - {% endfor %}
         </td>
         <td class="p-3 mb-2 text-secondary border border-primary" width="150"
             style="border: 1px solid white;vertical-align: middle;background-image: var(--bs-gradient);">
@@ -180,11 +174,11 @@
                             <form action="/modif_collab/{{data[0].id_collab}}" method="post">
                                 <label class="form-label text-primary" for="nom2">Nom :</label>
                                 <input class="text-primary form-control" type="text" id="nom2" name="nom2"
-                                       value="{{data[0].nom}}">
+                                       value="{{data[0].nom}}" required="required">
                                 <br>
                                 <label class="form-label text-primary" for="prenom2">Prénom :</label>
                                 <input class="text-primary form-control" type="text" id="prenom2" name="prenom2"
-                                       value="{{data[0].prenom}}">
+                                       value="{{data[0].prenom}}" required="required">
                                 <br>
                                 <label class="form-label text-primary" for="access2">Access :</label>
                                 <select class="form-select bg-white text-primary" name="access2" id="access2">
@@ -197,7 +191,7 @@
                                 <br>
                                 <label class="form-label text-primary" for="conges">Jours de congés :</label>
                                 <input class="text-primary form-control" type="number" id="conges" name="conges"
-                                       value={{data[0].boncomms[0].boncomm.nbCongesTot}}>
+                                       value="{{data[0].boncomms[0].boncomm.nbCongesTot}}" required="required">
                                 <br>
                                 <button name="button" class="btn btn-primary">Modifier le collaborateur
                                 </button>

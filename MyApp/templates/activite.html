@@ -431,7 +431,7 @@
                             <form action="/modif_activite/{{activite[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
                                 <input class="text-primary form-control" type="text" name="activite"
-                                       value="{{activite[0].activite}}">
+                                       value="{{activite[0].activite}}" required="required">
                                 <br>
                                 <label>Hors Projet : (pour les formations)</label>
                                 <select class="form-select bg-white text-primary" name="horsProjet" id="horsProjet">
@@ -447,11 +447,11 @@
                                 <br>
                                 <label for="anneeTarif">Année tarifaire :</label>
                                 <input class="text-primary form-control" type="number" name="anneeTarif"
-                                       value={{activite[0].anneeTarif}}>
+                                       value={{activite[0].anneeTarif}} required="required">
                                 <br>
                                 <label for="jourThq">Jours alloués à l'activité :</label>
                                 <input class="text-primary form-control" type="number" name="jourThq"
-                                       value={{activite[0].jourThq}}>
+                                       value={{activite[0].jourThq}} required="required">
                                 <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs">
                                     {% for collab in collabs %}
@@ -611,48 +611,50 @@
                             <form action="/modif_boncomm/{{activite[0].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
                                 <input class="text-primary form-control" type="text" id="activite" name="activite"
-                                       value={{activite[0].activite}}>
+                                       value="{{activite[0].activite}}" required="required">
                                 <br>
                                 <label for="com">Commentaire :</label>
                                 <input class="text-primary form-control" type="text" id="com" name="com">
                                 <br>
                                 <label for="anneeTarif">Année tarifaire :</label>
                                 <input class="text-primary form-control" type="number" id="anneeTarif" name="anneeTarif"
-                                       value={{activite[0].anneeTarif}}>
+                                       value="{{activite[0].anneeTarif}}" required="required">
                                 <br>
                                 <label for="caAtos">CA Atos :</label>
                                 <input class="text-primary form-control" type="number" id="caAtos" name="caAtos"
-                                       value={{activite[0].caAtos}}>
+                                       value="{{activite[0].caAtos}}" required="required">
                                 <br>
                                 <label for="jourThq">Jours alloués théoriques :</label>
                                 <input class="text-primary form-control" type="number" id="jourThq" name="jourThq"
-                                       value={{activite[0].jourThq}}>
+                                       value="{{activite[0].jourThq}}" required="required">
                                 <br>
                                 <label for="delais">Délais :</label>
                                 <input class="text-primary form-control" type="number" id="delais" name="delais"
-                                       value={{activite[0].delais}}>
+                                       value="{{activite[0].delais}}" required="required">
                                 <br>
                                 <label for="montantHT">Montant HT :</label>
                                 <input class="text-primary form-control" type="number" id="montantHT" name="montantHT"
-                                       value={{activite[0].montantHT}}>
+                                       value="{{activite[0].montantHT}}" required="required">
                                 <br>
                                 <label for="partEGIS">Part EGIS :</label>
                                 <input class="text-primary form-control" type="number" id="partEGIS" name="partEGIS"
-                                       value={{activite[0].partEGIS}}>
+                                       value="{{activite[0].partEGIS}}" required="required">
                                 <br>
                                 <label for="num">Numéro :</label>
                                 <input class="text-primary form-control" type="text" id="num" name="num"
-                                       value={{activite[0].num}}>
+                                       value="{{activite[0].num}}" required="required">
                                 <br>
                                 <label for="poste">Poste :</label>
-                                <input class="text-primary form-control" type="text" id="poste" name="poste"value={{activite[0].poste}}>
+                                <input class="text-primary form-control" type="text" id="poste" name="poste"
+                                       value="{{activite[0].poste}}" required="required">
                                 <br>
                                 <label for="projet">Projet :</label>
-                                <input class="text-primary form-control" type="text" id="projet" name="projet" value={{activite[0].projet}}>
+                                <input class="text-primary form-control" type="text" id="projet" name="projet"
+                                       value="{{activite[0].projet}}" required="required">
                                 <br>
                                 <label for="tjm">TJM :</label>
                                 <input class="text-primary form-control" type="number" id="tjm" name="tjm"
-                                       value={{activite[0].tjm}}>
+                                       value="{{activite[0].tjm}}" required="required">
                                 <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs" id="collabs">
                                     {% for collab in collabs %}
@@ -784,7 +786,8 @@
                         <div class="modal-body">
                             <form action="/modif_activite/{{activite[2].id_acti}}" method="post">
                                 <label for="activite">Activité :</label>
-                                <input class="text-primary form-control" type="text" id="activiteGDP" name="activite">
+                                <input class="text-primary form-control" type="text" id="activiteGDP" name="activite"
+                                       value="{{activite[2].activite}}" required="required">
                                 <br>
                                 <label for="com">Commentaire :</label>
                                 <input class="text-primary form-control" type="text" id="comGDP" name="com"
@@ -793,44 +796,48 @@
                                 <label for="anneeTarif">Année tarifaire :</label>
                                 <input class="text-primary form-control" type="number" id="anneeTarifGDP"
                                        name="anneeTarif"
-                                       value={{activite[2].anneeTarif}}>
+                                       value="{{activite[2].anneeTarif}}" required="required">
                                 <br>
                                 <label for="caAtos">CA Atos :</label>
                                 <input class="text-primary form-control" type="number" id="caAtosGDP" name="caAtos"
-                                       value={{activite[2].caAtos}}>
+                                       value="{{activite[2].caAtos}}" required="required">
                                 <br>
                                 <label for="jourThq">Jours alloués théoriques :</label>
                                 <input class="text-primary form-control" type="number" id="jourThqGDP" name="jourThq"
-                                       value={{activite[2].jourThq}}>
+                                       value="{{activite[2].jourThq}}" required="required">
                                 <br>
                                 <label for="partGDP">Part GdP :</label>
-                                <input class="text-primary form-control" type="number" id="partGDPGDP" name="partGDP">
+                                <input class="text-primary form-control" type="number" id="partGDPGDP" name="partGDP"
+                                       placeholder="Ne pas remplir">
                                 <br>
                                 <label for="delais">Délais :</label>
                                 <input class="text-primary form-control" type="number" id="delaisGDP" name="delais"
-                                       value={{activite[2].delais}}>
+                                       value="{{activite[2].delais}}" required="required">
                                 <br>
                                 <label for="montantHT">Montant HT :</label>
                                 <input class="text-primary form-control" type="number" id="montantHTGDP"
                                        name="montantHT"
-                                       value={{activite[2].montantHT}}>
+                                       value="{{activite[2].montantHT}}" required="required">
                                 <br>
                                 <label for="partEGIS">Part EGIS :</label>
                                 <input class="text-primary form-control" type="number" id="partEGISGDP" name="partEGIS"
-                                       value={{activite[2].partEGIS}}>
+                                       value="{{activite[2].partEGIS}}" required="required">
                                 <br>
                                 <label for="num">Numéro :</label>
-                                <input class="text-primary form-control" type="text" id="numGDP" name="num">
+                                <input class="text-primary form-control" type="text" id="numGDP" name="num"
+                                       value="{{activite[2].num}}" required="required">
                                 <br>
                                 <label for="poste">Poste :</label>
-                                <input class="text-primary form-control" type="text" id="posteGDP" name="poste">
+                                <input class="text-primary form-control" type="text" id="posteGDP" name="poste"
+                                       value="{{activite[2].poste}}" required="required">
                                 <br>
                                 <label for="projet">Projet :</label>
-                                <input class="text-primary form-control" type="text" id="projetGDP" name="projet">
+                                <input class="text-primary form-control" type="text" id="projetGDP" name="projet"
+                                       value="{{activite[2].projet}}" required="required">
                                 <br>
                                 <label for="tjm">TJM :</label>
                                 <input class="text-primary form-control" type="number" id="tjmGDP" name="tjm"
-                                       value={{activite[2].tjm}}>
+                                       value="{{activite[2].tjm}}" required="required">
                                 <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs"
                                         id="collabsGDP">
@@ -877,14 +884,6 @@
             var joursAllouables = joursThq - partGDP;
             alert("Il y a " +joursAllouables+" jours à répartir");
             }
-
-
-
-
-
-
-
-
 
 </script>
 </body>

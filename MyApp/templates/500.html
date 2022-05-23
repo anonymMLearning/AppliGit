@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Erreur 500</title>
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_archives">Données d'imputation</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_boncomm">Activités</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_global">Imputations globales</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_conges">Congés</a>
+                </li>
+                {% for collab in data_navbar %}
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee}}/{{mois}}">{{collab[0]}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Erreur 500 -</h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Oops ! Une erreur est apparue :
+            <br></h5>
+        <h5 style="margin-top: 5px; text-align: center" class="text-danger">{{e}}</h5>
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Faites un rapport de l'erreur à l'admin de
+            l'application.<br>Vous pouvez retourner sur l'application en utilisant la barre de navigation.</h5>
+    </div>
+</div>
+</body>
+</html>

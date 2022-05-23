@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
@@ -24,7 +25,8 @@
                 </li>
                 {% for collab in data_navbar %}
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee_courant}}/{{mois_courant}}">{{collab[0]}}</a>
+                    <a class="nav-link"
+                       href="/see_imput_collab/{{collab[1].id_collab}}/{{annee_courant}}/{{mois_courant}}">{{collab[0]}}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -95,9 +97,11 @@
                 {{boncomm[0].activite}}
             </td>
             {%for imput in boncomm[1] %}
-            <td style="border-right: 1px solid white; background-image: var(--bs-gradient)" width="160"
-                class="bg-secondary">
-                <input class="bg-secondary text-white" onblur="validImput(this.id)" style="text-align:center;" type="number" step="0.5"
+            <td style="border-right: 1px solid #0d6efd; border-bottom: 1px solid #0d6efd;background-image: var(--bs-gradient)"
+                width="160"
+                class="">
+                <input class="" onblur="validImput(this.id)" style="text-align:center; color : #0d6efd;"
+                       type="number" step="0.5"
                        name="{{boncomm[0].id_acti}}/{{imput[0]}}"
                        id="{{boncomm[0].id_acti}}/{{imput[0]}}" value="{{imput[1]}}">
             </td>
@@ -124,13 +128,11 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous">
 </script>
-<script src=
-                "https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js">
 </script>
 <script>
     function validImput(id){
         var joursImput = parseFloat(document.getElementById("formulaire").elements[id].value);
-        console.log(joursImput);
         if (joursImput < 0){
             document.getElementById("formulaire").elements[id].value = 0;
             alert("Saisissez un nombre entre 0 et le nombre de jours disponibles");
@@ -160,9 +162,18 @@
             document.getElementById("formulaire").elements[id].value = 0;
             alert("Attention ! Vérifiez les jours disponibles");
         }
+        if (joursImputTot < nbJoursDispo){
+            document.getElementById(id).style.backgroundColor = "#ffc107";
+            document.getElementById(id).style.color = "black";
         }
-
-
+        if (joursImputTot == nbJoursDispo){
+            for (i=0; i < tr.length-2; i++){
+                id_col = tr[i+2].id +"/"+numSemaine;
+                document.getElementById(id_col).style.backgroundColor = "white";
+                document.getElementById(id_col).style.color = "#0d6efd";
+                }
+        }
+        }
 
 </script>
 </body>

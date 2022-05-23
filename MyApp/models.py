@@ -119,12 +119,14 @@ class Imputation(db.Model):
     collab_id = db.Column(db.Integer, db.ForeignKey('collab.id_collab'), nullable=False)
     date_id = db.Column(db.Integer, db.ForeignKey('date.id_date'), nullable=False)
     joursAllouesTache = db.Column(db.Float, nullable=False)
+    type = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, acti_id, collab_id, date_id, joursAllouesTache):
+    def __init__(self, acti_id, collab_id, date_id, joursAllouesTache, type):
         self.acti_id = acti_id
         self.collab_id = collab_id
         self.date_id = date_id
         self.joursAllouesTache = joursAllouesTache
+        self.type = type
 
     def get_jours(self):
         imp = db.session.query(Imputation).filter(Imputation.acti_id == self.acti_id,
