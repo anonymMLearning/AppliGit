@@ -24,7 +24,7 @@ from datetime import datetime
 
 
 @app.errorhandler(404)
-def page_not_found(e):
+def error404(e):
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
@@ -33,11 +33,11 @@ def page_not_found(e):
     for collab in data:
         data_navbar.append([collab.abreviation(), collab])
     moisStr = stringMois(str(mois))
-    return render_template('404.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 404
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 404
 
 
 @app.errorhandler(500)
-def internal_server_error(e):
+def error500(e):
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
@@ -46,7 +46,98 @@ def internal_server_error(e):
     for collab in data:
         data_navbar.append([collab.abreviation(), collab])
     moisStr = stringMois(str(mois))
-    return render_template('500.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 500
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 500
+
+
+@app.errorhandler(400)
+def error400(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 400
+
+
+@app.errorhandler(401)
+def error401(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 401
+
+
+@app.errorhandler(403)
+def error403(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 403
+
+
+@app.errorhandler(405)
+def error405(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 405
+
+
+@app.errorhandler(502)
+def error502(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 502
+
+
+@app.errorhandler(503)
+def error401(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 503
+
+
+@app.errorhandler(504)
+def error504(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 504
 
 
 """ --- Accueil, initialisation de la BDD et données d'imputation --- """
@@ -318,7 +409,7 @@ def poser_conges(idc, mois, annee):
             if jourPose != "":
                 imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
                                                           Imputation.collab_id == idc,
-                                                          Imputation.acti_id == conges.id_acti,).all()
+                                                          Imputation.acti_id == conges.id_acti, ).all()
                 if imp[0].joursAllouesTache != jourPose:
                     previousJourPose = imp[0].joursAllouesTache
                     diffJourPose = float(jourPose) - previousJourPose  # écart entre jours posés avant/après
