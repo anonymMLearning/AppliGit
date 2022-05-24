@@ -19,8 +19,127 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 
 from .exportExcel import *
+from .exportExcelMarche import *
 from .models import *
 from datetime import datetime
+
+
+@app.errorhandler(404)
+def error404(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 404
+
+
+@app.errorhandler(500)
+def error500(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 500
+
+
+@app.errorhandler(400)
+def error400(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 400
+
+
+@app.errorhandler(401)
+def error401(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 401
+
+
+@app.errorhandler(403)
+def error403(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 403
+
+
+@app.errorhandler(405)
+def error405(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 405
+
+
+@app.errorhandler(502)
+def error502(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 502
+
+
+@app.errorhandler(503)
+def error401(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 503
+
+
+@app.errorhandler(504)
+def error504(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 504
+
 
 """ --- Accueil, initialisation de la BDD --- """
 
@@ -29,6 +148,24 @@ from datetime import datetime
 def accueilGlobal():
     collabs = db.session.query(Collab).filter(Collab.access == 3).all()
     return render_template('accueil.html', collabs=collabs)
+
+
+@app.route('/export_excel_marche', methods=['GET', 'POST'])
+def export_excel_marche():
+    """
+        Exporte les données de la base sous format excel.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template
+            renvoie la page d'acceuil.
+    """
+    export_excel_marcheMS4()
+    collabs = db.session.query(Collab).filter(Collab.access == 3).all()
+    return render_template('accueilMarcheMS4.html', collabs=collabs)
 
 
 @app.route('/modif_pourcent', methods=['GET', 'POST'])
@@ -105,8 +242,9 @@ def saveUo():
     charges = request.form['charges']
     num = request.form['num']
     description = request.form['description']
+    type = request.form['type']
     prix = request.form['prix']
-    newUo = UO(charges, num, description, prix)
+    newUo = UO(charges, num, description, type, prix)
     data_boncomms = db.session.query(Boncomm).all()
     for boncomm in data_boncomms:
         asso = AssoUoBoncomm(facteur=0)
@@ -138,11 +276,13 @@ def modifUo(idUo):
     charges = request.form['charges']
     num = request.form['num']
     description = request.form['description']
+    type = request.form['type']
     prix = request.form['prix']
     uo.charges = charges
     uo.prix = prix
     uo.num = num
     uo.description = description
+    uo.type = type
     db.session.commit()
     uos = db.session.query(UO).all()
     data_uos = []
@@ -196,7 +336,6 @@ def seeFonctionGcm():
     dataGcm = []
     for gcm in gcms:
         dataGcm.append([gcm, gcm.fonctions])
-        print(gcm.fonctions)
     return render_template('fonctionGcm.html', fonctions=fonctions, dataGcm=dataGcm)
 
 
@@ -288,7 +427,6 @@ def deleteFonction(idf):
     dataGcm = []
     for gcm in gcms:
         dataGcm.append([gcm, gcm.fonctions])
-        print(gcm.fonctions)
     return render_template('fonctionGcm.html', fonctions=fonctions, dataGcm=dataGcm)
 
 
@@ -453,7 +591,7 @@ def seeChronoFd():
         assocs = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti).all()
         data_fds.append([boncomm, calculerTotUo(boncomm), assocs])
     nbBons = len(data_fds)
-    uos = db.session.query(UO).all()
+    uos = db.session.query(UO).filter(UO.type == "Fd").all()
     return render_template('chronoFD.html', data_fds=data_fds, nbBons=nbBons, uos=uos)
 
 
@@ -556,7 +694,8 @@ def seePdc():
                                 for date in dates:
                                     imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
                                                                               Imputation.collab_id == collab.id_collab,
-                                                                              Imputation.acti_id == boncomm.id_acti, ).all()
+                                                                              Imputation.acti_id == boncomm.id_acti,
+                                                                              Imputation.type == "client").all()
                                     consoMois += imp[0].joursAllouesTache
                                 conso += consoMois
                                 dataTotMois[i][1] += float(consoMois)
@@ -577,7 +716,8 @@ def seePdc():
                                 for date in dates:
                                     imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
                                                                               Imputation.collab_id == collab.id_collab,
-                                                                              Imputation.acti_id == boncomm.id_acti, ).all()
+                                                                              Imputation.acti_id == boncomm.id_acti,
+                                                                              Imputation.type == "client").all()
                                     consoMois += imp[0].joursAllouesTache
                                 conso += consoMois
                                 dataTotMois[i][1] += float(consoMois)
@@ -618,7 +758,8 @@ def seePdc():
                             for date in dates:
                                 imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
                                                                           Imputation.collab_id == collab.id_collab,
-                                                                          Imputation.acti_id == boncomm.id_acti, ).all()
+                                                                          Imputation.acti_id == boncomm.id_acti,
+                                                                          Imputation.type == "client").all()
                                 consoMois += imp[0].joursAllouesTache
                             conso += consoMois
                             dataTotMois[i][1] += float(consoMois)
@@ -691,13 +832,15 @@ def seeCRA():
                         for jour in annee:
                             imput = db.session.query(Imputation).filter(Imputation.acti_id == bon.id_acti,
                                                                         Imputation.collab_id == collab.id_collab,
-                                                                        Imputation.date_id == jour.id_date).all()[0]
+                                                                        Imputation.date_id == jour.id_date,
+                                                                        Imputation.type == "client").all()[0]
                             joursImput += imput.joursAllouesTache
                 else:
                     for jour in dates:
                         imput = db.session.query(Imputation).filter(Imputation.acti_id == bon.id_acti,
                                                                     Imputation.collab_id == collab.id_collab,
-                                                                    Imputation.date_id == jour.id_date).all()[0]
+                                                                    Imputation.date_id == jour.id_date,
+                                                                    Imputation.type == "client").all()[0]
                         joursImput += imput.joursAllouesTache
         dataBonProjet[1].append(joursImput)
         for i in range(len(dataBonProjet) - 2):  # elt 0 est la str du projet
@@ -744,7 +887,8 @@ def modifdateFinOp(idb):
             for asso in assoCollabs:
                 collab = asso.collab
                 imputs = db.session.query(Imputation).filter(Imputation.acti_id == bon.id_acti,
-                                                             Imputation.collab_id == collab.id_collab)
+                                                             Imputation.collab_id == collab.id_collab,
+                                                             Imputation.type == "client")
                 for imput in imputs:
                     joursImput += imput.joursAllouesTache
 
@@ -793,7 +937,8 @@ def modifdateDebutOp(idb):
             for asso in assoCollabs:
                 collab = asso.collab
                 imputs = db.session.query(Imputation).filter(Imputation.acti_id == bon.id_acti,
-                                                             Imputation.collab_id == collab.id_collab)
+                                                             Imputation.collab_id == collab.id_collab,
+                                                             Imputation.type == "client")
                 for imput in imputs:
                     joursImput += imput.joursAllouesTache
 
@@ -887,7 +1032,8 @@ def see_conges():
                 congesAn = 0
                 imputations = db.session.query(Imputation).filter(Imputation.acti_id == asso.boncomm.id_acti,
                                                                   Imputation.collab_id == data_collabs[i].id_collab,
-                                                                  Imputation.joursAllouesTache != 0).all()
+                                                                  Imputation.joursAllouesTache != 0,
+                                                                  Imputation.type == "client").all()
                 for imputation in imputations:
                     date = db.session.query(Date).get(imputation.date_id)
                     if date.annee == annee_courant:
@@ -947,7 +1093,8 @@ def see_poser_conges(idc):
             i += 1
             imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
                                                       Imputation.collab_id == idc,
-                                                      Imputation.acti_id == conges.id_acti).all()
+                                                      Imputation.acti_id == conges.id_acti,
+                                                      Imputation.type == "client").all()
             ligne_1.append([date, imp[0].joursAllouesTache, case])
         date = dates[i]
     lignes_date.append([numLigne, ligne_1])
@@ -966,7 +1113,8 @@ def see_poser_conges(idc):
                     case = "Disponible"
                     imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
                                                               Imputation.collab_id == idc,
-                                                              Imputation.acti_id == conges.id_acti).all()
+                                                              Imputation.acti_id == conges.id_acti,
+                                                              Imputation.type == "client").all()
                     ligne.append([date, imp[0].joursAllouesTache, case])
         lignes_date.append([numLigne, ligne])
     """---------- Cas de la dernière ligne ----------  """
@@ -983,7 +1131,8 @@ def see_poser_conges(idc):
                 case = "Disponible"
                 imp = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
                                                           Imputation.collab_id == idc,
-                                                          Imputation.acti_id == conges.id_acti).all()
+                                                          Imputation.acti_id == conges.id_acti,
+                                                          Imputation.type == "client").all()
                 dern_ligne.append([date, imp[0].joursAllouesTache, case])
     for i in range(
             7 - nbJoursDernSem):  # Pour le reste des jours de la semaine, cases vides car jours du mois suivant.
@@ -1052,6 +1201,7 @@ def poser_conges(idc, mois, annee):
                     previousJourPose = imp[0].joursAllouesTache
                     diffJourPose = float(jourPose) - previousJourPose  # écart entre jours posés avant/après
                     imp[0].joursAllouesTache = jourPose
+                    imp[1].joursAllouesTache = jourPose
                     nbJourPose += float(diffJourPose)
     conges.nbCongesPose += nbJourPose
     db.session.commit()
@@ -1066,7 +1216,8 @@ def poser_conges(idc, mois, annee):
                 congesAn = 0
                 imputations = db.session.query(Imputation).filter(Imputation.acti_id == asso.boncomm.id_acti,
                                                                   Imputation.collab_id == data_collabs[i].id_collab,
-                                                                  Imputation.joursAllouesTache != 0).all()
+                                                                  Imputation.joursAllouesTache != 0,
+                                                                  Imputation.type == "client").all()
                 for imputation in imputations:
                     date = db.session.query(Date).get(imputation.date_id)
                     if date.annee == annee_courant:
@@ -1150,16 +1301,15 @@ def see_archives_collab():
                     jour_conges = db.session.query(Imputation).filter(
                         Imputation.acti_id == conges.id_acti,
                         Imputation.collab_id == idc,
-                        Imputation.date_id == jour.id_date
-                    ).all()[0].joursAllouesTache
+                        Imputation.date_id == jour.id_date,
+                        Imputation.type == "client").all()[0].joursAllouesTache
                     if jour_conges != 0:  # Si un congés est posé cette semaine, on enlève 1 jour de disponible dans cette
                         # dernière.
                         column[1] -= jour_conges
                 imputation = db.session.query(Imputation).filter(
                     Imputation.acti_id == boncomms[i].id_acti,
                     Imputation.collab_id == idc,
-                    Imputation.date_id == jour.id_date
-                ).all()
+                    Imputation.date_id == jour.id_date, Imputation.type == "client").all()
                 if imputation[0].joursAllouesTache != 0:
                     jourImpute += imputation[
                         0].joursAllouesTache  # En fonction du nombre d'imputation avec le nombre de jours alloués != 0,
@@ -1171,7 +1321,8 @@ def see_archives_collab():
             AssociationBoncommCollab.boncomm_id == boncomms[i].id_acti).all()
         imputations = db.session.query(Imputation).filter(Imputation.acti_id == boncomms[i].id_acti,
                                                           Imputation.collab_id == idc,
-                                                          Imputation.joursAllouesTache != 0).all()
+                                                          Imputation.joursAllouesTache != 0,
+                                                          Imputation.type == "client").all()
         dejaConso = 0  # On va récupèrer les données de ce qui est déjà conso et ce qu'il reste à faire.
         for imputation in imputations:
             dejaConso += imputation.joursAllouesTache
@@ -1264,8 +1415,10 @@ def save_collab():
     db.session.add(conges)
     dates = db.session.query(Date).all()
     for date in dates:  # Initilialise les imputations à 0 sur toutes les dates pour les congés.
-        imp = Imputation(conges.id_acti, collab.id_collab, date.id_date, 0)
+        imp = Imputation(conges.id_acti, collab.id_collab, date.id_date, 0, "client")
+        impAtos = Imputation(conges.id_acti, collab.id_collab, date.id_date, 0, "atos")
         db.session.add(imp)
+        db.session.add(impAtos)
     db.session.commit()
     collabs = db.session.query(Collab).all()
     data = []
@@ -1482,8 +1635,10 @@ def save_formation():
         # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates
         dates = db.session.query(Date).all()
         for date in dates:
-            imp = Imputation(formation.id_acti, idc, date.id_date, 0)
+            imp = Imputation(formation.id_acti, idc, date.id_date, 0, "client")
+            impAtos = Imputation(formation.id_acti, idc, date.id_date, 0, "atos")
             db.session.add(imp)
+            db.session.add(impAtos)
     db.session.add(formation)
     db.session.commit()
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
@@ -1551,8 +1706,10 @@ def save_autre():
         # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates.
         dates = db.session.query(Date).all()
         for date in dates:
-            imp = Imputation(autre.id_acti, idc, date.id_date, 0)
+            imp = Imputation(autre.id_acti, idc, date.id_date, 0, "client")
+            impAtos = Imputation(autre.id_acti, idc, date.id_date, 0, "atos")
             db.session.add(imp)
+            db.session.add(impAtos)
     db.session.add(autre)
     db.session.commit()
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
@@ -1649,8 +1806,10 @@ def save_bonComm():
         # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates.
         dates = db.session.query(Date).all()
         for date in dates:
-            imp = Imputation(bon.id_acti, idc, date.id_date, 0)
+            imp = Imputation(bon.id_acti, idc, date.id_date, 0, "client")
+            impAtos = Imputation(bon.id_acti, idc, date.id_date, 0, "atos")
             db.session.add(imp)
+            db.session.add(impAtos)
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collGDP = [ava, cde]
@@ -1665,8 +1824,10 @@ def save_bonComm():
         # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates.
         dates = db.session.query(Date).all()
         for date in dates:
-            imp = Imputation(bonGDP.id_acti, collaborateur.id_collab, date.id_date, 0)
+            imp = Imputation(bonGDP.id_acti, collaborateur.id_collab, date.id_date, 0, "client")
+            impAtos = Imputation(bonGDP.id_acti, collaborateur.id_collab, date.id_date, 0, "atos")
             db.session.add(imp)
+            db.session.add(impAtos)
     db.session.add(bon)
     db.session.add(bonGDP)
     db.session.commit()
@@ -1749,8 +1910,10 @@ def save_fraisD():
         # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates.
         dates = db.session.query(Date).all()
         for date in dates:
-            imp = Imputation(bon.id_acti, idc, date.id_date, 0)
+            imp = Imputation(bon.id_acti, idc, date.id_date, 0, "client")
+            impAtos = Imputation(bon.id_acti, idc, date.id_date, 0, "atos")
             db.session.add(imp)
+            db.session.add(impAtos)
     db.session.add(bon)
     db.session.commit()
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
@@ -1867,8 +2030,10 @@ def modif_boncomm(idb):
             # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates
             dates = db.session.query(Date).all()
             for date in dates:
-                imp = Imputation(data_to_change.id_acti, idc, date.id_date, 0)
+                imp = Imputation(data_to_change.id_acti, idc, date.id_date, 0, "client")
+                impAtos = Imputation(data_to_change.id_acti, idc, date.id_date, 0, "atos")
                 db.session.add(imp)
+                db.session.add(impAtos)
     db.session.commit()
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
@@ -1954,8 +2119,10 @@ def modif_activite(idb):
             # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates
             dates = db.session.query(Date).all()
             for date in dates:
-                imp = Imputation(data_to_change.id_acti, idc, date.id_date, 0)
+                imp = Imputation(data_to_change.id_acti, idc, date.id_date, 0, "client")
+                impAtos = Imputation(data_to_change.id_acti, idc, date.id_date, 0, "atos")
                 db.session.add(imp)
+                db.session.add(impAtos)
     db.session.commit()
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
@@ -2257,7 +2424,7 @@ def save_imputation(idc, annee, mois):
                     jourConges = db.session.query(Imputation).filter(
                         Imputation.acti_id == conges.id_acti,
                         Imputation.collab_id == idc,
-                        Imputation.date_id == jour.id_date
+                        Imputation.date_id == jour.id_date, Imputation.type == "client"
                     ).all()[0].joursAllouesTache
                     if jourConges != 0:  # Si un congés est posé, on n'enlève 1 ou 0.5 jour de disponible
                         column[1] -= jourConges
@@ -2268,35 +2435,46 @@ def save_imputation(idc, annee, mois):
                     db.session.delete(imp)
             for k in range(int(jours[0])):  # On prend la partie entière des jours posés, et on impute tant de jours
                 date = date_access[k]
-                imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 1)
+                imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 1, "client")
+                impAtos = Imputation(boncomms[i].id_acti, idc, date.id_date, 1, "atos")
                 db.session.add(imp)
+                db.session.add(impAtos)
 
             if len(jours) > 1:  # Pour les float du type 2.0, 3.5, etc ...
                 if jours[2] == "5":  # Si une demi-journée est imputée
                     date = date_access[int(jours[0])]
-                    imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 0.5)
+                    imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 0.5, "client")
+                    impAtos = Imputation(boncomms[i].id_acti, idc, date.id_date, 0.5, "atos")
                     db.session.add(imp)
+                    db.session.add(impAtos)
                     for j in range(len(date_access) - int(jours[0])):  # Sinon on met le reste à 0
                         date = date_access[int(jours[0]) + j]
-                        imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 0)
+                        imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 0, "client")
+                        impAtos = Imputation(boncomms[i].id_acti, idc, date.id_date, 0, "atos")
                         db.session.add(imp)
+                        db.session.add(impAtos)
                 else:
                     for j in range(len(date_access) - int(
                             jours[0])):  # Pour les jours restants, imputations avec le nombre de jours alloués = 0
                         date = date_access[int(jours[0]) + j]
-                        imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 0)
+                        imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 0, "client")
+                        impAtos = Imputation(boncomms[i].id_acti, idc, date.id_date, 0, "atos")
                         db.session.add(imp)
+                        db.session.add(impAtos)
             else:  # Pour les formats entiers type 1, 2, etc...
                 for j in range(len(date_access) - int(
                         jours[0])):  # Pour les jours restants, imputations avec le nombre de jours alloués = 0
                     date = date_access[int(jours[0]) + j]
-                    imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 0)
+                    imp = Imputation(boncomms[i].id_acti, idc, date.id_date, 0, "client")
+                    impAtos = Imputation(boncomms[i].id_acti, idc, date.id_date, 0, "atos")
                     db.session.add(imp)
+                    db.session.add(impAtos)
 
             imputBC.append([numSemaine, jours])
         imputations = db.session.query(Imputation).filter(Imputation.acti_id == boncomms[i].id_acti,
                                                           Imputation.collab_id == idc,
-                                                          Imputation.joursAllouesTache != 0).all()
+                                                          Imputation.joursAllouesTache != 0,
+                                                          Imputation.type == "client").all()
         dejaConso = 0
         for imputation in imputations:
             dejaConso += imputation.joursAllouesTache
@@ -2369,15 +2547,14 @@ def see_imput_collab(idc, annee, mois):
                     jour_conges = db.session.query(Imputation).filter(
                         Imputation.acti_id == conges.id_acti,
                         Imputation.collab_id == idc,
-                        Imputation.date_id == jour.id_date
+                        Imputation.date_id == jour.id_date, Imputation.type == "client"
                     ).all()[0].joursAllouesTache
                     if jour_conges != 0:
                         column[1] -= jour_conges
                 imputation = db.session.query(Imputation).filter(
                     Imputation.acti_id == boncomms[i].id_acti,
                     Imputation.collab_id == idc,
-                    Imputation.date_id == jour.id_date
-                ).all()
+                    Imputation.date_id == jour.id_date, Imputation.type == "client").all()
                 if imputation[0].joursAllouesTache != 0:
                     jourImpute += imputation[
                         0].joursAllouesTache  # En fonction du nb d'imputation avec le nombre de jours alloués != 0,
@@ -2389,7 +2566,8 @@ def see_imput_collab(idc, annee, mois):
             AssociationBoncommCollab.boncomm_id == boncomms[i].id_acti).all()
         imputations = db.session.query(Imputation).filter(Imputation.acti_id == boncomms[i].id_acti,
                                                           Imputation.collab_id == idc,
-                                                          Imputation.joursAllouesTache != 0).all()
+                                                          Imputation.joursAllouesTache != 0,
+                                                          Imputation.type == "client").all()
         dejaConso = 0
         for imputation in imputations:
             dejaConso += imputation.joursAllouesTache
@@ -2449,7 +2627,8 @@ def see_imput_global():
                 joursAllouesCollab = asso[0].joursAllouesBC
                 imputations = db.session.query(Imputation).filter(Imputation.acti_id == bons[i].id_acti,
                                                                   Imputation.collab_id == collab.id_collab,
-                                                                  Imputation.joursAllouesTache != 0).all()
+                                                                  Imputation.joursAllouesTache != 0,
+                                                                  Imputation.type == "client").all()
                 joursConso = 0
                 for imputation in imputations:
                     joursConso += imputation.joursAllouesTache
@@ -2466,7 +2645,8 @@ def see_imput_global():
                 joursAllouesCollab = assoGDP[0].joursAllouesBC
                 imputsGDP = db.session.query(Imputation).filter(Imputation.acti_id == bonsGDP[i].id_acti,
                                                                 Imputation.collab_id == collab.id_collab,
-                                                                Imputation.joursAllouesTache != 0).all()
+                                                                Imputation.joursAllouesTache != 0,
+                                                                Imputation.type == "client").all()
                 joursConso = 0
                 for imputGDP in imputsGDP:
                     joursConso += imputGDP.joursAllouesTache

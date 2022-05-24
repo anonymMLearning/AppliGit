@@ -278,6 +278,12 @@
                         <input required="required" class="text-primary form-control" type="text" id="description"
                                name="description">
                         <br>
+                        <label class="form-label text-primary">Type d'UO :</label>
+                        <select required="required" class="form-select bg-white text-primary" name="type">
+                            <option value="Prod">Prod</option>
+                            <option value="Fd">FD</option>
+                        </select>
+                        <br>
                         <label class="form-label text-primary" for="prix">Montant (sur l'année en cours):</label>
                         <input required="required" class="text-primary form-control" type="text" id="prix" name="prix">
                         <br>
@@ -340,6 +346,15 @@
                                 <input class="form-control" type="text" id="descriptionModif"
                                        name="description"
                                        value="{{uo[0].description}}" required="required">
+                                <br>
+                                <label class="form-label text-dark">Type d'UO :</label>
+                                <select required="required" class="form-select bg-white text-dark" name="type">
+                                    <option value="{{uo[0].type}}">Type actuellement sélectionné :
+                                        {{uo[0].type}}
+                                    </option>
+                                    <option value="Prod">Prod</option>
+                                    <option value="Fd">FD</option>
+                                </select>
                                 <br>
                                 <label class="form-label text-warning" for="chargesModif">Charges :</label>
                                 <input class="form-control" type="text" id="chargesModif"

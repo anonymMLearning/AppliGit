@@ -245,8 +245,10 @@
     <div class="bg-light border border-3 border-primary rounded mt-2"
          style="margin: 20px; margin-right:20px; margin-bottom: 30px">
         <div style="margin-left: 20px">
-            <h5 style="margin-top: 5px; text-align: center" class="text-primary">Texte ici :
-                vsgvziugfvqiuogvqsduifgbqsdgfqius
+            <h5 style="margin-top: 5px; text-align: center" class="text-primary">Suivi des bons de commande. <br> Pour
+                calculer le montant obtenu par les UO, cliquer sur "Calculer".
+            </h5>
+            <h5 style="margin-top: 5px; text-align: center" class="text-danger">Une case rouge indique une différence entre les montants obtenus pour le bon.
             </h5>
         </div>
     </div>
@@ -355,7 +357,8 @@
                         <div class="col-6">
                             <a style="margin-right:15px;" class="btn btn-primary" data-bs-toggle="modal"
                                data-bs-target="#calcUo{{data_boncomms[i][0].id_acti}}" class="nav-link">Calculer</a>
-                            <div class="modal fade" id="calcUo{{data_boncomms[i][0].id_acti}}" tabindex="-1" aria-hidden="true"
+                            <div class="modal fade" id="calcUo{{data_boncomms[i][0].id_acti}}" tabindex="-1"
+                                 aria-hidden="true"
                                  aria-labelledby="calcUo{{data_boncomms[i][0].id_acti}}">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
@@ -414,6 +417,7 @@
             document.getElementById(id).style.color = "white";
         }
     }
+
 
 
 
