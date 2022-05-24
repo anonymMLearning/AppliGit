@@ -354,7 +354,8 @@ def valeursGlobales(boncomm):
     for collab in collabs:
         imputations = db.session.query(Imputation).filter(Imputation.acti_id == boncomm.id_acti,
                                                           Imputation.collab_id == collab.id_collab,
-                                                          Imputation.joursAllouesTache != 0).all()
+                                                          Imputation.joursAllouesTache != 0,
+                                                          Imputation.type == "client").all()
         joursConsommesCollab = 0
         for imputation in imputations:
             joursConsommesCollab += imputation.joursAllouesTache
