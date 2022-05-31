@@ -88,6 +88,22 @@ class AssoUoBoncomm(db.Model):
     boncomm = db.relationship("Boncomm", back_populates="uos")
 
 
+class AssoCollabSCR(db.Model):
+    collab_id = db.Column('collab_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True)
+    scr_id = db.Column('scr_id', db.Integer, db.ForeignKey('SCR.id_scr'), primary_key=True)
+    annee = db.Column(db.Integer, nullable=False)
+    collab = db.relationship("Collab", back_populates="scrs")
+    scr = db.relationship("SCR", back_populates="collabs")
+
+
+class AssoCollabBooster(db.Model):
+    collab_id = db.Column('collab_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True)
+    booster_id = db.Column('booster_id', db.Integer, db.ForeignKey('booster.id_booster'), primary_key=True)
+    annee = db.Column(db.Integer, nullable=False)
+    collab = db.relationship("Collab", back_populates="boosters")
+    booster = db.relationship("Booster", back_populates="collabs")
+
+
 class Gcm(db.Model):
     """
         Réprésente un code GCM.
@@ -122,6 +138,23 @@ class Gcm(db.Model):
     def __init__(self, code, tjm):
         self.code = code
         self.tjm = tjm
+
+
+class Booster(db.Model):
+    id_booster = db.Column(db.Integer, primary_key=True)
+    mois = db.Column(db.Integer, nullable=False)
+    annee = db.Column(db.Integer, nullable=False)
+    com = db.Column(db.String(100), nullable=False)
+    monteG = db.Column(db.Float, nullable=False)
+    monteR = db.Column(db.Float, nullable=False)
+    collabs = db.relationship('AssoCollabBooster', back_populates="booster")
+
+    def __init__(self, mois, annee, com, monteG, monteR):
+        self.mois = mois
+        self.annee = annee
+        self.com = com
+        self.monteG = monteG
+        self.monteR = monteR
 
 
 class Collab(db.Model):
@@ -160,15 +193,19 @@ class Collab(db.Model):
     prenom = db.Column(db.String(30), nullable=False)
     access = db.Column(db.Integer, nullable=False)
     entreprise = db.Column(db.String(30), nullable=False)
+    rafInit = db.Column(db.Float, nullable=False)
     gcm_id = db.Column(db.Integer, db.ForeignKey('gcm.id_gcm'), nullable=False)
     imputations = db.relationship('Imputation', backref='collab', uselist=False)
     boncomms = db.relationship('AssociationBoncommCollab', back_populates="collab")
+    scrs = db.relationship('AssoCollabSCR', back_populates="collab")
+    boosters = db.relationship('AssoCollabBooster', back_populates="collab")
 
-    def __init__(self, nom, prenom, access, entreprise):
+    def __init__(self, nom, prenom, access, entreprise, rafInit):
         self.nom = nom
         self.prenom = prenom
         self.access = access
         self.entreprise = entreprise
+        self.rafInit = rafInit
 
     def abreviation(self):
         prenom = self.prenom[0]
@@ -185,6 +222,17 @@ class Fonction(db.Model):
 
     def __init__(self, nom):
         self.nom = nom
+
+
+class SCR(db.Model):
+    id_scr = db.Column(db.Integer, primary_key=True)
+    cout = db.Column(db.Float, nullable=False)
+    ponderation = db.Column(db.Float, nullable=False)
+    collabs = db.relationship('AssoCollabSCR', back_populates="scr")
+
+    def __init__(self, cout, ponderation):
+        self.cout = cout
+        self.ponderation = ponderation
 
 
 class Imputation(db.Model):
@@ -232,18 +280,33 @@ class Boncomm(db.Model):
     dateFinPrev = db.Column(db.String(30))
     dateNotif = db.Column(db.String(30))
     dateFinOp = db.Column(db.String(30))
+    """ Pour les formations """
     horsProjet = db.Column(db.String(10))
     nbJoursFormation = db.Column(db.Float)
+    """ ------------------- """
+    """ Pour les congés """
     nbCongesTot = db.Column(db.Float)
     nbCongesPose = db.Column(db.Float)
+    """ --------------- """
+    """ Pour les autres activités """
     nbJoursAutre = db.Column(db.Float)
+    """ ------------------------- """
+    """ Pour les frais de déplacement """
+    apm = db.Column(db.String(50))
+    lieu = db.Column(db.String(50))
+    client = db.Column(db.String(50))
+    dateSign = db.Column(db.String(50))
+    margeLib = db.Column(db.Float)
+    """ ----------------------------- """
     imputations = db.relationship('Imputation', backref='boncomm', uselist=False)
+    noteDeFrais = db.relationship('NoteDeFrais', backref='boncomm', uselist=False)
     collabs = db.relationship('AssociationBoncommCollab', back_populates="boncomm")
     uos = db.relationship('AssoUoBoncomm', back_populates="boncomm")
 
     def __init__(self, activite, etat, com, anneeTarif, caAtos, jourThq, delais, montantHT, partEGIS, num, poste,
                  projet, tjm, notification, facturation, prodGdpOuFd, dateDebut, dateFinPrev, dateNotif, dateFinOp,
-                 horsProjet, nbJoursFormation, nbCongesTot, nbCongesPose, nbJoursAutre):
+                 horsProjet, nbJoursFormation, nbCongesTot, nbCongesPose, nbJoursAutre, apm, lieu, client, dateSign,
+                 margeLib):
         self.activite = activite
         self.etat = etat
         self.com = com
@@ -269,6 +332,11 @@ class Boncomm(db.Model):
         self.nbCongesTot = nbCongesTot
         self.nbCongesPose = nbCongesPose
         self.nbJoursAutre = nbJoursAutre
+        self.apm = apm
+        self.lieu = lieu
+        self.client = client
+        self.dateSign = dateSign
+        self.margeLib = margeLib
 
 
 class Date(db.Model):
@@ -277,13 +345,17 @@ class Date(db.Model):
     mois = db.Column(db.Integer, nullable=False)
     annee = db.Column(db.Integer, nullable=False)
     pourcentAn = db.Column(db.Float, nullable=False)
+    tjm = db.Column(db.Float, nullable=False)
+    equipe = db.Column(db.Float, nullable=False)
     imputations = db.relationship('Imputation', backref='date', uselist=False)
 
-    def __init__(self, jour, mois, annee, pourcentAn):
+    def __init__(self, jour, mois, annee, pourcentAn, tjm, equipe):
         self.jour = jour
         self.mois = mois
         self.annee = annee
         self.pourcentAn = pourcentAn
+        self.tjm = tjm
+        self.equipe = equipe
 
     def transfoDate(self):
         date = datetime.date(self.annee, self.mois, self.jour)
@@ -321,6 +393,40 @@ class UO(db.Model):
         self.type = type
         self.description = description
         self.prix = prix
+
+
+class Prod(db.Model):
+    id_prod = db.Column(db.Integer, primary_key=True)
+    mois = db.Column(db.Integer, nullable=False)
+    annee = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.String(50), nullable=False)
+    amort = db.Column(db.Float, nullable=False)
+    coutDP = db.Column(db.Float, nullable=False)
+    coutTeam = db.Column(db.Float, nullable=False)
+    jourMoisDP = db.Column(db.Float, nullable=False)
+    jourMoisTeam = db.Column(db.Float, nullable=False)
+
+    def __init__(self, mois, annee, type, amort, coutDP, coupTeam, jourMoisDP, joursMoisTeam):
+        self.mois = mois
+        self.annee = annee
+        self.type = type
+        self.amort = amort
+        self.coutDP = coutDP
+        self.coupTeam = coupTeam
+        self.jourMoisDP = jourMoisDP
+        self.joursMoisTeam = joursMoisTeam
+
+
+class NoteDeFrais(db.Model):
+    id_ndf = db.Column(db.Integer, primary_key=True)
+    acti_id = db.Column(db.Integer, db.ForeignKey('boncomm.id_acti'), nullable=False)
+    type = db.Column(db.String(50), nullable=False)
+    depense = db.Column(db.Float, nullable=False)
+
+    def __int__(self, acti_id, type, depense):
+        self.acti_id = acti_id
+        self.type = type
+        self.depense = depense
 
 
 def columnMois(mois, annee):
@@ -372,7 +478,8 @@ def valeursGlobales(boncomm):
     for collab in collabs:
         imputations = db.session.query(Imputation).filter(Imputation.acti_id == boncomm.id_acti,
                                                           Imputation.collab_id == collab.id_collab,
-                                                          Imputation.joursAllouesTache != 0).all()
+                                                          Imputation.joursAllouesTache != 0,
+                                                          Imputation.type == "client").all()
         joursConsommesCollab = 0
         for imputation in imputations:
             joursConsommesCollab += imputation.joursAllouesTache

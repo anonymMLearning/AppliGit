@@ -53,7 +53,7 @@
             question.
             <h5 class="text-danger">Attention : La suppression d'une activité entraine la suppression des imputations
                 des collaborateurs liés à ce bon !</h5></h5>
-        <h5 class="text-warning"> H-P : pour les formations, si hors-projet ou non</h5>
+        <h5 class="text-warning"> H-P : pour les formations ou autres activités, si hors-projet ou non</h5>
     </div>
 </div>
 <h5 style="margin-left: 20px; margin-top: 20px;margin-bottom: 20px" class="text-primary font-italic">Pour enregistrer
@@ -249,17 +249,18 @@
                                        id="anneeTarifFD"
                                        name="anneeTarif" required="required">
                                 <br>
-                                <label class="form-label text-primary" for="caAtosFD">CA Atos :</label>
-                                <input class="text-primary form-control" type="number" id="caAtosFD" name="caAtos"
-                                       required="required">
+
+                                <label class="form-label text-primary" for="montantHTFD">Montant HT :</label>
+                                <input class="text-primary form-control" type="number" id="montantHTFD"
+                                       name="montantHT" required="required">
                                 <br>
                                 <label class="form-label text-primary" for="delaisFD">Délais :</label>
                                 <input class="text-primary form-control" type="number" id="delaisFD" name="delais"
                                        required="required">
                                 <br>
-                                <label class="form-label text-primary" for="montantHTFD">Montant HT :</label>
-                                <input class="text-primary form-control" type="number" id="montantHTFD"
-                                       name="montantHT" required="required">
+                                <label class="form-label text-primary" for="caAtosFD">CA Atos :</label>
+                                <input class="text-primary form-control" type="number" id="caAtosFD" name="caAtos"
+                                       required="required">
                                 <br>
                                 <label class="form-label text-primary" for="partEGISFD">Part EGIS :</label>
                                 <input class="text-primary form-control" type="number" id="partEGISFD" name="partEGIS"
@@ -1144,6 +1145,8 @@
             var joursAllouables = joursThq - partGDP;
             alert("Il y a " +joursAllouables+" jours à répartir");
             }
+
+
 
 </script>
 </body>

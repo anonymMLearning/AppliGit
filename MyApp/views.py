@@ -37,6 +37,19 @@ def error404(e):
     return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 404
 
 
+@app.errorhandler(404)
+def error404(e):
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
+    data_navbar = []
+    for collab in data:
+        data_navbar.append([collab.abreviation(), collab])
+    moisStr = stringMois(str(mois))
+    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 404
+
+
 @app.errorhandler(500)
 def error500(e):
     dateNow = str(datetime.now())
@@ -1403,11 +1416,11 @@ def save_collab():
     gcm = request.form['gcm']
     nbCongesTot = request.form['conges_save']
     nom_conges = "Congés de " + nom + " " + prenom
-    collab = Collab(nom, prenom, access, entreprise)
+    collab = Collab(nom, prenom, access, entreprise, 0)
     collab.gcm_id = gcm
     # On crée les congés du collaborateur
-    conges = Boncomm(nom_conges, "", "", 0, 0, 0, 0, 0, 0, "", "", "", 0, "O", "", "", "", "", "", "", "", 0,
-                     nbCongesTot, 0, 0)
+    conges = Boncomm(nom_conges, "", "", 0, 0, 0, 0, 0, 0, "", "", "", 0, "", "", "", "", "", "", "", "", 0,
+                     nbCongesTot, 0, 0, "", "", "", "", 0)
     assoc = AssociationBoncommCollab(joursAllouesBC=int(nbCongesTot))
     assoc.collab = collab
     conges.collabs.append(assoc)
@@ -1624,7 +1637,8 @@ def save_formation():
     dateNotif = request.form['dateNotif']
     dateFinPrev = request.form['dateFinPrev']
     formation = Boncomm(activite, "", com, anneeTarif, 0, nbJoursFormation, 0, 0, 0, "", "", "", 0, notification, "",
-                        "", dateNotif, dateFinPrev, dateNotif, "", horsProjet, nbJoursFormation, 0, 0, 0)
+                        "", dateNotif, dateFinPrev, dateNotif, "", horsProjet, nbJoursFormation, 0, 0, 0, "", "", "",
+                        "", 0)
     # Association aux collabs :
     ids = request.form.getlist('collabs2')
     for idc in ids:  # Pour tous les collabs sélectionnés dans la création de la formation
@@ -1695,7 +1709,7 @@ def save_autre():
     dateFinPrev = request.form['dateFinPrev']
     notification = request.form['notification']
     autre = Boncomm(activite, "", com, anneeTarif, 0, nbJoursAutre, 0, 0, 0, "", "", "", 0, notification, "", "",
-                    dateNotif, dateFinPrev, dateNotif, "", "", 0, 0, 0, nbJoursAutre)
+                    dateNotif, dateFinPrev, dateNotif, "", "", 0, 0, 0, nbJoursAutre, "", "", "", "", 0)
     # Association aux collabs :
     ids = request.form.getlist('collabs3')
     for idc in ids:  # Pour tous les collabs sélectionnés dans la création de l'activité.
@@ -1777,10 +1791,10 @@ def save_bonComm():
     facturation = request.form['facturation']
     bon = Boncomm(activite, "", com, anneeTarif, caAtos, float(jourThq) - float(partGDP), delais, montantHT, partEGIS,
                   num, poste, projet, tjm, notification, facturation, "Prod", "OS", dateFinPrev, dateNotif,
-                  "", "", 0, 0, 0, 0)
+                  "", "", 0, 0, 0, 0, "", "", "", "", 0)
     bonGDP = Boncomm('CP - ' + activite, "", com, anneeTarif, caAtos, partGDP, delais, montantHT, partEGIS, num,
                      poste, projet, tjm, notification, facturation, "Gdp", "OS", dateFinPrev, dateNotif,
-                     "", "", 0, 0, 0, 0)
+                     "", "", 0, 0, 0, 0, "", "", "", "", 0)
     # Association aux UO
     uos = db.session.query(UO).all()
     for uo in uos:
@@ -1891,7 +1905,7 @@ def save_fraisD():
     notification = request.form['notification']
     bon = Boncomm(activite, "", com, anneeTarif, caAtos, 0, delais, montantHT, partEGIS,
                   num, poste, "DEP", 500, notification, "", "Fd", dateNotif, dateFinPrev, dateNotif,
-                  "", "", 0, 0, 0, 0)
+                  "", "", 0, 0, 0, 0, "", "", "", "", 0)
     # Association aux UO
     uos = db.session.query(UO).all()
     for uo in uos:
@@ -2323,19 +2337,19 @@ def init_date():
         for mois in range(12):
             if mois == 1:  # Mois de février
                 for jour in range(28):
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0))
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6))
                 if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
-                    db.session.add(Date(29, 2, 2021 + annee, 0))
+                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6))
             else:
                 for jour in range(30):  # Ajout des 31 pour les mois concernés
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0))
-        db.session.add(Date(31, 1, 2021 + annee, 0))
-        db.session.add(Date(31, 3, 2021 + annee, 0))
-        db.session.add(Date(31, 5, 2021 + annee, 0))
-        db.session.add(Date(31, 7, 2021 + annee, 0))
-        db.session.add(Date(31, 8, 2021 + annee, 0))
-        db.session.add(Date(31, 10, 2021 + annee, 0))
-        db.session.add(Date(31, 12, 2021 + annee, 0))
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6))
+        db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6))
+        db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6))
+        db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6))
+        db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6))
+        db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6))
+        db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6))
+        db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6))
         db.session.commit()
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
@@ -2634,6 +2648,7 @@ def see_imput_global():
                     joursConso += imputation.joursAllouesTache
                 raf = joursAllouesCollab - joursConso
                 data_ligne.append([joursAllouesCollab, joursConso, raf])
+                print([joursAllouesCollab, joursConso, raf])
             else:
                 data_ligne.append(["", "", ""])  # Ligne vide si le collab n'impute pas sur cette activité
 
