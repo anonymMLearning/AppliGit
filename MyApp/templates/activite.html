@@ -133,8 +133,16 @@
                                        required="required">
                                 <br>
                                 <label class="form-label text-primary" for="projetBC">Projet :</label>
-                                <input class="text-primary form-control" type="text" id="projetBC" name="projetBC"
-                                       required="required">
+                                <select class="form-select bg-white text-primary" name="projetBC"
+                                        id="projetBC">
+                                    <option value="CNS">CNS</option>
+                                    <option value="APP">APP</option>
+                                    <option value="ATM1">ATM1</option>
+                                    <option value="ATM2">ATM2</option>
+                                    <option value="ATM1-2">ATM1-2</option>
+                                    <option value="TRANS">TRANS</option>
+                                    <option value="EXP">EXP</option>
+                                </select>
                                 <br>
                                 <label class="form-label text-primary" for="collabsBC">Liste des collaborateurs
                                     concernés :</label>
@@ -160,7 +168,17 @@
                                        name="joursBC{{collab.id_collab}}">
                                 <br>
                                 {% endfor %}
-
+                                <label class="form-label text-primary">Répartition pour la GDP :</label>
+                                <br>
+                                <label class="form-label text-primary">AVA :</label>
+                                <input class="text-primary form-control" type="number"
+                                       step="0.5"
+                                       name="joursGDPAVA" value="0">
+                                <br>
+                                <label class="form-label text-primary">CDE :</label>
+                                <input class="text-primary form-control" type="number"
+                                       step="0.5"
+                                       name="joursGDPCDE" value="0">
                                 <button class="btn btn-primary" name="button">Enregistrer le BC</button>
                             </form>
                         </div>
@@ -258,6 +276,12 @@
                                 <label class="form-label text-primary" for="nbjoursautre">Nombre de jours :</label>
                                 <input class="text-primary form-control" type="number" id="nbjoursautre"
                                        name="nbjoursautre" required="required">
+                                <br>
+                                <label class="form-label text-primary" for="hprojet">Formation hors projet :</label>
+                                <select class="form-select bg-white text-primary" name="horsProjet">
+                                    <option value="Oui">Oui</option>
+                                    <option value="Non">Non</option>
+                                </select>
                                 <br>
                                 <select class="form-select bg-white text-primary" multiple name="collabs3"
                                         id="collabs3">
@@ -649,8 +673,20 @@
                                        value="{{activite[0].poste}}" required="required">
                                 <br>
                                 <label for="projet">Projet :</label>
-                                <input class="text-primary form-control" type="text" id="projet" name="projet"
-                                       value="{{activite[0].projet}}" required="required">
+                                <label class="form-label text-primary" for="projetBC">Projet :</label>
+                                <select required="required" class="form-select bg-white text-primary" name="projetBC"
+                                        id="projet">
+                                    <option value="{{activite[0].projet}}">Actuellement sélectionné :
+                                        {{activite[0].projet}}
+                                    </option>
+                                    <option value="CNS">CNS</option>
+                                    <option value="APP">APP</option>
+                                    <option value="ATM1">ATM1</option>
+                                    <option value="ATM2">ATM2</option>
+                                    <option value="ATM1-2">ATM1-2</option>
+                                    <option value="TRANS">TRANS</option>
+                                    <option value="EXP">EXP</option>
+                                </select>
                                 <br>
                                 <label for="tjm">TJM :</label>
                                 <input class="text-primary form-control" type="number" id="tjm" name="tjm"
@@ -884,6 +920,9 @@
             var joursAllouables = joursThq - partGDP;
             alert("Il y a " +joursAllouables+" jours à répartir");
             }
+
+
+
 
 </script>
 </body>

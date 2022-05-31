@@ -73,17 +73,19 @@
             <div class="modal-body">
                 <form action="/save_collab" method="post">
                     <label class="form-label text-primary" for="nom_save">Nom :</label>
-                    <input required="required" class="text-primary form-control" type="text" id="nom_save" name="nom_save">
+                    <input required="required" class="text-primary form-control" type="text" id="nom_save"
+                           name="nom_save">
                     <br>
                     <label class="form-label text-primary" for="prenom_save">Prénom :</label>
                     <input required="required" class="text-primary form-control" type="text" id="prenom_save"
                            name="prenom_save">
                     <br>
                     <label class="form-label text-primary" for="access_save">Access :</label>
-                    <select required="required" class="form-select bg-white text-primary" name="access_save" id="access_save">
+                    <select required="required" class="form-select bg-white text-primary" name="access_save"
+                            id="access_save">
                         <option value="1">1 : Admin</option>
-                        <option value="2">2 : Collaborateur</option>
-                        <option value="3">3 : Observateur</option>
+                        <option value="2">2 : Collaborateur MS4</option>
+                        <option value="3">3 : Collaborateur hors MS4</option>
                         <option value="4">4 : Partis</option>
                     </select>
                     <br>
@@ -182,10 +184,12 @@
                                 <br>
                                 <label class="form-label text-primary" for="access2">Access :</label>
                                 <select class="form-select bg-white text-primary" name="access2" id="access2">
-                                    <option selected value="{{data[0].access}}">Valeur actuellement sélectionné : {{data[0].access}}</option>
+                                    <option selected value="{{data[0].access}}">Valeur actuellement sélectionné :
+                                        {{data[0].access}}
+                                    </option>
                                     <option value="1">1 : Admin</option>
-                                    <option value="2">2 : Collaborateur</option>
-                                    <option value="3">3 : Observateur</option>
+                                    <option value="2">2 : Collaborateur MS4</option>
+                                    <option value="3">3 : Collaborateur hors MS4</option>
                                     <option value="4">4 : Partis</option>
                                 </select>
                                 <br>
@@ -222,6 +226,8 @@
         document.formulaireDate.action = url;
 	    document.forms["formulaireDate"].submit();
     }
+
+
 
 
 
