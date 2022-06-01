@@ -22,6 +22,8 @@ from .exportExcel import *
 from .models import *
 from datetime import datetime
 
+"""----------------------------------------- Gestion des différentes erreurs ----------------------------------------"""
+
 
 @app.errorhandler(404)
 def error404(e):
@@ -153,6 +155,8 @@ def error504(e):
     return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 504
 
 
+"""------------------------------------------------------------------------------------------------------------------"""
+
 """ --- Accueil, initialisation de la BDD et données d'imputation --- """
 
 
@@ -172,6 +176,7 @@ def acceuil():
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
+    # On montre dans la barre de navigation que les collaborateurs de l'équipe MS4 :
     data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
     for collab in data:
@@ -193,7 +198,7 @@ def export_excel_imputations():
         render_template
             renvoie la page d'acceuil.
     """
-    export_excel()
+    export_excel()  # Appel de la méthode codée dans le fichier exportExcel.py
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
@@ -253,9 +258,9 @@ def see_conges():
     for i in range(len(data_collabs)):  # On va récupérer les congés de chaque collaborateur
         assos = data_collabs[i].boncomms
         for asso in assos:  # On va récupérer uniquement les congés dans les activités de ce collaborateur
-            if asso.boncomm.nbCongesTot != 0:
+            if asso.boncomm.nbCongesTot != 0:  # Cette asso est celle liée aux congés du collaborateur
                 conges.append(asso.boncomm)
-                congesAn = 0
+                congesAn = 0  # Sur la page, la colonne congés posés ne contient que ceux de l'année en cours
                 imputations = db.session.query(Imputation).filter(Imputation.acti_id == asso.boncomm.id_acti,
                                                                   Imputation.collab_id == data_collabs[i].id_collab,
                                                                   Imputation.joursAllouesTache != 0,
@@ -304,7 +309,7 @@ def see_poser_conges(idc):
     numLigne = 0
     ligne_1 = []
     nbJoursSem1 = columns[0][1]
-    for i in range(7 - nbJoursSem1):  # Pour les jours du mois précédant, on met des cases vides dans le tableau.
+    for i in range(7 - nbJoursSem1):  # Pour les jours du mois précédent, on met des cases vides dans le tableau.
         ligne_1.append(["", 0, "Ne pas remplir"])
     numSem1 = columns[0][0]
     i = 0
@@ -407,7 +412,7 @@ def poser_conges(idc, mois, annee):
     columns = columnMoisWeekEnd(mois, annee)
     dates = []  # Liste contenant les dates et les cases vides du formulaire pour faire correspondre les id
     nbJoursSem1 = columns[0][1]
-    for i in range(7 - nbJoursSem1):  # Construction identique àa la méthode see_poser_conges
+    for i in range(7 - nbJoursSem1):  # Construction identique à la méthode see_poser_conges
         dates.append("")
     for date in data_dates:
         dates.append(date)
@@ -428,7 +433,8 @@ def poser_conges(idc, mois, annee):
                     diffJourPose = float(jourPose) - previousJourPose  # écart entre jours posés avant/après
                     imp[0].joursAllouesTache = jourPose
                     imp[1].joursAllouesTache = jourPose
-                    nbJourPose += float(diffJourPose)
+                    nbJourPose += float(
+                        diffJourPose)  # Contiendra la différence des congés entre avant et après l'enregistrement
     conges.nbCongesPose += nbJourPose
     db.session.commit()
     data_collabs = db.session.query(Collab).all()
@@ -472,7 +478,7 @@ def see_archives():
         render_template
             renvoie la page des données d'imputation avec les données nécessaires à sa construction.
     """
-    collabs = db.session.query(Collab).all()
+    collabs = db.session.query(Collab).all()  # On montre même les collaborateur DP et partis
     data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
     for collab in data:
@@ -530,8 +536,8 @@ def see_archives_collab():
                         Imputation.collab_id == idc,
                         Imputation.date_id == jour.id_date
                     ).all()[0].joursAllouesTache
-                    if jour_conges != 0:  # Si un congés est posé cette semaine, on enlève 1 jour de disponible dans cette
-                        # dernière.
+                    if jour_conges != 0:  # Si un congés est posé cette semaine, on enlève 1 jour de disponible dans
+                        # cette dernière.
                         column[1] -= jour_conges
                 imputation = db.session.query(Imputation).filter(
                     Imputation.acti_id == boncomms[i].id_acti,
@@ -554,7 +560,7 @@ def see_archives_collab():
         dejaConso = 0  # On va récupèrer les données de ce qui est déjà conso et ce qu'il reste à faire.
         for imputation in imputations:
             dejaConso += imputation.joursAllouesTache
-        joursAlloues = assoCollabBC[0].joursAllouesBC
+        joursAlloues = assoCollabBC[0].joursAllouesBC  # jours alloués à ce collab sur ce BC
         data_boncomms.append([boncomms[i], imput, joursAlloues, joursAlloues - dejaConso])
     data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
@@ -596,7 +602,8 @@ def see_data_collab():
             boncomm = assos[i].boncomm
             if boncomm.nbCongesTot == 0 and assos[i].joursAllouesBC != 0 and boncomm.etat != 'TE':
                 boncomms.append(boncomm)
-        data.append([collab, boncomms])
+        data.append(
+            [collab, boncomms])  # Si on veut afficher les BC auquels le collab est lié, ils sont contenu dans boncomms
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
@@ -624,15 +631,15 @@ def save_collab():
     prenom = request.form['prenom_save']
     access = request.form['access_save']
     nbCongesTot = request.form['conges_save']
-    nom_conges = "Congés de " + nom + " " + prenom
+    nom_conges = "Congés de " + nom + " " + prenom  # Nom générique pour les congés d'un collab
     collab = Collab(nom, prenom, access, "", 0)
-    collab.gcm_id = 0
+    collab.gcm_id = 0  # Pour les futures versions, on initialise le GCM lié au collab
     # On crée les congés du collaborateur
     conges = Boncomm(nom_conges, "", "", 0, 0, 0, 0, 0, 0, "", "", "", 0, "", "", "", "", "", "", "", "", 0,
                      nbCongesTot, 0, 0, "", "", "", "", 0)
     assoc = AssociationBoncommCollab(joursAllouesBC=int(nbCongesTot))
     assoc.collab = collab
-    conges.collabs.append(assoc)
+    conges.collabs.append(assoc)  # On crée l'association entre les congés et le collab
     db.session.add(collab)
     db.session.add(conges)
     dates = db.session.query(Date).all()
@@ -665,45 +672,23 @@ def save_collab():
 @app.route('/modif_collab/<idc>', methods=['GET', 'POST'])
 def modif_collab(idc):
     """
-    Permet
-    de
-    modifier
-    les
-    attributs
-    d
-    'un collaborateur.
+    Permet de modifier les attributs d'un collaborateur.
 
     Parameters
     - ---------
     idc
-    id
-    du
-    collaborateur
-    à
-    modifier.
-        Returns
+        id du collaborateur à modifier.
+
+    Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    la
-    liste
-    des
-    collaborateurs, avec
-    la
-    liste
-    des
-    collaborateurs
-    actualisée.
+        renvoie la page HTML avec la liste des collaborateurs, avec la liste des collaborateurs actualisée.
     """
     nom = request.form['nom2']
     prenom = request.form['prenom2']
     access = request.form['access2']
     newConges = request.form['conges']
-    data_to_change = db.session.query(Collab).get(idc)
+    data_to_change = db.session.query(Collab).get(idc)  # Collab à modifier
     prevConges = data_to_change.boncomms[0].boncomm.nbCongesTot
     if nom != "":  # On ne modifie pas si l'utilisateur ne veut pas modifier le nom = champ vide
         data_to_change.nom = nom
@@ -737,35 +722,17 @@ def modif_collab(idc):
 @app.route('/deletecollab/<idc>')
 def delete_collab(idc):
     """
-    Permet
-    de
-    supprimer
-    un
-    collaborateur.
+    Permet de supprimer un collaborateur.
 
-        Parameters
+    Parameters
     - ---------
     idc
-    id
-    du
-    collaborateur
-    à
-    supprimer.
-        Returns
+        id du collaborateur à supprimer.
+
+    Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    la
-    liste
-    des
-    collaborateurs, avec
-    cette
-    liste
-    actualisée.
+        renvoie la page HTML avec la liste des collaborateurs, avec cette liste actualisée.
     """
     data_to_delete = db.session.query(Collab).get(idc)
     imputations = db.session.query(Imputation).filter(Imputation.collab_id == idc).all()
@@ -797,18 +764,13 @@ def delete_collab(idc):
     return render_template('collab.html', data=data, mois=mois, annee=annee, data_navbar=data_navbar)
 
 
-""" - -- Partie
-    Activite: enregistrer, modifier, effacer, voir - -- """
+""" - -- Partie Activite: enregistrer, modifier, effacer, voir - -- """
 
 
 @app.route('/see_data_boncomm')
 def see_data_boncomm():
     """
-    Permet
-    de
-    voir
-    l
-    'ensemble des activités.
+    Permet de voir l'ensemble des activités.
 
     Parameters
     - ---------
@@ -816,26 +778,9 @@ def see_data_boncomm():
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    la
-    liste
-    des
-    activités, en
-    lui
-    donnant
-    les
-    données
-    nécessaires
-    à
-    sa
-    construction.
     """
     boncomms = db.session.query(Boncomm).all()
-    data_boncomm = []
+    data_boncomm = []  # On sépare les BC et GDP des Autres et Formations
     data_reste = []
     for i in range(len(boncomms)):
         boncomm = boncomms[i]
@@ -845,7 +790,7 @@ def see_data_boncomm():
                 # Dans l'ordre, si c'est un BC, il y a forcément ensuite sa partie GDP
                 collabsGDP = boncomms[i + 1].collabs
                 data_boncomm.append([boncomm, collabs, boncomms[i + 1], collabsGDP])
-            elif boncomm.nbCongesTot == 0:  # Autres activités, sauf les congés
+            elif boncomm.nbCongesTot == 0:  # Autres activités, sauf les congés qu'on ne veut pas afficher
                 collabs = boncomm.collabs
                 data_reste.append([boncomm, collabs])
     collabs = db.session.query(Collab).all()
@@ -863,23 +808,14 @@ def see_data_boncomm():
 @app.route('/save_formation', methods=['GET', 'POST'])
 def save_formation():
     """
-    Permet
-    de
-    créer
-    une
-    formation.
+    Permet de créer une formation.
 
-        Parameters
+    Parameters
     - ---------
 
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    des
-    activités.
     """
     activite = request.form['activite2']
     com = request.form['com2']
@@ -932,24 +868,14 @@ def save_formation():
 @app.route('/save_autre', methods=['GET', 'POST'])
 def save_autre():
     """
-    Permet
-    de
-    créer
-    une
-    autre
-    activité.
+    Permet de créer une autre activité.
 
-        Parameters
+    Parameters
     - ---------
 
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    des
-    activités.
     """
     activite = request.form['activite3']
     com = request.form['com3']
@@ -1002,26 +928,14 @@ def save_autre():
 @app.route('/save_boncomm', methods=['GET', 'POST'])
 def save_bonComm():
     """
-    Permet
-    de
-    créer
-    un
-    nouveau
-    bon
-    de
-    commande.
+    Permet de créer un nouveau bon de commande.
 
-        Parameters
+    Parameters
     - ---------
 
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    des
-    activités.
     """
     activite = request.form['activiteBC']
     com = request.form['comBC']
@@ -1036,8 +950,10 @@ def save_bonComm():
     poste = request.form['posteBC']
     projet = request.form['projetBC']
     tjm = request.form['tjmBC']
+    # Le bon contiendra que les jours de Prod :
     bon = Boncomm(activite, "", com, anneeTarif, caAtos, int(jourThq) - int(partGDP), delais, montantHT, partEGIS,
                   num, poste, projet, tjm, "", "", "", "", "", "", "", "", 0, 0, 0, 0, "", "", "", "", 0)
+    # La partie GDP du bon contiendra les jours de GDP
     bonGDP = Boncomm('CP - ' + activite, "", com, anneeTarif, caAtos, partGDP, delais, montantHT, partEGIS, num, poste,
                      projet, tjm, "", "", "", "", "", "", "", "", 0, 0, 0, 0, "", "", "", "", 0)
     ids = request.form.getlist('collabsBC')
@@ -1055,7 +971,7 @@ def save_bonComm():
             db.session.add(imp)
             impAtos = Imputation(bon.id_acti, idc, date.id_date, 0, "atos")
             db.session.add(impAtos)
-
+    # La GDP est gérée par CDE ou AVA :
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collGDP = [ava, cde]
@@ -1106,41 +1022,16 @@ def save_bonComm():
 @app.route('/modif_boncomm/<idb>', methods=['GET', 'POST'])
 def modif_boncomm(idb):
     """
-    Permet
-    de
-    modifier
-    les
-    attributs
-    d
-    'une activité.
+    Permet de modifier les attributs d'une activité.
 
     Parameters
     - ---------
     idb
-    id
-    du
-    bon
-    de
-    commande
-    à
-    modifier.
-        Returns
+        id du bon de commande à modifier.
+
+    Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    la
-    liste
-    des
-    bons
-    de
-    commandes, avec
-    cette
-    liste
-    actualisée.
     """
     activite = request.form['activite']
     com = request.form['com']
@@ -1229,41 +1120,16 @@ def modif_boncomm(idb):
 @app.route('/modif_activite/<idb>', methods=['GET', 'POST'])
 def modif_activite(idb):
     """
-    Permet
-    de
-    modifier
-    les
-    attributs
-    d
-    'une activité.
+    Permet de modifier les attributs d'une activité.
 
     Parameters
     - ---------
     idb
-    id
-    du
-    bon
-    de
-    commande
-    à
-    modifier.
-        Returns
+        id de l'activité à modifier.
+
+    Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    la
-    liste
-    des
-    bons
-    de
-    commandes, avec
-    cette
-    liste
-    actualisée.
     """
     activite = request.form['activite']
     com = request.form['com']
@@ -1336,37 +1202,15 @@ def modif_activite(idb):
 @app.route('/modif_etat/<idb>', methods=['GET', 'POST'])
 def modif_etat(idb):
     """
-    Permet
-    de
-    modifier
-    l
-    'état de l'
-    activité.
+    Permet de modifier l'état de l'activité.
 
         Parameters
     - ---------
     idb
-    id
-    de
-    l
-    'activité à modifier.
+        id de l'activité à modifier.
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    la
-    liste
-    des
-    bons
-    de
-    commandes, avec
-    cette
-    liste
-    actualisée.
     """
     etat = request.form['etat']
     boncomm = db.session.query(Boncomm).get(idb)
@@ -1407,37 +1251,14 @@ def modif_etat(idb):
 @app.route('/deleteactivite/<idb>')
 def delete_activite(idb):
     """
-    Permet
-    de
-    supprimer
-    une
-    activité.
+    Permet de supprimer une activité.
 
-        Parameters
+    Parameters
     - ---------
     idb
-    id
-    du
-    bon
-    de
-    commande
-    à
-    supprimer.
-        Returns
+        id du BC à supprimer.
+    Returns
     - ------
-    render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    la
-    liste
-    des
-    activités, avec
-    cette
-    liste
-    actualisée.
     """
     activite_to_delete = db.session.query(Boncomm).get(idb)
     # On supprime toutes les imputations et associations de cette activité.
@@ -1497,38 +1318,27 @@ def delete_activite(idb):
                            data_navbar=data_navbar, mois=mois, annee=annee)
 
 
-""" - -- Partie
-    Date: voir, enregistrer - --"""
+""" - -- Partie Date: voir, enregistrer - --"""
 
 
 @app.route('/init_date')
 def init_date():
     """
-    Initialise
-    la
-    base
-    de
-    donnée
-    des
-    dates.
+    Initialise la base de donnée des dates.
 
-        Parameters
+    Parameters
     - ---------
 
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    d
-    'acceuil.
     """
     for annee in range(10):
         for mois in range(12):
             if mois == 1:  # Mois de février
                 for jour in range(28):
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6))
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500,
+                                        6))  # 500 le TJM init, 6 le nombre de membres dans l'équipe init.
                 if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
                     db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6))
             else:
@@ -1556,14 +1366,7 @@ def init_date():
 @app.route('/see_data_date')
 def see_data_date():
     """
-    Amène
-    à
-    la
-    page
-    HTML
-    montrant
-    l
-    'ensemble des dates.
+    Amène à la page HTML montrant l'ensemble des dates.
 
     Parameters
     - ---------
@@ -1571,13 +1374,6 @@ def see_data_date():
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    l
-    'ensemble des dates enregistrées dans la BDD.
     """
     data3 = db.session.query(Date).all()
     collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
@@ -1590,55 +1386,26 @@ def see_data_date():
     return render_template('date.html', data3=data3, data_navbar=data_navbar, mois=mois, annee=annee)
 
 
-""" - -- Partie
-    Imputation: enregistrer, voir - --"""
+""" - -- Partie Imputation: enregistrer, voir - --"""
 
 
 @app.route('/save_imputation/<idc>/<annee>/<mois>', methods=['GET', 'POST'])
 def save_imputation(idc, annee, mois):
     """
-    Permet
-    créer
-    une
-    nouvelle
-    imputation.
+    Permet de créer une nouvelle imputation.
 
-        Parameters
+    Parameters
     - ---------
     idc
-    id
-    du
-    collaborateur
-    associé
+        id du collaborateur associé
     annee
-    annee
-    sur
-    laquelle
-    on
-    va
-    enregistrer
-    les
-    imputations.
-        mois
+        annee sur laquelle on va enregistrer les imputations.
     mois
-    sur
-    laquelle
-    on
-    va
-    enregistrer
-    les
-    imputations
+        mois sur lequel on va enregistrer les imputations
 
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    l
-    'ensemble des imputations associées à ce collaborateur.
     """
     columns = columnMois(mois, annee)
     collab = db.session.query(Collab).get(idc)
@@ -1650,7 +1417,8 @@ def save_imputation(idc, annee, mois):
             boncomms.append(boncomm)
         elif boncomm.nbCongesTot != 0:
             conges = boncomm
-    data_boncomms = []  # liste qui contiendra pour chasue bon de commande l'imputation sur chaque semaine
+    # Principe de construction identique à la méthode see_archive
+    data_boncomms = []  # liste qui contiendra pour chaque bon de commande l'imputation sur chaque semaine
     calcJoursDispo = True  # Variable pour calculer une seule fois les jours dispos par semaine dans la boucle des dates.
     for i in range(len(boncomms)):
         imputBC = []
@@ -1670,7 +1438,7 @@ def save_imputation(idc, annee, mois):
                         Imputation.acti_id == conges.id_acti,
                         Imputation.collab_id == idc,
                         Imputation.date_id == jour.id_date, Imputation.type == "client").all()[0].joursAllouesTache
-                    if jourConges != 0:  # Si un congés est posé, on n'enlève 1 ou 0.5 jour de disponible
+                    if jourConges != 0:  # Si un congés est posé, on enlève 1 ou 0.5 jour de disponible
                         column[1] -= jourConges
                 imps = db.session.query(Imputation).filter(Imputation.collab_id == idc,
                                                            Imputation.date_id == jour.id_date,
@@ -1762,38 +1530,19 @@ def save_imputation(idc, annee, mois):
 @app.route('/see_imput_collab/<idc>/<annee>/<mois>')
 def see_imput_collab(idc, annee, mois):
     """
-    Permet
-    de
-    voir
-    les
-    imputations
-    d
-    'un collaborateur.
+    Permet de voir les imputations d'un collaborateur.
 
     Parameters
     - ---------
     idc
-    id
-    du
-    collaborateur
+        id du collaborateur
     annee
-    annee
-    sélectionnée
+        annee sélectionnée
     mois
-    mois
-    sélectionné
+        mois sélectionné
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    les
-    imputations
-    du
-    collaborateurs.
     """
     collab = db.session.query(Collab).get(idc)
     assos = collab.boncomms
@@ -1818,7 +1567,7 @@ def see_imput_collab(idc, annee, mois):
             for date in dates:
                 if date.numSemaine() == numSemaine:
                     date_access.append(date)
-            for jour in date_access:
+            for jour in date_access:  # Que les jours de la semaine en cours de la boucle "for column"
                 if calcJoursDispo:  # On calcule une seule fois les jours dispo dans la semaine par rapport aux
                     # congés posés
                     jour_conges = db.session.query(Imputation).filter(
@@ -1826,7 +1575,7 @@ def see_imput_collab(idc, annee, mois):
                         Imputation.collab_id == idc,
                         Imputation.date_id == jour.id_date, Imputation.type == "client").all()[0].joursAllouesTache
                     if jour_conges != 0:
-                        column[1] -= jour_conges
+                        column[1] -= jour_conges  # On enlève un jour de dispo si un congés est posé cette semaine
                 imputation = db.session.query(Imputation).filter(
                     Imputation.acti_id == boncomms[i].id_acti,
                     Imputation.collab_id == idc,
@@ -1868,28 +1617,14 @@ def see_imput_collab(idc, annee, mois):
 @app.route('/see_imput_global')
 def see_imput_global():
     """
-    Permet
-    de
-    voir
-    les
-    imputations
-    globales
-    des
-    activités.
+    Permet de voir les imputations globales des activités.
 
-        Parameters
+    Parameters
     - ---------
 
     Returns
     - ------
     render_template
-    renvoie
-    la
-    page
-    HTML
-    avec
-    l
-    'ensemble des imputations en cours.
     """
     collabs = db.session.query(Collab).filter(Collab.access != 3).all()
     boncomms = []
@@ -1920,7 +1655,7 @@ def see_imput_global():
                                                                   Imputation.type == "client").all()
                 joursConso = 0
                 for imputation in imputations:
-                    joursConso += imputation.joursAllouesTache
+                    joursConso += imputation.joursAllouesTache  # jours consommés par le collab sur le bon
                 raf = joursAllouesCollab - joursConso
                 data_ligne.append([joursAllouesCollab, joursConso, raf])
             else:
@@ -1962,8 +1697,5 @@ def see_imput_global():
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
     return render_template('imputglobal.html', collabs=collabs, boncomms=boncomms, nbCollab=nbCollab,
-                           data_bonGDP=data_bonGDP, data_bon=data_bon,
-                           valeursBoncomms=valeursBoncomms, valeursBoncommsGDP=valeursBoncommsGDP,
-                           data_navbar=data_navbar,
-                           mois=mois,
-                           annee=annee)
+                           data_bonGDP=data_bonGDP, data_bon=data_bon, valeursBoncomms=valeursBoncomms,
+                           valeursBoncommsGDP=valeursBoncommsGDP, data_navbar=data_navbar, mois=mois, annee=annee)
