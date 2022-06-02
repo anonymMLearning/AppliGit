@@ -23,6 +23,8 @@ from .exportExcelMarche import *
 from .models import *
 from datetime import datetime
 
+"""----------------------------------------- Gestion des différentes erreurs ----------------------------------------"""
+
 
 @app.errorhandler(404)
 def error404(e):
@@ -30,19 +32,6 @@ def error404(e):
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
     data = db.session.query(Collab).filter(Collab.access != 4).all()
-    data_navbar = []
-    for collab in data:
-        data_navbar.append([collab.abreviation(), collab])
-    moisStr = stringMois(str(mois))
-    return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 404
-
-
-@app.errorhandler(404)
-def error404(e):
-    dateNow = str(datetime.now())
-    mois = int(dateNow[5:7])
-    annee = int(dateNow[:4])
-    data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
     for collab in data:
         data_navbar.append([collab.abreviation(), collab])
@@ -154,6 +143,7 @@ def error504(e):
     return render_template('error.html', e=e, data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr), 504
 
 
+"""------------------------------------------------------------------------------------------------------------------"""
 """ --- Accueil, initialisation de la BDD --- """
 
 
@@ -176,13 +166,23 @@ def export_excel_marche():
         render_template
             renvoie la page d'acceuil.
     """
-    export_excel_marcheMS4()
+    export_excel_marcheMS4()  # Appel de la méthode du fichier exportExcelMarche.py
     collabs = db.session.query(Collab).filter(Collab.access == 3).all()
     return render_template('accueilMarcheMS4.html', collabs=collabs)
 
 
 @app.route('/modif_pourcent', methods=['GET', 'POST'])
 def modifPourcentageAn():
+    """
+        Modifie le pourcentage sur une année choisi.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template.
+    """
     annee = request.form['annee']
     pourcentage = request.form['pourcentage']
     dates = db.session.query(Date).filter(Date.annee == annee).all()
@@ -225,6 +225,16 @@ def init_db():
 
 @app.route('/accueil_marcheMS4')
 def accueilMarcheMS4():
+    """
+        Amène à l'accueil de la partie Marché MS4.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template
+    """
     return render_template('accueilMarcheMS4.html')
 
 
@@ -233,13 +243,24 @@ def accueilMarcheMS4():
 
 @app.route('/see_uo')
 def seeUo():
+    """
+        Amène à la page contenant l'ensemble des UO.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template
+    """
     uos = db.session.query(UO).all()
     data_uos = []
+    # Contiendra pour chaque année le pourcentage appliquée à celle-ci :
     pourcentages = [[2022, db.session.query(Date).filter(Date.annee == 2022).all()[0].pourcentAn]]
-    calcPourcent = True
+    calcPourcent = True  # On ne calculera une seule fois
     for uo in uos:
         data_uo = [uo]
-        for i in range(6):
+        for i in range(6):  # On montre jusqu'à 2028
             if calcPourcent:
                 pourcentAn = db.session.query(Date).filter(Date.annee == (2023 + i)).all()[0].pourcentAn
                 pourcentages.append([2023 + i, pourcentAn])
@@ -252,6 +273,16 @@ def seeUo():
 
 @app.route('/save_uo', methods=['GET', 'POST'])
 def saveUo():
+    """
+        Enregistrement d'une nouvelle UO.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template
+    """
     charges = request.form['charges']
     num = request.form['num']
     description = request.form['description']
@@ -259,7 +290,7 @@ def saveUo():
     prix = request.form['prix']
     newUo = UO(charges, num, description, type, prix)
     data_boncomms = db.session.query(Boncomm).all()
-    for boncomm in data_boncomms:
+    for boncomm in data_boncomms:  # On crée les associations de l'UO à tous les BC en initialisant le facteur à 0
         asso = AssoUoBoncomm(facteur=0)
         asso.uo = newUo
         asso.boncomm = boncomm
@@ -285,6 +316,17 @@ def saveUo():
 
 @app.route('/modif_uo/<idUo>', methods=['GET', 'POST'])
 def modifUo(idUo):
+    """
+        Modifie une UO.
+
+        Parameters
+        ----------
+        idUo
+            id de l'UO à modifier
+        Returns
+        -------
+        render_template
+    """
     uo = db.session.query(UO).get(idUo)
     charges = request.form['charges']
     num = request.form['num']
@@ -316,6 +358,18 @@ def modifUo(idUo):
 
 @app.route('/delete_uo/<idUo>', methods=['GET', 'POST'])
 def deleteUo(idUo):
+    """
+        Supprime une UO.
+
+        Parameters
+        ----------
+        idUo
+            id de l'UO à modifier
+
+        Returns
+        -------
+        render_template
+    """
     uo = db.session.query(UO).get(idUo)
     assocs = uo.boncomms
     for asso in assocs:
@@ -344,6 +398,15 @@ def deleteUo(idUo):
 
 @app.route('/see_fonctionGcm')
 def seeFonctionGcm():
+    """
+        Amène à la page contenant l'ensemble des GCM et fonctions.
+
+        Parameters
+        ----------
+        Returns
+        -------
+        render_template
+    """
     fonctions = db.session.query(Fonction).all()
     gcms = db.session.query(Gcm).all()
     dataGcm = []
@@ -354,11 +417,20 @@ def seeFonctionGcm():
 
 @app.route('/save_gcm', methods=['GET', 'POST'])
 def saveGcm():
+    """
+        Enregistrement d'un nouveau GCM.
+
+        Parameters
+        ----------
+        Returns
+        -------
+        render_template
+    """
     code = request.form['code']
     tjm = request.form['tjm']
     gcm = Gcm(code, tjm)
 
-    fonctions = db.session.query(Fonction).all()
+    fonctions = db.session.query(Fonction).all()  # On crée l'association du GCM aux différentes fonctions
     for fonction in fonctions:  # Pour toutes les fonctions sélectionnés.
         affectation = request.form['fonction' + str(fonction.id_fonction)]  # Pourcentage sur la fonction.
         assoc = AssoGcmFonction(affectation=affectation)
@@ -378,11 +450,23 @@ def saveGcm():
 
 @app.route('/modif_gcm/<idg>', methods=['GET', 'POST'])
 def modifGcm(idg):
+    """
+        Permet de modifier un GCM.
+
+        Parameters
+        ----------
+        idg
+            id du GCM à modifier
+
+        Returns
+        -------
+        render_template
+    """
     gcm = db.session.query(Gcm).get(idg)
     gcm.code = request.form['code']
     gcm.tjm = request.form['tjm']
     assocs = gcm.fonctions
-    for asso in assocs:
+    for asso in assocs:  # On modifie les affectations si nécessaire
         affectation = request.form['fonction' + str(asso.fonction.id_fonction)]  # Pourcentage sur la fonction.
         asso.affectation = affectation
     db.session.commit()
@@ -396,12 +480,25 @@ def modifGcm(idg):
 
 @app.route('/delete_gcm/<idg>', methods=['GET', 'POST'])
 def deleteGcm(idg):
+    """
+        Supprime un GCM.
+
+        Parameters
+        ----------
+        idg
+            id du GCM à modifier
+
+        Returns
+        -------
+        render_template
+    """
     gcm = db.session.query(Gcm).get(idg)
     collabs = db.session.query(Collab).filter(Collab.gcm_id == idg).all()
     for collab in collabs:
+        # Pour les collabs ayant ce GCM, on passe l'id à 0, il faudra alors leur en affecter un nouveau:
         collab.gcm_id = 0
     assocs = gcm.fonctions
-    for assoc in assocs:
+    for assoc in assocs:  # On supprime les associations
         db.session.delete(assoc)
     db.session.delete(gcm)
     db.session.commit()
@@ -415,6 +512,15 @@ def deleteGcm(idg):
 
 @app.route('/create_fonctions', methods=['GET', 'POST'])
 def createFonctions():
+    """
+        Crée l'ensemble des fonctions.
+
+        Parameters
+        ----------
+        Returns
+        -------
+        render_template
+    """
     rpa = Fonction("RPA")
     rla = Fonction("RLA")
     po = Fonction("PO")
@@ -429,9 +535,21 @@ def createFonctions():
 
 @app.route('/delete_fonction/<idf>', methods=['GET', 'POST'])
 def deleteFonction(idf):
+    """
+        Supprime une fonction.
+
+        Parameters
+        ----------
+        idf
+            id de la fonction à supprimer
+
+        Returns
+        -------
+        render_template
+    """
     fonction = db.session.query(Fonction).get(idf)
     assocs = fonction.gcms
-    for assoc in assocs:
+    for assoc in assocs:  # On supprime ses associations
         db.session.delete(assoc)
     db.session.delete(fonction)
     db.session.commit()
@@ -445,10 +563,19 @@ def deleteFonction(idf):
 
 @app.route('/save_fonction', methods=['GET', 'POST'])
 def saveFonction():
+    """
+        Enregistre une nouvelle fonction.
+
+        Parameters
+        ----------
+        Returns
+        -------
+        render_template
+    """
     nom = request.form['fonction']
     fonction = Fonction(nom)
     gcms = db.session.query(Gcm).all()
-    for gcm in gcms:
+    for gcm in gcms:  # On ajoute l'association aux différents GCM en initialisant l'affectation à 0
         affectation = 0  # Pourcentage sur la fonction.
         assoc = AssoGcmFonction(affectation=affectation)
         assoc.fonction = fonction
@@ -470,9 +597,18 @@ def saveFonction():
 
 @app.route('/see_ressources')
 def seeRessources():
+    """
+        Amène à la page contenant l'ensemble des ressources et leur GCM.
+
+        Parameters
+        ----------
+        Returns
+        -------
+        render_template
+    """
     data = db.session.query(Collab).filter(Collab.access != 4).all()
     collabs = []
-    calcPourcent = True
+    calcPourcent = True  # Pour ne calculer qu'une seule fois les pourcentages des années
     pourcentages = []
     for collab in data:
         gcm = db.session.query(Gcm).get(collab.gcm_id)
@@ -493,13 +629,23 @@ def seeRessources():
         collabs.append(dataCollab)
     fonctions = db.session.query(Fonction).all()
     gcms = db.session.query(Gcm).all()
-    nbAnnees = 10
+    nbAnnees = 10  # On affiche jusqu'à 2030
     return render_template('ressources.html', collabs=collabs, pourcentages=pourcentages, fonctions=fonctions,
                            nbAnnees=nbAnnees, gcms=gcms)
 
 
 @app.route('/modif_tjm', methods=['GET', 'POST'])
 def modifTjm():
+    """
+        Modifie le TJM d'un GCM.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template
+    """
     idGcm = request.form['gcm']
     tjm = request.form['tjm']
     gcm = db.session.query(Gcm).get(idGcm)
@@ -538,6 +684,17 @@ def modifTjm():
 
 @app.route('/see_chronoBC')
 def seeChronoBC():
+    """
+        Amène à la page du Chrono des BC.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template
+    """
+    # Que les parties Prod des BC
     boncomms = db.session.query(Boncomm).filter(Boncomm.nbJoursFormation == 0, Boncomm.nbJoursAutre == 0,
                                                 Boncomm.nbCongesTot == 0, Boncomm.prodGdpOuFd == "Prod").all()
     data_boncomms = []
@@ -551,9 +708,21 @@ def seeChronoBC():
 
 @app.route('/see_repartitionUoBC/<idb>', methods=['GET', 'POST'])
 def seeRepartitionUoBC(idb):
+    """
+        Amène à la page permettant de faire la répartition des UO sur un BC.
+
+        Parameters
+        ----------
+        idb
+            id du BC
+
+        Returns
+        -------
+        render_template
+    """
     boncomm = db.session.query(Boncomm).get(idb)
-    data_uos = []
-    uosToHide = db.session.query(UO).all()
+    data_uos = []  # Contiendra les UO sélectionnées par l'utilisateur
+    uosToHide = db.session.query(UO).all()  # Contiendra les UO non-sélectionnées par l'utilisateur, qu'on cachera donc
     idUos = request.form.getlist('uos')
     for i in range(len(idUos)):
         iduo = idUos[i]
@@ -561,21 +730,33 @@ def seeRepartitionUoBC(idb):
         assoc = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti,
                                                        AssoUoBoncomm.uo_id == iduo).all()[0]
         data_uos.append([uo, assoc])
-        del uosToHide[int(iduo) - i - 1]
+        del uosToHide[int(iduo) - i - 1]  # On l'enlève si elle est sélectionnée
     return render_template('repartitionUoBC.html', data_uos=data_uos, boncomm=boncomm, uosToHide=uosToHide)
 
 
 @app.route('/repartition_uoBC/<idb>', methods=['GET', 'POST'])
 def repartitionUo(idb):
+    """
+        Enregistre les répartitions des UO sur le BC.
+
+        Parameters
+        ----------
+        idb
+            id du BC
+
+        Returns
+        -------
+        render_template
+    """
     boncomm = db.session.query(Boncomm).get(idb)
     uos = db.session.query(UO).all()
-    for uo in uos:
+    for uo in uos:  # On enregistre les répartitions ^pour chaque UO sélectionnée
         facteur = request.form['facteur' + str(uo.id_uo)]
         assoc = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.uo_id == uo.id_uo,
                                                        AssoUoBoncomm.boncomm_id == idb).all()
-        if assoc != []:  # Si le collab imputait déjà sur ce bon
+        if assoc != []:  # Si l'UO était déjà liée au BC
             assoc[0].facteur = facteur
-        else:
+        else:  # Sinon on crée l'association
             assoc2 = AssoUoBoncomm(facteur=facteur)
             assoc2.uo = uo
             assoc2.boncomm = boncomm
@@ -597,6 +778,16 @@ def repartitionUo(idb):
 
 @app.route('/see_chronoFD')
 def seeChronoFd():
+    """
+        Amène à la page du Chrono des FD.
+
+        Parameters
+        ----------
+        Returns
+        -------
+        render_template
+    """
+    # On ne montre que les FD
     boncomms = db.session.query(Boncomm).filter(Boncomm.nbJoursFormation == 0, Boncomm.nbJoursAutre == 0,
                                                 Boncomm.nbCongesTot == 0, Boncomm.prodGdpOuFd == "Fd").all()
     data_fds = []
@@ -604,14 +795,26 @@ def seeChronoFd():
         assocs = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti).all()
         data_fds.append([boncomm, calculerTotUo(boncomm), assocs])
     nbBons = len(data_fds)
-    uos = db.session.query(UO).filter(UO.type == "Fd").all()
+    uos = db.session.query(UO).filter(UO.type == "Fd").all()  # Ne montre que les UO de type FD
     return render_template('chronoFD.html', data_fds=data_fds, nbBons=nbBons, uos=uos)
 
 
 @app.route('/see_repartitionUoFd/<idb>', methods=['GET', 'POST'])
 def seeRepartitionUoFd(idb):
+    """
+        Amène à la page permettant de faire la répartition des UO sur un FD.
+
+        Parameters
+        ----------
+        idb
+            id du FD
+
+        Returns
+        -------
+        render_template
+    """
     boncomm = db.session.query(Boncomm).get(idb)
-    data_uos = []
+    data_uos = []  # Même principe que pour Chrono des BC
     uosToHide = db.session.query(UO).all()
     idUos = request.form.getlist('uos')
     for i in range(len(idUos)):
@@ -626,6 +829,19 @@ def seeRepartitionUoFd(idb):
 
 @app.route('/repartition_uoFd/<idb>', methods=['GET', 'POST'])
 def repartitionUoFD(idb):
+    """
+        Enregistre les répartitions des UO sur le FD.
+
+        Parameters
+        ----------
+        idb
+            id du FD
+
+        Returns
+        -------
+        render_template
+    """
+    # Même principe que pour Chrono des BC
     boncomm = db.session.query(Boncomm).get(idb)
     uos = db.session.query(UO).all()
     for uo in uos:
@@ -656,8 +872,19 @@ def repartitionUoFD(idb):
 
 @app.route('/see_pdc', methods=['GET', 'POST'])
 def seePdc():
+    """
+        Amène à la page du plan de charge.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template
+    """
     moisDebut, anneeDebut = request.form['moisD'], request.form['anneeD']
     moisFin, anneeFin = request.form['moisF'], request.form['anneeF']
+    # On traite les différents cas, en fonction de l'année de début et fin
     if anneeDebut == anneeFin:
         moisToShow = [[int(moisDebut) + i, anneeDebut] for i in range(int(moisFin) - int(moisDebut) + 1)]
     else:
@@ -667,8 +894,9 @@ def seePdc():
                 moisToShow.append([j + 1, int(anneeDebut) + i + 1])
         for j in range(int(moisFin)):
             moisToShow.append([j + 1, anneeFin])
-    budgetTotJours = 0
+    budgetTotJours = 0  # Budget total des projets, pour les calculs du 2ème et 3ème tableau
     nbMois = len(moisToShow)
+    # Contiendra les données pour la création du 2ème et 3ème tableau
     dataTotMois = [[str(mois[0]) + "/" + str(mois[1]), 0.0, 0.0, 0.0] for mois in moisToShow]
     boncomms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod").all()
     projets = []  # Contiendra tous les différents projets en cours
@@ -678,8 +906,9 @@ def seePdc():
             projets.append(projet)
     data = []
     for projet in projets:
+        # Si le projet est APPROCHES, on sépare entre EGIS et ATOS
         if projet == "APP":
-            collabs = collabsProjet(projet)
+            collabs = collabsProjet(projet)  # Récupère les collabs imputant sur ce projet
             bonsProjet = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod", Boncomm.projet == projet).all()
             budgetTotAtos = 0
             budgetTotEgis = 0
@@ -691,6 +920,7 @@ def seePdc():
             dataProjetEgis = [budgetTotEgis, projet + " EGIS"]
 
             for collab in collabs:
+                # Si le collab est interne Atos, on ajoute ses données dans la part Atos :
                 if collab.entreprise == "Atos":
                     dataCollab = [collab.abreviation(), []]
                     conso = 0
@@ -699,6 +929,7 @@ def seePdc():
                     for asso in assos:
                         boncomm = asso.boncomm
                         if boncomm.projet == projet:
+                            # Nombre total de jours alloués sur ce projet à ce collab :
                             joursAlloues += asso.joursAllouesBC
                             for i in range(nbMois):
                                 mois = moisToShow[i]
@@ -709,11 +940,11 @@ def seePdc():
                                                                               Imputation.collab_id == collab.id_collab,
                                                                               Imputation.acti_id == boncomm.id_acti,
                                                                               Imputation.type == "client").all()
-                                    consoMois += imp[0].joursAllouesTache
-                                conso += consoMois
+                                    consoMois += imp[0].joursAllouesTache  # ce qu'il à consommé sur ce mois
+                                conso += consoMois  # Conso total sur ce projet
                                 dataTotMois[i][1] += float(consoMois)
                                 dataCollab[1].append(float(consoMois))
-                elif collab.entreprise == "EGIS":
+                elif collab.entreprise == "EGIS":  # Idem, mais dans le cas ou le collab vient d'EGIS
                     dataCollab = [collab.abreviation(), []]
                     conso = 0
                     joursAlloues = 0
@@ -746,7 +977,7 @@ def seePdc():
             data.append(dataProjetAtos)
             data.append(dataProjetEgis)
 
-        else:
+        else:  # Pour tous les autres projets, ATM1, ATM2, et ATM1-2 sont séparés, principe identique
             collabs = collabsProjet(projet)
             bonsProjet = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod", Boncomm.projet == projet).all()
             budgetTot = 0
@@ -784,15 +1015,18 @@ def seePdc():
                     dataProjet.append(dataCollab)
 
             data.append(dataProjet)
-    budgetTotJours = budgetTotJours / 500
+    budgetTotJours = budgetTotJours / 500  # Budget total en jour sur tous les projets
     if budgetTotJours != 0:
         dataTotMois[0][2] = round(100 * dataTotMois[0][1] / budgetTotJours, 1)
     else:
         dataTotMois[0][2] = 0
+    # Remplissage des données nécessaires à la construction du 2ème et 3ème tableau :
     dataTotMois[0][3] = round(dataTotMois[0][1] / 18, 2)
     for i in range(nbMois - 1):
+        # Production d'OTP moyen sur le mois :
         dataTotMois[i + 1][3] = round(dataTotMois[i + 1][1] / 18, 2)
         if budgetTotJours != 0:
+            # Pourcentage d'avancement :
             dataTotMois[i + 1][2] = round((dataTotMois[i + 1][1] / budgetTotJours) * 100 + dataTotMois[i][2], 1)
         else:
             dataTotMois[i + 1][2] = 0
@@ -804,8 +1038,19 @@ def seePdc():
 
 @app.route('/see_CRA', methods=['GET', 'POST'])
 def seeCRA():
+    """
+        Amène à la page du CRA Marché.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template
+    """
     moisDebut, anneeDebut = request.form['moisD'], request.form['anneeD']
     moisFin, anneeFin = request.form['moisF'], request.form['anneeF']
+    # Idem que pour le plan de charge :
     if anneeDebut == anneeFin:
         dates = db.session.query(Date).filter(Date.annee == anneeDebut, Date.mois <= moisFin, Date.mois >= moisDebut)
     else:
@@ -820,7 +1065,7 @@ def seeCRA():
         if projet not in projets:
             projets.append(projet)
 
-    dataBoncomms = [["CAUTRA"]]
+    dataBoncomms = [["CAUTRA"]]  # Regroupera ATM1, ATM2 et ATM1-2
     for projet in projets:
         if projet == "ATM1" or projet == "ATM2" or projet == "ATM1-2":
             dataBonProjet = dataBoncomms[0]
@@ -836,7 +1081,7 @@ def seeCRA():
         bonsProjet = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod", Boncomm.projet == projet).all()
         for i in range(len(bonsProjet)):
             bon = bonsProjet[i]
-            dataBonProjet.append([bon, valeursGlobales(bon)[2]])
+            dataBonProjet.append([bon, valeursGlobales(bon)[2]])  # Pourcentage d'avancement du bon
             assoCollabs = bon.collabs
             for asso in assoCollabs:
                 collab = asso.collab
@@ -865,13 +1110,25 @@ def seeCRA():
 
 @app.route('/modif_dateFinOp/<idb>', methods=['GET', 'POST'])
 def modifdateFinOp(idb):
+    """
+        Modifie la date de fin opérationnelle d'un BC.
+
+        Parameters
+        ----------
+        idb
+            id du BC à modifier.
+        Returns
+        -------
+        render_template
+    """
     date = request.form['dateFinOp']
     bonAModif = db.session.query(Boncomm).get(idb)
-    if bonAModif.prodGdpOuFd == "Prod":
+    if bonAModif.prodGdpOuFd == "Prod":  # On modifie alors aussi la date sur sa part Gdp si c'est un BC de Prod
         bonGDP = db.session.query(Boncomm).get(str(int(idb) + 1))
         bonGDP.dateFinOp = date
     bonAModif.dateFinOp = date
     db.session.commit()
+    # Construction identique à la méthode seeCra
     boncomms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Prod").all()
     projets = []  # Contiendra tous les différents projets en cours
     for boncomm in boncomms:
@@ -915,6 +1172,17 @@ def modifdateFinOp(idb):
 
 @app.route('/modif_dateDebutOp/<idb>', methods=['GET', 'POST'])
 def modifdateDebutOp(idb):
+    """
+        Modifie la date de début opérationnel du BC.
+
+        Parameters
+        ----------
+        idb
+            id du BC à modifier.
+        Returns
+        -------
+        render_template
+    """
     date = request.form['dateDebutOp']
     bonAModif = db.session.query(Boncomm).get(idb)
     if bonAModif.prodGdpOuFd == "Prod":
@@ -985,6 +1253,7 @@ def accueilImputation():
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
+    # On montre dans la barre de navigation que les collaborateurs de l'équipe MS4 :
     data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
     for collab in data:
@@ -1006,7 +1275,7 @@ def export_excel_imputations():
         render_template
             renvoie la page d'acceuil.
     """
-    export_excel()
+    export_excel()  # Appel de la méthode codée dans le fichier exportExcel.py
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
@@ -1040,7 +1309,7 @@ def see_conges():
     for i in range(len(data_collabs)):  # On va récupérer les congés de chaque collaborateur
         assos = data_collabs[i].boncomms
         for asso in assos:  # On va récupérer uniquement les congés dans les activités de ce collaborateur
-            if asso.boncomm.nbCongesTot != 0:
+            if asso.boncomm.nbCongesTot != 0:  # Cette asso est celle liée aux congés du collaborateur
                 conges.append(asso.boncomm)
                 congesAn = 0
                 imputations = db.session.query(Imputation).filter(Imputation.acti_id == asso.boncomm.id_acti,
@@ -1215,7 +1484,8 @@ def poser_conges(idc, mois, annee):
                     diffJourPose = float(jourPose) - previousJourPose  # écart entre jours posés avant/après
                     imp[0].joursAllouesTache = jourPose
                     imp[1].joursAllouesTache = jourPose
-                    nbJourPose += float(diffJourPose)
+                    nbJourPose += float(
+                        diffJourPose)  # Contiendra la différence des congés entre avant et après l'enregistrement
     conges.nbCongesPose += nbJourPose
     db.session.commit()
     data_collabs = db.session.query(Collab).filter(Collab.access != 3, Collab.access != 4).all()
@@ -1258,7 +1528,7 @@ def see_archives():
         render_template
             renvoie la page des données d'imputation avec les données nécessaires à sa construction.
     """
-    collabs = db.session.query(Collab).filter(Collab.access != 3).all()
+    collabs = db.session.query(Collab).filter(Collab.access != 3).all()  # On montre même les collaborateur partis
     data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
     for collab in data:
@@ -1316,8 +1586,8 @@ def see_archives_collab():
                         Imputation.collab_id == idc,
                         Imputation.date_id == jour.id_date,
                         Imputation.type == "client").all()[0].joursAllouesTache
-                    if jour_conges != 0:  # Si un congés est posé cette semaine, on enlève 1 jour de disponible dans cette
-                        # dernière.
+                    if jour_conges != 0:  # Si un congés est posé cette semaine, on enlève 1 jour de disponible dans
+                        # cette dernière.
                         column[1] -= jour_conges
                 imputation = db.session.query(Imputation).filter(
                     Imputation.acti_id == boncomms[i].id_acti,
@@ -1382,7 +1652,8 @@ def see_data_collab():
             if boncomm.nbCongesTot == 0 and assos[i].joursAllouesBC != 0 and boncomm.etat != 'TE':
                 boncomms.append(boncomm)
         gcm = db.session.query(Gcm).get(collab.gcm_id)
-        data.append([collab, boncomms, gcm])
+        data.append([collab, boncomms,
+                     gcm])  # Si on veut afficher les BC auquels le collab est lié, ils sont contenu dans boncomms
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
@@ -1415,7 +1686,7 @@ def save_collab():
     entreprise = request.form['entreprise_save']
     gcm = request.form['gcm']
     nbCongesTot = request.form['conges_save']
-    nom_conges = "Congés de " + nom + " " + prenom
+    nom_conges = "Congés de " + nom + " " + prenom # Nom générique pour les congés d'un collab
     collab = Collab(nom, prenom, access, entreprise, 0)
     collab.gcm_id = gcm
     # On crée les congés du collaborateur
@@ -1423,7 +1694,7 @@ def save_collab():
                      nbCongesTot, 0, 0, "", "", "", "", 0)
     assoc = AssociationBoncommCollab(joursAllouesBC=int(nbCongesTot))
     assoc.collab = collab
-    conges.collabs.append(assoc)
+    conges.collabs.append(assoc) # On crée l'association entre les congés et le collab
     db.session.add(collab)
     db.session.add(conges)
     dates = db.session.query(Date).all()
@@ -2337,6 +2608,7 @@ def init_date():
         for mois in range(12):
             if mois == 1:  # Mois de février
                 for jour in range(28):
+                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init :
                     db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6))
                 if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
                     db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6))
@@ -2420,7 +2692,8 @@ def save_imputation(idc, annee, mois):
         elif boncomm.nbCongesTot != 0:
             conges = boncomm
     data_boncomms = []  # liste qui contiendra pour chasue bon de commande l'imputation sur chaque semaine
-    calcJoursDispo = True  # Variable pour calculer une seule fois les jours dispos par semaine dans la boucle des dates.
+    calcJoursDispo = True  # Variable pour calculer une seule fois les jours dispos par semaine dans la boucle des
+    # dates.
     for i in range(len(boncomms)):
         imputBC = []
         for column in columns:
@@ -2645,7 +2918,7 @@ def see_imput_global():
                                                                   Imputation.type == "client").all()
                 joursConso = 0
                 for imputation in imputations:
-                    joursConso += imputation.joursAllouesTache
+                    joursConso += imputation.joursAllouesTache  # jours consommés par le collab sur le bon
                 raf = joursAllouesCollab - joursConso
                 data_ligne.append([joursAllouesCollab, joursConso, raf])
                 print([joursAllouesCollab, joursConso, raf])
