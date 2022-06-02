@@ -779,6 +779,9 @@ def see_data_boncomm():
     - ------
     render_template
     """
+    ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
+    cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
+    collGDP = [ava, cde]
     boncomms = db.session.query(Boncomm).all()
     data_boncomm = []  # On sépare les BC et GDP des Autres et Formations
     data_reste = []
@@ -839,6 +842,9 @@ def save_formation():
             db.session.add(impAtos)
     db.session.add(formation)
     db.session.commit()
+    ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
+    cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
+    collGDP = [ava, cde]
     boncomms = db.session.query(Boncomm).all()
     data_boncomm = []
     data_reste = []
@@ -877,6 +883,7 @@ def save_autre():
     - ------
     render_template
     """
+
     activite = request.form['activite3']
     com = request.form['com3']
     anneeTarif = request.form['anneeTarif3']
@@ -899,6 +906,9 @@ def save_autre():
             db.session.add(impAtos)
     db.session.add(autre)
     db.session.commit()
+    ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
+    cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
+    collGDP = [ava, cde]
     boncomms = db.session.query(Boncomm).all()
     data_boncomm = []
     data_reste = []
@@ -1091,6 +1101,9 @@ def modif_boncomm(idb):
                 impAtos = Imputation(data_to_change.id_acti, idc, date.id_date, 0, "atos")
                 db.session.add(impAtos)
     db.session.commit()
+    ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
+    cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
+    collGDP = [ava, cde]
     boncomms = db.session.query(Boncomm).all()
     data_boncomm = []
     data_reste = []
@@ -1173,6 +1186,9 @@ def modif_activite(idb):
                 impAtos = Imputation(data_to_change.id_acti, idc, date.id_date, 0, "atos")
                 db.session.add(impAtos)
     db.session.commit()
+    ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
+    cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
+    collGDP = [ava, cde]
     boncomms = db.session.query(Boncomm).all()
     data_boncomm = []
     data_reste = []
@@ -1222,6 +1238,9 @@ def modif_etat(idb):
     elif boncomm.activite[0:4] != "CP -":  # Le cas des GdP est traité avec sa part production
         boncomm.etat = etat
     db.session.commit()
+    ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
+    cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
+    collGDP = [ava, cde]
     boncomms = db.session.query(Boncomm).all()
     data_boncomm = []
     data_reste = []
@@ -1292,6 +1311,9 @@ def delete_activite(idb):
             db.session.delete(assoc)
         db.session.delete(activite_to_delete)
     db.session.commit()
+    ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
+    cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
+    collGDP = [ava, cde]
     boncomms = db.session.query(Boncomm).all()
     data_boncomm = []
     data_reste = []
@@ -1419,7 +1441,8 @@ def save_imputation(idc, annee, mois):
             conges = boncomm
     # Principe de construction identique à la méthode see_archive
     data_boncomms = []  # liste qui contiendra pour chaque bon de commande l'imputation sur chaque semaine
-    calcJoursDispo = True  # Variable pour calculer une seule fois les jours dispos par semaine dans la boucle des dates.
+    calcJoursDispo = True  # Variable pour calculer une seule fois les jours dispos par semaine dans la boucle des
+    # dates.
     for i in range(len(boncomms)):
         imputBC = []
         for column in columns:
