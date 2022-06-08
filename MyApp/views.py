@@ -2609,20 +2609,20 @@ def init_date():
         for mois in range(12):
             if mois == 1:  # Mois de février
                 for jour in range(28):
-                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init :
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6))
+                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init, 400 le SCR moyen retenu
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
                 if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
-                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6))
+                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6, 400))
             else:
                 for jour in range(30):  # Ajout des 31 pour les mois concernés
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6))
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
         db.session.commit()
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
