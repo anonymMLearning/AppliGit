@@ -1976,11 +1976,12 @@ def save_autre():
     com = request.form['com3']
     anneeTarif = request.form['anneeTarif3']
     nbJoursAutre = request.form['nbjoursautre']
+    horsProjet = request.form['horsProjet']
     dateNotif = request.form['dateNotif']
     dateFinPrev = request.form['dateFinPrev']
     notification = request.form['notification']
     autre = Boncomm(activite, "", com, anneeTarif, 0, nbJoursAutre, 0, 0, 0, "", "", "", 0, notification, "", "",
-                    dateNotif, dateFinPrev, dateNotif, "", "", 0, 0, 0, nbJoursAutre, "", "", "", "", 0)
+                    dateNotif, dateFinPrev, dateNotif, "", horsProjet, 0, 0, 0, nbJoursAutre, "", "", "", "", 0)
     # Association aux collabs :
     ids = request.form.getlist('collabs3')
     for idc in ids:  # Pour tous les collabs sélectionnés dans la création de l'activité.
