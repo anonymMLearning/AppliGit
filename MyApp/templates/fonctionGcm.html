@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <title>Fonctions et GCM</title>
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_uo">UO</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_ressources">Ressources</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_fonctionGcm">Fonctions et GCM</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoBC">Chrono BC Prod</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoFD">Chrono BC FD</a>
+                </li>
+                <li class="list-inline-item">
+                    <a data-bs-toggle="modal" data-bs-target="#pdc" class="nav-link" href="/">PdC</a>
+                </li>
+                <div class="modal fade" id="pdc" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="pdc">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white">Choisissez les mois à afficher</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h5 align="center" class="text-danger">Ne pas afficher plus de 10 mois pour garder la
+                                    lisibilité de la
+                                    page !</h5>
+                                <form style="text-align:center; margin: 20px " action="/see_pdc" method="post">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="moisD">Mois début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisD"
+                                                        id="moisD">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="moisF">Mois fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisF"
+                                                        id="moisF">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                            </div>
+                                            <div class="col-6">
+
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="anneeD">Année début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeD"
+                                                        id="anneeD">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+
+                                                </select>
+                                                <br>
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="anneeF">Année fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeF"
+                                                        id="anneeF">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+                                                </select>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button style="font-weight:bold;" align="center"
+                                            class="btn border border-white btn-primary"
+                                            name="button">Accéder au PdC
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <li class="list-inline-item">
+                    <a data-bs-toggle="modal" data-bs-target="#marche" class="nav-link" href="/">CRA Marché</a>
+                </li>
+                <div class="modal fade" id="marche" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="marche">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white">Choisissez les mois à compter</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form style="text-align:center; margin: 20px " action="/see_CRA" method="post">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;">Mois
+                                                    début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisD">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                                <label class="form-label text-primary" style="font-weight:bold;">Mois
+                                                    fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisF">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;">Année
+                                                    début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeD">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+
+                                                </select>
+                                                <br>
+
+                                                <label class="form-label text-primary" style="font-weight:bold;">Année
+                                                    fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeF">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+                                                </select>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button style="font-weight:bold;" align="center"
+                                            class="btn border border-white btn-primary"
+                                            name="button">Accéder au CRA Marché
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </nav>
+</head>
+<body>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Fonctions et GCM -</h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableaux regroupant les fonctions et GCM
+            existants. <br> Pour modifier ou effacer une donnée, cliquer sur le bouton associé.
+        </h5>
+    </div>
+</div>
+<div align="center">
+    <h5 class="text-primary">Pour ajouter un code GCM, cliquez ici : </h5>
+    <button style="background-image: var(--bs-gradient);" type="button"
+            class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#savegcm">
+        Ajouter un GCM
+    </button>
+    <div class="modal fade" id="savegcm" tabindex="-1" aria-hidden="true"
+         aria-labelledby="savegcm">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Ajouter un GCM</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/save_gcm" method="post">
+                        <label class="form-label text-primary" for="code">Code :</label>
+                        <input required="required" class="text-primary form-control" type="text" id="code" name="code">
+                        <br>
+                        <label class="form-label text-primary" for="tjm">TJM :</label>
+                        <input required="required" class="text-primary form-control" type="number" step="0.1"
+                               name="tjm" id="tjm">
+                        <br>
+
+                        <label class="form-label text-primary">Répartition des fonctions (en %) :</label>
+                        <table style="margin-left:auto; margin-right:auto;margin-top:10px; margin-bottom:10px;  text-align:center;   table-layout: fixed;">
+                            {% for fonction in fonctions %}
+                            <tr class="bg-primary text-white"
+                                style="background-image: var(--bs-gradient);">
+                                <td width="50">{{fonction.nom}}</td>
+                                <td width="50">
+                                    <input class="text-primary" width="50" type="number" step="0.1"
+                                           name="fonction{{fonction.id_fonction}}" value="0" required="required">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        <br>
+                        <button style="margin-top: 15px;" name="button" class="btn btn-primary">Ajouter ce GCM</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <table id="tableau"
+                   style=" margin-left:20px; margin-top:20px; margin-bottom:20px;  text-align:center;   table-layout: fixed;">
+                <tr class="p-3 mb-2 bg-primary text-white" style="background-image: var(--bs-gradient);">
+                    <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-right: 1px solid white; padding: 1px;">
+                        GCM
+                    </td>
+                    <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-left: 1px solid #0d6efd; border-right: 1px solid white; padding: 1px;">
+                        TJM
+                    </td>
+                    {% for fonction in fonctions %}
+                    <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-left: 1px solid white; padding: 1px;">
+                        {{fonction.nom}}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% for gcm in dataGcm %}
+                <tr style="border-bottom : 1px solid#0d6efd">
+                    <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{gcm[0].code}}</td>
+                    <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{gcm[0].tjm}}</td>
+                    {% for asso in gcm[1] %}
+                    <td class="text-primary"
+                        style="border-left: 1px solid #0d6efd; border-right: 1px solid #0d6efd; padding: 20px;">
+                        {{asso.affectation}} %
+                    </td>
+                    {% endfor %}
+                    <td style="border-top: 1px solid #0d6efd;border-left: 1px solid #0d6efd; border-right: 1px solid #0d6efd; padding: 20px;">
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                data-bs-target="#modif{{gcm[0].id_gcm}}">
+                            Modifier
+                        </button>
+                        <div class="modal fade" id="modif{{gcm[0].id_gcm}}" tabindex="-1" aria-hidden="true"
+                             aria-labelledby="modif{{gcm[0].id_gcm}}">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning">
+                                        <h5 style="text-align:center;" class="modal-title">Modifier le GCM</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <form action="/modif_gcm/{{gcm[0].id_gcm}}" method="post">
+                                        <label style="font-weight:bold;" class="form-label">Code :</label>
+                                        <input class="form-control" type="text" name="code" style="text-align:center;"
+                                               value="{{gcm[0].code}}" required="required">
+                                        <br>
+                                        <label style="font-weight:bold;" class="form-label">TJM :</label>
+                                        <input class="form-control" type="number" step="0.1" style="text-align:center;"
+                                               name="tjm"
+                                               value="{{gcm[0].tjm}}" required="required">
+                                        <br>
+                                        <label style="font-weight:bold;" class="form-label">Répartition des fonctions
+                                            (en %)
+                                            :</label>
+                                        <table style="margin-left:auto; margin-right:auto;margin-top:10px; margin-bottom:5px;  text-align:center;   table-layout: fixed;">
+                                            {% for asso in gcm[1] %}
+                                            <tr class="bg-warning border border-dark"
+                                                style="background-image: var(--bs-gradient);">
+                                                <td class="bg-warning" width="50">{{asso.fonction.nomnom}}</td>
+                                                <td class="bg-light" width="50">
+                                                    <input class="bg-light" class="text-primary" width="50"
+                                                           type="number" step="0.1"
+                                                           name="fonction{{asso.fonction.id_fonction}}"
+                                                           value="{{asso.affectation}}" required="required">
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </table>
+                                        <br>
+                                        <button style="margin-top: 5px;margin-bottom: 10px;" name="button"
+                                                class="btn btn-warning">Modifier
+                                            le GCM
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td
+                            style="border-top: 1px solid #0d6efd;border-left: 1px solid #0d6efd; border-right: 1px solid #0d6efd; padding: 20px;">
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                data-bs-target="#deleteGcm{{gcm[0].id_gcm}}">
+                            Effacer
+                        </button>
+                        <div class="modal fade" id="deleteGcm{{gcm[0].id_gcm}}" tabindex="-1" aria-hidden="true"
+                             aria-labelledby="deleteGcm{{gcm[0].id_gcm}}">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning">
+                                        <h5 style="text-align:center;" class="modal-title">Effacer le GCM</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h4 style="margin-bottom:10px;"> Voulez-vous supprimer ce GCM ?</h4>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-6" align="center">
+                                                    <a class="text-dark"
+                                                       href="/delete_gcm/{{gcm[0].id_gcm}}">Oui</a>
+                                                </div>
+                                                <div class="col-6" align="center">
+                                                    <a class="text-dark" href="/see_fonctionGcm">Non</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-2">
+            <table align="center" style="margin-bottom: 30px;">
+                <tr>
+                    <td style="font-weight:bold; " class="bg-warning border border-dark">Fonction</td>
+                </tr>
+                {% for fonction in fonctions %}
+                <tr>
+                    <td class="bg-light"
+                        style="text-align:center;border: 1px solid black; padding: 5px;">
+                        {{fonction.nom}}
+                    </td>
+                    <td class="bg-light"
+                        style="border: 1px solid black; padding: 5px;">
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                data-bs-target="#delete{{fonction.id_fonction}}">
+                            Effacer
+                        </button>
+                        <div class="modal fade" id="delete{{fonction.id_fonction}}" tabindex="-1" aria-hidden="true"
+                             aria-labelledby="delete{{fonction.id_fonction}}">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning">
+                                        <h5 style="text-align:center;" class="modal-title">Effacer la fonction</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h4 style="margin-bottom:10px;"> Voulez-vous supprimer cette fonction ?</h4>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-6" align="center">
+                                                    <a class="text-dark"
+                                                       href="/delete_fonction/{{fonction.id_fonction}}">Oui</a>
+                                                </div>
+                                                <div class="col-6" align="center">
+                                                    <a class="text-dark" href="/see_fonctionGcm">Non</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</html>

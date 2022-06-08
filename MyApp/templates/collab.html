@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
     <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
-    <nav class="bg-light" style="border-bottom : 2px solid blue">
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
-                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_archives">Archives</a>
+                    <a class="nav-link" href="/see_archives">Données d'imputation</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                    <a class="nav-link" href="/see_scr">SCR</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_boncomm">Activités</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_imput_global">Imputations globales</a>
@@ -22,10 +25,9 @@
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_conges">Congés</a>
                 </li>
-                {% for data_navbar in data_navbar %}
+                {% for collab in data_navbar %}
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_imput_collab/{{data_navbar.id_collab}}/{{annee}}/{{mois}}">{{data_navbar.nom}}
-                        {{data_navbar.prenom}}</a>
+                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee}}/{{mois}}">{{collab[0]}}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -45,7 +47,7 @@
     -</h1></div>
 <br>
 <div class="bg-light border border-3 border-primary rounded mt-2" style="margin-left: 20px; margin-right:20px">
-    <div style="margin-left: 20px">
+    <div style="text-align: center; margin-left: 20px">
         <h5 style="margin-top: 5px" class="text-primary">Ce tableau contient la liste des collaborateurs, ainsi que
             leur niveau d'accès et les bons de commande sur lesquels ils imputent. <br>
             Pour modifier ou effacer un collaborateur, cliquer sur les boutons associés sur la ligne du collaborateur en
@@ -74,22 +76,37 @@
             <div class="modal-body">
                 <form action="/save_collab" method="post">
                     <label class="form-label text-primary" for="nom_save">Nom :</label>
-                    <input class="text-primary form-control" type="text" id="nom_save" name="nom_save">
+                    <input required="required" class="text-primary form-control" type="text" id="nom_save"
+                           name="nom_save">
                     <br>
                     <label class="form-label text-primary" for="prenom_save">Prénom :</label>
-                    <input class="text-primary form-control" type="text" id="prenom_save"
+                    <input required="required" class="text-primary form-control" type="text" id="prenom_save"
                            name="prenom_save">
                     <br>
                     <label class="form-label text-primary" for="access_save">Access :</label>
-                    <select class="form-select bg-white text-primary" name="access_save" id="access_save">
+                    <select required="required" class="form-select bg-white text-primary" name="access_save"
+                            id="access_save">
                         <option value="1">1 : Admin</option>
-                        <option value="2">2 : Collaborateur</option>
-                        <option value="3">3 : Observateur</option>
+                        <option value="2">2 : Collaborateur MS4</option>
+                        <option value="3">3 : Collaborateur hors MS4</option>
                         <option value="4">4 : Partis</option>
                     </select>
                     <br>
+                    <label class="form-label text-primary" for="gcm_save">GCM :</label>
+                    <select required="required" class="form-select bg-white text-primary" name="gcm" id="gcm_save">
+                        {% for gcm in gcms %}
+                        <option value="{{gcm.id_gcm}}">{{gcm.code}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <label class="form-label text-primary">Entreprise :</label>
+                    <select required="required" class="form-select bg-white text-primary" name="entreprise_save">
+                        <option value="Atos">Atos</option>
+                        <option value="EGIS">EGIS</option>
+                    </select>
+                    <br>
                     <label class="form-label text-primary" for="conges_save">Jours de congés :</label>
-                    <input class="text-primary form-control" type="number" id="conges_save"
+                    <input required="required" class="text-primary form-control" type="number" id="conges_save"
                            name="conges_save">
                     <br>
                     <button name="button" class="btn btn-primary">Ajouter ce collaborateur</button>
@@ -100,7 +117,7 @@
 </div>
 
 
-<table id="tableau" style=" margin-left:20px; margin-top:20px;   text-align:center;   table-layout: fixed;">
+<table id="tableau" align="center" style=" margin-top:20px;   text-align:center;   table-layout: fixed;">
     <tr class="p-3 mb-2 bg-primary text-white" style="height:20px;background-image: var(--bs-gradient);">
         <!-- tr : ligne / td : colonne -->
         <td style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
@@ -108,10 +125,10 @@
         </td>
         <td style="font-weight:bold;border-right: 1px solid white;">Prénom</td>
         <td style="font-weight:bold;border-right: 1px solid white; padding:10px">Access</td>
-        <td style="font-weight:bold;">BC</td>
+        <td style="font-weight:bold;border-right: 1px solid white; padding:10px">Entreprise</td>
     </tr>
 
-    {% for data in data%}
+    {% for data in data %}
 
     <tr id="{{data[0].id_collab}}">
         <td class="p-3 mb-2 bg-white text-primary border border-primary"
@@ -126,21 +143,13 @@
             style="font-size: 20px;border-left: 1px solid white; vertical-align: middle;border-right:1px solid white;padding:15px;">
             {{data[0].access}}
         </td>
-
         <td class="p-3 mb-2 bg-white text-primary border border-primary"
-            style="font-size: 20px;background-image: var(--bs-gradient);">
-            {% for boncomm in data[1] %} {{boncomm.activite}} <br> {% endfor %}
-
-        </td>
-        <td class="p-3 mb-2 text-secondary border-primary" width="150"
-            style="border-top: 1px solid white;border-left: 1px solid white;border-bottom: 1px solid white;vertical-align: middle;background-image: var(--bs-gradient);">
-            <div style="text-align:center; padding: 20px"><a class="btn btn-secondary" id="link"
-                                                             href="/see_imput_global">Imputer</a>
-            </div>
+            style="font-size: 20px;border-left: 1px solid white; vertical-align: middle;border-right:1px solid white;padding:15px;">
+            {{data[0].entreprise}}
         </td>
         <td class="p-3 mb-2 text-secondary border border-primary" width="150"
             style="border: 1px solid white;vertical-align: middle;background-image: var(--bs-gradient);">
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                     data-bs-target="#effacer{{data[0].id_collab}}">
                 Effacer
             </button>
@@ -148,7 +157,7 @@
                  aria-labelledby="effacerCollab">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
+                        <div class="modal-header bg-warning text-dark">
                             <h5 class="modal-title">Effacer le collaborateur</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
@@ -157,10 +166,10 @@
                             <div class="container">
                                 <div class="row">
                                     <div class="col-6">
-                                        <a href="/deletecollab/{{data[0].id_collab}}">Oui</a>
+                                        <a class="text-dark" href="/deletecollab/{{data[0].id_collab}}">Oui</a>
                                     </div>
                                     <div class="col-6">
-                                        <a href="/see_data_collab">Non</a>
+                                        <a class="text-dark" href="/see_data_collab">Non</a>
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +180,7 @@
         </td>
         <td class="p-3 mb-2 text-white border border-primary" width="150"
             style="border: 1px solid white;vertical-align: middle;background-image: var(--bs-gradient);">
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                     data-bs-target="#modif{{data[0].id_collab}}">
                 Modifier
             </button>
@@ -179,31 +188,59 @@
                  aria-labelledby="modifCollab">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title">Modifier le collaborateur</h5>
+                        <div class="modal-header bg-warning">
+                            <h5 class="modal-title text-dark">Modifier le collaborateur</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form action="/modif_collab/{{data[0].id_collab}}" method="post">
-                                <label class="form-label text-primary" for="nom2">Nom :</label>
-                                <input class="text-primary form-control" type="text" id="nom2" name="nom2"
-                                       placeholder="Changez le nom">
+                                <label class="form-label text-dark" for="nom2">Nom :</label>
+                                <input class="text-dark form-control" type="text" id="nom2" name="nom2"
+                                       value="{{data[0].nom}}" required="required">
                                 <br>
-                                <label class="form-label text-primary" for="prenom2">Prénom :</label>
-                                <input class="text-primary form-control" type="text" id="prenom2" name="prenom2"
-                                       placeholder="Changez le prénom">
+                                <label class="form-label text-dark" for="prenom2">Prénom :</label>
+                                <input class="text-dark form-control" type="text" id="prenom2" name="prenom2"
+                                       value="{{data[0].prenom}}" required="required">
                                 <br>
-                                <label class="form-label text-primary" for="access2">Access :</label>
-                                <input class="text-primary form-control" type="number" id="access2"
-                                       value={{data[0].access}} name="access2"
-                                       placeholder="Changez les droits d'accès">
+                                <label class="form-label text-dark" for="access2">Access :</label>
+                                <select required="required" class="form-select bg-white text-dark" name="access2"
+                                        id="access2">
+                                    <option selected value="{{data[0].access}}">Valeur actuellement sélectionné :
+                                        {{data[0].access}}
+                                    </option>
+                                    <option value="1">1 : Admin</option>
+                                    <option value="2">2 : Collaborateur MS4</option>
+                                    <option value="3">3 : Collaborateur hors MS4</option>
+                                    <option value="4">4 : Partis</option>
+                                </select>
                                 <br>
-                                <label class="form-label text-primary" for="conges">Jours de congés :</label>
-                                <input class="text-primary form-control" type="number" id="conges" name="conges"
-                                       value={{data[0].boncomms[0].boncomm.nbCongesTot}}>
+                                <label class="form-label text-dark" for="modifgcm">GCM :</label>
+                                <select required="required" class="form-select bg-white text-dark" name="gcm"
+                                        id="modifgcm">
+                                    <option selected value="{{data[2].id_gcm}}">GCM actuellement sélectionné :
+                                        {{data[2].code}}
+                                    </option>
+                                    {% for gcm in gcms %}
+                                    <option value="{{gcm.id_gcm}}">{{gcm.code}}</option>
+                                    {% endfor %}
+                                </select>
                                 <br>
-                                <button name="button" class="btn btn-primary">Modifier le collaborateur
+                                <label class="form-label text-dark">Entreprise :</label>
+                                <select required="required" class="form-select bg-white text-dark" name="entreprise2">
+                                    <option value="{{data[0].entreprise}}">Entreprise actuellement sélectionnée :
+                                        {{data[0].entreprise}}
+                                    </option>
+                                    <option value="Atos">Atos</option>
+                                    <option value="EGIS">EGIS</option>
+                                </select>
+                                <br>
+                                <label class="form-label text-dark" for="conges">Jours de congés :</label>
+                                <input required="required" class="text-dark form-control" type="number" id="conges"
+                                       name="conges"
+                                       value="{{data[0].boncomms[0].boncomm.nbCongesTot}}">
+                                <br>
+                                <button name="button" class="btn btn-warning">Modifier le collaborateur
                                 </button>
                             </form>
                         </div>
@@ -232,6 +269,21 @@
         document.formulaireDate.action = url;
 	    document.forms["formulaireDate"].submit();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

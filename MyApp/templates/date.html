@@ -5,19 +5,19 @@
     <title>Date</title>
 </head>
 
-<nav class="bg-light" style="border-bottom : 2px solid blue">
+<nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Imputation MS4</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_archives">Archives</a>
+                    <a class="nav-link" href="/see_archives">Données d'imputation</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_data_boncomm">Bon de commandes</a>
+                    <a class="nav-link" href="/see_data_boncomm">Activités</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_imput_global">Imputations globales</a>
@@ -25,10 +25,9 @@
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_conges">Congés</a>
                 </li>
-                {% for data in data %}
+                {% for collab in data_navbar %}
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_imput_collab/{{data.id_collab}}/{{annee}}/{{mois}}">{{data.nom}}
-                        {{data.prenom}}</a>
+                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee}}/{{mois}}">{{collab[0]}}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -43,6 +42,7 @@
         <td style="font-weight:bold; border: 1px solid black; padding: 1px;background-color:#CFE2FF;">Jour</td>
         <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Mois</td>
         <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Annee</td>
+        <td style="font-weight:bold;border: 1px solid black;background-color:#CFE2FF">Pourcentage</td>
     </tr>
 
     {% for data3 in data3%}
@@ -51,7 +51,7 @@
         <td style=" border-right:solid 1px black;">{{data3.jour}}</td>
         <td style="border-right:solid 1px black;">{{data3.mois}}</td>
         <td style="" ...>{{data3.annee}}</td>
-
+        <td style="" ...>{{data3.pourcentAn}}</td>
         {% endfor %}
 </table>
 {% endblock content %}

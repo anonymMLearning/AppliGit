@@ -1,105 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <meta charset="UTF-8">
-    <title>Accueil</title>
+    <title>Ressources</title>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/accueil_imputation">Imputations MS4</a>
+                    <a class="nav-link" href="/see_uo">UO</a>
                 </li>
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/accueil_marcheMS4">Marché MS4</a>
+                    <a class="nav-link" href="/see_ressources">Ressources</a>
                 </li>
                 <li class="list-inline-item">
-                    <a data-bs-toggle="modal" data-bs-target="#horsMs4" class="nav-link" href="/">Imputations DP</a>
+                    <a class="nav-link" href="/see_fonctionGcm">Fonctions et GCM</a>
                 </li>
-                <div class="modal fade" id="horsMs4" tabindex="-1" aria-hidden="true"
-                     aria-labelledby="horsMS4">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoBC">Chrono BC Prod</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chronoFD">Chrono BC FD</a>
+                </li>
+                <li class="list-inline-item">
+                    <a data-bs-toggle="modal" data-bs-target="#pdc" class="nav-link" href="/">PdC</a>
+                </li>
+                <div class="modal fade" id="pdc" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="pdc">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header bg-primary">
-                                <h5 class="modal-title text-white">Choisissez le collaborateur</h5>
+                                <h5 class="modal-title text-white">Choisissez les mois à afficher</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form style="text-align:center; margin: 20px " action="/see_archives_collab"
-                                      method="post">
-                                    <label class="form-label text-primary" style="font-weight:bold;" for="collab">Collaborateur
-                                        :</label>
-                                    <select class="form-select bg-light text-primary" name="collab" id="collab"
-                                            style="">
-                                        <{% for collab in collabs %}
-                                        <option name="{{collab.id_collab}}" value="{{collab.id_collab}}">
-                                            {{collab.nom}}
-                                        </option>
-                                        {% endfor %}>
-                                    </select>
-                                    <br>
-                                    <label class="form-label text-primary" style="font-weight:bold;" for="mois">Mois
-                                        :</label>
-                                    <select class="form-select bg-light text-primary" name="mois" id="mois">
-                                        <option selected value="1">Janvier</option>
-                                        <option value="2">Février</option>
-                                        <option value="3">Mars</option>
-                                        <option value="4">Avril</option>
-                                        <option value="5">Mai</option>
-                                        <option value="6">Juin</option>
-                                        <option value="7">Juillet</option>
-                                        <option value="8">Août</option>
-                                        <option value="9">Septembre</option>
-                                        <option value="10">Octobre</option>
-                                        <option value="11">Novembre</option>
-                                        <option value="12">Décembre</option>
-                                    </select>
-                                    <br>
-                                    <label class="form-label text-primary" style="font-weight:bold;" for="anneeCollab">Année
-                                        :</label>
-                                    <select class="form-select bg-light text-primary" name="annee" id="anneeCollab">
-                                        <option value="2021">2021</option>
-                                        <option selected value="2022">2022</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2026">2026</option>
-                                        <option value="2027">2027</option>
-                                        <option value="2028">2028</option>
-                                        <option value="2029">2029</option>
-                                        <option value="2030">2030</option>
-
-                                    </select>
-                                    <br>
-                                    <button style="font-weight:bold;" class="btn border border-white btn-primary"
-                                            name="button">Accéder à cette
-                                        imputation
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <li class="list-inline-item">
-                    <a data-bs-toggle="modal" data-bs-target="#suiviConso" class="nav-link" href="/">SSQ Suivi Conso</a>
-                </li>
-                <div class="modal fade" id="suiviConso" tabindex="-1" aria-hidden="true"
-                     aria-labelledby="suiviConso">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary">
-                                <h5 class="modal-title text-white">Choisissez les dates à montrer</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form style="text-align:center; margin: 20px " action="/see_suivi_conso" method="post">
+                                <h5 align="center" class="text-danger">Ne pas afficher plus de 10 mois pour garder la
+                                    lisibilité de la
+                                    page !</h5>
+                                <form style="text-align:center; margin: 20px " action="/see_pdc" method="post">
                                     <div class="container">
                                         <div class="row">
                                             <div class="col-6">
@@ -161,6 +105,7 @@
 
                                                 </select>
                                                 <br>
+
                                                 <label class="form-label text-primary" style="font-weight:bold;"
                                                        for="anneeF">Année fin
                                                     :</label>
@@ -183,7 +128,7 @@
                                     </div>
                                     <button style="font-weight:bold;" align="center"
                                             class="btn border border-white btn-primary"
-                                            name="button">Accéder au suivi conso
+                                            name="button">Accéder au PdC
                                     </button>
                                 </form>
                             </div>
@@ -191,24 +136,24 @@
                     </div>
                 </div>
                 <li class="list-inline-item">
-                    <a data-bs-toggle="modal" data-bs-target="#prodAnnee" class="nav-link" href="/">Production Année</a>
+                    <a data-bs-toggle="modal" data-bs-target="#marche" class="nav-link" href="/">CRA Marché</a>
                 </li>
-                <div class="modal fade" id="prodAnnee" tabindex="-1" aria-hidden="true"
-                     aria-labelledby="prodAnnee">
+                <div class="modal fade" id="marche" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="marche">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header bg-primary">
-                                <h5 class="modal-title text-white">Choisissez les mois à montrer</h5>
+                                <h5 class="modal-title text-white">Choisissez les mois à compter</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form style="text-align:center; margin: 20px " action="/see_prod_annee" method="post">
+                                <form style="text-align:center; margin: 20px " action="/see_CRA" method="post">
                                     <div class="container">
                                         <div class="row">
                                             <div class="col-6">
-                                                <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="moisD">Mois début
+                                                <label class="form-label text-primary" style="font-weight:bold;">Mois
+                                                    début
                                                     :</label>
                                                 <select class="form-select bg-light text-primary" name="moisD">
                                                     <option selected value="1">Janvier</option>
@@ -225,8 +170,8 @@
                                                     <option value="12">Décembre</option>
                                                 </select>
                                                 <br>
-                                                <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="moisF">Mois fin
+                                                <label class="form-label text-primary" style="font-weight:bold;">Mois
+                                                    fin
                                                     :</label>
                                                 <select class="form-select bg-light text-primary" name="moisF">
                                                     <option selected value="1">Janvier</option>
@@ -245,8 +190,8 @@
                                                 <br>
                                             </div>
                                             <div class="col-6">
-                                                <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="anneeD">Année début
+                                                <label class="form-label text-primary" style="font-weight:bold;">Année
+                                                    début
                                                     :</label>
                                                 <select class="form-select bg-light text-primary" name="anneeD">
                                                     <option value="2021">2021</option>
@@ -262,8 +207,9 @@
 
                                                 </select>
                                                 <br>
-                                                <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="anneeF">Année fin
+
+                                                <label class="form-label text-primary" style="font-weight:bold;">Année
+                                                    fin
                                                     :</label>
                                                 <select class="form-select bg-light text-primary" name="anneeF">
                                                     <option value="2021">2021</option>
@@ -283,7 +229,7 @@
                                     </div>
                                     <button style="font-weight:bold;" align="center"
                                             class="btn border border-white btn-primary"
-                                            name="button">Accéder à la production sur ces mois
+                                            name="button">Accéder au CRA Marché
                                     </button>
                                 </form>
                             </div>
@@ -295,79 +241,91 @@
     </nav>
 </head>
 <body>
-<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Accueil : MS4 SUPV -</h1>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Tableau des Ressources
+    -</h1>
 <div class="bg-light border border-3 border-primary rounded mt-2"
      style="margin: 20px; margin-right:20px; margin-bottom: 30px">
     <div style="margin-left: 20px">
-        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Bienvenue sur l'accueil<br>Vous pouvez
-            accéder à la section que vous cherchez en cliquant sur l'icône associée ci-dessous
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau regroupant les ressources avec
+            leurs affectations aux différents rôles.
         </h5>
     </div>
 </div>
-<div style="text-align:center">
-    <a id="link" class="btn btn-primary" href="/init_db"
-       style="margin-left:10px; font-weight:bold;text-align:center;background-image: var(--bs-gradient);">
-        Vider la BDD</a>
-    <br>
-    <a class="btn btn-warning"
-       style="margin-left:10px; margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-       href="/create_fonctions">Créer les fonctions</a>
-    <br>
-    <button style="margin-top:20px; background-image: var(--bs-gradient); font-weight:bold;" type="button"
+<div align="center" style="margin-bottom: 15px;">
+    <h5 class="text-primary">Pour modifier le TJM d'un GCM, cliquez ici : </h5>
+    <button style="background-image: var(--bs-gradient);" type="button"
             class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#modifpourcent">
-        Modifier le pourcentage d'une année
+            data-bs-target="#modiftjm">
+        Modifier un TJM
     </button>
-    <div class="modal fade" id="modifpourcent" tabindex="-1" aria-hidden="true"
-         aria-labelledby="modifPourcent">
+    <div class="modal fade" id="modiftjm" tabindex="-1" aria-hidden="true"
+         aria-labelledby="saveUo">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title">Modifier le pourcentage d'une année</h5>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Modifier un TJM</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/modif_pourcent" method="post">
-                        <label for="annee">Année :</label>
-                        <select class="form-select bg-warning" name="annee" id="annee">
-                            <option value="2021">2021</option>
-                            <option selected value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
-
+                    <form action="/modif_tjm" method="post">
+                        <label class="form-label text-primary" for="gcm">GCM :</label>
+                        <select class="form-select bg-white text-primary" name="gcm" id="gcm">
+                            {% for gcm in gcms %}
+                            <option value="{{gcm.id_gcm}}">{{gcm.code}}</option>
+                            {% endfor %}
                         </select>
                         <br>
-                        <label for="pourcentage">Pourcentage à appliquer :</label>
-                        <input value="0.0" class="form-control bg-warning" type="number" step="0.01" id="pourcentage"
-                               name="pourcentage">
-                        <br>
-                        <button name="button" class="btn btn-warning">Valider</button>
+                        <label class="form-label text-primary" for="tjm">Nouveau TJM :</label>
+                        <input class="text-primary form-control" type="number" step="0.1" id="tjm" name="tjm"
+                               required="required">
+                        <button style="margin-top: 15px;" name="button" class="btn btn-primary">Modifier le TJM</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <br>
-    <div>
-        <a id="creationdate" class="btn btn-warning" href="/init_date" style="margin-top:20px;margin-left:10px; font-weight:bold;
-                    text-align:center;background-image: var(--bs-gradient);">Créer le calendrier</a>
-    </div>
-    <br>
-    <div>
-        <a class="btn btn-primary"
-           style="margin-left:10px; font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-           href="/see_data_date">Voir
-            les dates</a>
-    </div>
 </div>
 
+<table id="tableau" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2 bg-primary text-white" style="background-image: var(--bs-gradient);">
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Abrév.
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            Entreprise
+        </td>
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            GCM
+        </td>
+        {% for pourcentage in pourcentages %}
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            {{pourcentage[0]}} <br> {{pourcentage[1]}} %
+        </td>
+        {% endfor %}
+        {% for fonction in fonctions %}
+        <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-right: 1px solid white; padding: 5px;">
+            {{fonction.nom}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% for collab in collabs %}
+    <tr style="border-bottom : 1px solid#0d6efd">
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{collab[0]}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{collab[1].entreprise}}</td>
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 20px;">{{collab[2].code}}</td>
+        {% for i in range(nbAnnees) %}
+        <td class="text-primary" style="border-left: 1px solid #0d6efd; padding: 10px;">{{collab[3][i]}}</td>
+        {% endfor %}
+        {% for affectFonction in collab[4] %}
+        <td class="text-primary" style="border-right: 1px solid #0d6efd;border-left: 1px solid #0d6efd; padding: 20px;">
+            {{affectFonction}} %
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

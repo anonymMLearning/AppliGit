@@ -6,7 +6,7 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <meta charset="UTF-8">
-    <title>Accueil</title>
+    <title>SSQ Suivi Conso</title>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
@@ -190,184 +190,269 @@
                         </div>
                     </div>
                 </div>
-                <li class="list-inline-item">
-                    <a data-bs-toggle="modal" data-bs-target="#prodAnnee" class="nav-link" href="/">Production Année</a>
-                </li>
-                <div class="modal fade" id="prodAnnee" tabindex="-1" aria-hidden="true"
-                     aria-labelledby="prodAnnee">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary">
-                                <h5 class="modal-title text-white">Choisissez les mois à montrer</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form style="text-align:center; margin: 20px " action="/see_prod_annee" method="post">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="moisD">Mois début
-                                                    :</label>
-                                                <select class="form-select bg-light text-primary" name="moisD">
-                                                    <option selected value="1">Janvier</option>
-                                                    <option value="2">Février</option>
-                                                    <option value="3">Mars</option>
-                                                    <option value="4">Avril</option>
-                                                    <option value="5">Mai</option>
-                                                    <option value="6">Juin</option>
-                                                    <option value="7">Juillet</option>
-                                                    <option value="8">Août</option>
-                                                    <option value="9">Septembre</option>
-                                                    <option value="10">Octobre</option>
-                                                    <option value="11">Novembre</option>
-                                                    <option value="12">Décembre</option>
-                                                </select>
-                                                <br>
-                                                <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="moisF">Mois fin
-                                                    :</label>
-                                                <select class="form-select bg-light text-primary" name="moisF">
-                                                    <option selected value="1">Janvier</option>
-                                                    <option value="2">Février</option>
-                                                    <option value="3">Mars</option>
-                                                    <option value="4">Avril</option>
-                                                    <option value="5">Mai</option>
-                                                    <option value="6">Juin</option>
-                                                    <option value="7">Juillet</option>
-                                                    <option value="8">Août</option>
-                                                    <option value="9">Septembre</option>
-                                                    <option value="10">Octobre</option>
-                                                    <option value="11">Novembre</option>
-                                                    <option value="12">Décembre</option>
-                                                </select>
-                                                <br>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="anneeD">Année début
-                                                    :</label>
-                                                <select class="form-select bg-light text-primary" name="anneeD">
-                                                    <option value="2021">2021</option>
-                                                    <option selected value="2022">2022</option>
-                                                    <option value="2023">2023</option>
-                                                    <option value="2024">2024</option>
-                                                    <option value="2025">2025</option>
-                                                    <option value="2026">2026</option>
-                                                    <option value="2027">2027</option>
-                                                    <option value="2028">2028</option>
-                                                    <option value="2029">2029</option>
-                                                    <option value="2030">2030</option>
-
-                                                </select>
-                                                <br>
-                                                <label class="form-label text-primary" style="font-weight:bold;"
-                                                       for="anneeF">Année fin
-                                                    :</label>
-                                                <select class="form-select bg-light text-primary" name="anneeF">
-                                                    <option value="2021">2021</option>
-                                                    <option selected value="2022">2022</option>
-                                                    <option value="2023">2023</option>
-                                                    <option value="2024">2024</option>
-                                                    <option value="2025">2025</option>
-                                                    <option value="2026">2026</option>
-                                                    <option value="2027">2027</option>
-                                                    <option value="2028">2028</option>
-                                                    <option value="2029">2029</option>
-                                                    <option value="2030">2030</option>
-                                                </select>
-                                                <br>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button style="font-weight:bold;" align="center"
-                                            class="btn border border-white btn-primary"
-                                            name="button">Accéder à la production sur ces mois
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </ul>
         </div>
     </nav>
 </head>
 <body>
-<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Accueil : MS4 SUPV -</h1>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- SSQ Suivi Conso -</h1>
 <div class="bg-light border border-3 border-primary rounded mt-2"
      style="margin: 20px; margin-right:20px; margin-bottom: 30px">
     <div style="margin-left: 20px">
-        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Bienvenue sur l'accueil<br>Vous pouvez
-            accéder à la section que vous cherchez en cliquant sur l'icône associée ci-dessous
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau de suivi des imputations sur les
+            différentes activités du projet
         </h5>
     </div>
 </div>
-<div style="text-align:center">
-    <a id="link" class="btn btn-primary" href="/init_db"
-       style="margin-left:10px; font-weight:bold;text-align:center;background-image: var(--bs-gradient);">
-        Vider la BDD</a>
-    <br>
-    <a class="btn btn-warning"
-       style="margin-left:10px; margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-       href="/create_fonctions">Créer les fonctions</a>
-    <br>
-    <button style="margin-top:20px; background-image: var(--bs-gradient); font-weight:bold;" type="button"
-            class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#modifpourcent">
-        Modifier le pourcentage d'une année
-    </button>
-    <div class="modal fade" id="modifpourcent" tabindex="-1" aria-hidden="true"
-         aria-labelledby="modifPourcent">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title">Modifier le pourcentage d'une année</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="/modif_pourcent" method="post">
-                        <label for="annee">Année :</label>
-                        <select class="form-select bg-warning" name="annee" id="annee">
-                            <option value="2021">2021</option>
-                            <option selected value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
 
-                        </select>
-                        <br>
-                        <label for="pourcentage">Pourcentage à appliquer :</label>
-                        <input value="0.0" class="form-control bg-warning" type="number" step="0.01" id="pourcentage"
-                               name="pourcentage">
-                        <br>
-                        <button name="button" class="btn btn-warning">Valider</button>
-                    </form>
+<table id="tableau" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        <td></td>
+        <td></td>
+        <td></td>
+        {% for mois in dataMois %}
+        <td style="font-weight: bold;border: 1px solid black;" class="bg-warning">{{mois}}</td>
+        {% endfor %}
+    </tr>
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient); ">
+        <td></td>
+        <td></td>
+        <td></td>
+        {% for column in columns %}
+        <td style="font-weight: bold;border: 1px solid black;">
+            <div class="container">
+                <div class="row">
+                    {%for sem in column[2] %}
+                    <div class="col-2 bg-light" style=" border: 1px solid black;">{{sem[0]}}</div>
+                    {% endfor %}
                 </div>
             </div>
-        </div>
-    </div>
-    <br>
-    <div>
-        <a id="creationdate" class="btn btn-warning" href="/init_date" style="margin-top:20px;margin-left:10px; font-weight:bold;
-                    text-align:center;background-image: var(--bs-gradient);">Créer le calendrier</a>
-    </div>
-    <br>
-    <div>
-        <a class="btn btn-primary"
-           style="margin-left:10px; font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-           href="/see_data_date">Voir
-            les dates</a>
-    </div>
-</div>
+        </td>
+        {% endfor %}
+    </tr>
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient); ">
+        <td></td>
+        <td style="font-weight:bold; border: 1px solid black; padding: 5px;" class="bg-secondary">Jours disponibles</td>
+        <td style="border: 1px solid black;">-</td>
+        {% for column in columns %}
+        <td style="font-weight: bold;border: 1px solid black;">
+            <div class="container">
+                <div class="row">
+                    {%for sem in column[2] %}
+                    <div class="col-2 bg-light" style=" border: 1px solid black;">{{sem[1]}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    <tr class="bg-warning" style="border: 1px solid black;">
+        <td></td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-warning">MS - Prod</td>
+        <td></td>
+        {% for column in columns %}
+        <td></td>
+        {% endfor %}
+    </tr>
+    {% for i in range(nbCollabs) %}
+    <tr style="border: 1px solid black;">
+        <td style="writing-mode: vertical-rl; text-orientation:sideways-rl; padding: 5px;transform: rotate(180deg);">
+            MS4
+        </td>
+        <td style="font-weight:bold; border: 1px solid black; padding: 5px;" class="bg-secondary">Formation sur supervision</td>
+        <td style="border:1px solid black; padding: 5px;">{{dataCollabs[i]}}</td>
+        {% for mois in dataMs4Form[i] %}
+        <td style="border: 1px solid black;">
+            <div class="container">
+                <div class="row">
+                    {%for sem in mois %}
+                    <div class="col-2 bg-light" style=" border: 1px solid black;padding-left:3px;">{{sem}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr class="bg-dark">
+        <td></td>
+        <td></td>
+        <td></td>
+        {% for column in columns %}
+        <td></td>
+        {% endfor %}
+    </tr>
+    {% for i in range(nbCollabs) %}
+    <tr style="border: 1px solid black;">
+        <td style="writing-mode: vertical-rl; text-orientation:sideways-rl; padding: 5px;transform: rotate(180deg);">
+            MS4
+        </td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-secondary">Prod sur BC</td>
+        <td style="border:1px solid black; padding: 5px;">{{dataCollabs[i]}}</td>
+        {% for mois in dataMs4Prod[i] %}
+        <td style="border: 1px solid black;">
+            <div class="container">
+                <div class="row">
+                    {%for sem in mois %}
+                    <div class="col-2 bg-light" style=" border: 1px solid black;padding-left:3px;">{{sem}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr class="bg-warning" style="border: 1px solid black;">
+        <td></td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-warning">Formations</td>
+        <td></td>
+        {% for column in columns %}
+        <td></td>
+        {% endfor %}
+    </tr>
+    {% for k in range(nbFormations) %}
+    {% for i in range(nbCollabs) %}
+    <tr style="border: 1px solid black;">
+        <td style="writing-mode: vertical-rl; text-orientation:sideways-rl; padding: 5px;transform: rotate(180deg);">
+            MS4
+        </td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-secondary">{{formations[k].activite}}</td>
+        <td style="border:1px solid black; padding: 5px;">{{dataCollabs[i]}}</td>
+        {% for mois in dataFormations[k][i] %}
+        <td style="border: 1px solid black;">
+            <div class="container">
+                <div class="row">
+                    {%for sem in mois %}
+                    <div class="col-2 bg-light" style=" border: 1px solid black;padding-left:3px;">{{sem}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr class="bg-dark">
+        <td></td>
+        <td></td>
+        <td></td>
+        {% for column in columns %}
+        <td></td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr class="bg-warning" style="border: 1px solid black;">
+        <td></td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-warning">Montée Doc. Autonomie</td>
+        <td></td>
+        {% for column in columns %}
+        <td></td>
+        {% endfor %}
+    </tr>
+    {% for i in range(nbCollabs) %}
+    <tr style="border: 1px solid black;">
+        <td style="writing-mode: vertical-rl; text-orientation:sideways-rl; padding: 5px;transform: rotate(180deg);">
+            MD
+        </td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-secondary">Montée Doc.</td>
+        <td style="border:1px solid black; padding: 5px;">{{dataCollabs[i]}}</td>
+        {% for mois in dataMonteeDoc[i] %}
+        <td style="border: 1px solid black;">
+            <div class="container">
+                <div class="row">
+                    {%for sem in mois %}
+                    <div class="col-2 bg-light" style=" border: 1px solid black;padding-left:3px;">{{sem}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr class="bg-warning" style="border: 1px solid black;">
+        <td></td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-warning">GDP</td>
+        <td></td>
+        {% for column in columns %}
+        <td></td>
+        {% endfor %}
+    </tr>
+    <tr style="border: 1px solid black;">
+        <td style="writing-mode: vertical-rl; text-orientation:sideways-rl; padding: 5px;transform: rotate(180deg);">
+            GDP
+        </td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-secondary">prépa - GdP</td>
+        <td style="border:1px solid black;padding: 5px;">AVA</td>
+        {% for mois in dataGdp %}
+        <td style="border: 1px solid black;">
+            <div class="container">
+                <div class="row">
+                    {%for sem in mois %}
+                    <div class="col-2 bg-light" style=" border: 1px solid black;padding-left:3px;">{{sem}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
 
+    <tr class="bg-warning" style="border: 1px solid black;">
+        <td></td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-warning">Absences</td>
+        <td></td>
+        {% for column in columns %}
+        <td></td>
+        {% endfor %}
+    </tr>
+    {% for i in range(nbCollabs) %}
+    <tr style="border: 1px solid black;">
+        <td style="writing-mode: vertical-rl; text-orientation:sideways-rl; padding: 5px;transform: rotate(180deg);">
+            Vac
+        </td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-secondary">Congés</td>
+        <td style="border:1px solid black; padding: 5px;">{{dataCollabs[i]}}</td>
+        {% for mois in dataAbsences[0][i] %}
+        <td style="border: 1px solid black;">
+            <div class="container">
+                <div class="row">
+                    {%for sem in mois %}
+                    <div class="col-2 bg-light" style=" border: 1px solid black;padding-left:3px;">{{sem}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr class="bg-dark">
+        <td></td>
+        <td></td>
+        <td></td>
+        {% for column in columns %}
+        <td></td>
+        {% endfor %}
+    </tr>
+    {% for i in range(nbCollabs) %}
+    <tr style="border: 1px solid black;">
+        <td style="writing-mode: vertical-rl; text-orientation:sideways-rl; padding: 5px;transform: rotate(180deg);">
+            HP
+        </td>
+        <td style="font-weight:bold; border: 1px solid black;" class="bg-secondary">Hors-Projet</td>
+        <td style="border:1px solid black; padding: 5px;">{{dataCollabs[i]}}</td>
+        {% for mois in dataAbsences[1][i] %}
+        <td style="border: 1px solid black;">
+            <div class="container">
+                <div class="row">
+                    {% for sem in mois %}
+                    <div class="col-2 bg-light" style=" border: 1px solid black;padding-left:3px;">{{sem}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

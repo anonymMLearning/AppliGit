@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Répartition SCR</title>
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_archives">Données d'imputation</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_collab">Collaborateurs</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_scr">SCR</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_data_boncomm">Activités</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_global">Imputations globales</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_conges">Congés</a>
+                </li>
+                {% for collab in data_navbar %}
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_imput_collab/{{collab[1].id_collab}}/{{annee}}/{{mois}}">{{collab[0]}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<h1 style="margin-top:20px;margin-bottom:20px;" class="text-primary" align="center">- Répartition du SCR -<br></h1>
+<div class="border border-3 border-primary rounded bg-light"
+     style="margin-bottom:20px; background-image: var(--bs-gradient); margin-left : 30%; margin-right : 30%">
+    <form style="text-align:center; margin: 20px " action="/add_scr_collab/{{scr.id_scr}}" method="post">
+        {% for collab in collabs %}
+        <label class="form-label text-primary" style="font-weight:bold;" for="annee{{collab.id_collab}}">{{collab.nom}}
+            :</label>
+        <select class="form-select bg-light text-primary" name="annee{{collab.id_collab}}"
+                id="annee{{collab.id_collab}}">
+            <option value=""></option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+        </select>
+        <br>
+        {% endfor %}
+
+        <button style="font-weight:bold; margin-top: 20px;" class="btn border border-white btn-primary" name="button">
+            Répartir le SCR
+        </button>
+    </form>
+</div>
+</body>
+</html>
