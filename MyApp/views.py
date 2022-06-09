@@ -1976,12 +1976,13 @@ def save_autre():
     com = request.form['com3']
     anneeTarif = request.form['anneeTarif3']
     nbJoursAutre = request.form['nbjoursautre']
+    horsProjet = request.form['horsProjet']
     dateNotif = request.form['dateNotif']
     dateFinPrev = request.form['dateFinPrev']
     notification = request.form['notification']
     print(nbJoursAutre)
     autre = Boncomm(activite, "", com, anneeTarif, 0, nbJoursAutre, 0, 0, 0, "", "", "", 0, notification, "", "",
-                    dateNotif, dateFinPrev, dateNotif, "", "", 0, 0, 0, nbJoursAutre, "", "", "", "", 0)
+                    dateNotif, dateFinPrev, dateNotif, "", horsProjet, 0, 0, 0, nbJoursAutre, "", "", "", "", 0)
     print(nbJoursAutre)
     # Association aux collabs :
     ids = request.form.getlist('collabs3')
@@ -2611,20 +2612,20 @@ def init_date():
         for mois in range(12):
             if mois == 1:  # Mois de février
                 for jour in range(28):
-                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init :
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6))
+                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init, 400 le SCR moyen retenu :
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
                 if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
-                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6))
+                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6, 400))
             else:
                 for jour in range(30):  # Ajout des 31 pour les mois concernés
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6))
-        db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6))
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
         db.session.commit()
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
@@ -2992,7 +2993,6 @@ def seeSuiviConso():
         else:
             formations.append(formation)
     nbFormations = len(formations)
-    print(formationsSUPV)
     moisDebut, anneeDebut = request.form['moisD'], request.form['anneeD']
     moisFin, anneeFin = request.form['moisF'], request.form['anneeF']
     # Idem que pour le plan de charge, mais on construit la liste des mois qu'il faudra afficher
@@ -3147,12 +3147,44 @@ def seeSuiviConso():
 
 
 """------------------------------------------------------------------------------------------------------------------"""
-"""----------------------------------------------- Partie Production Année ----------------------------------------- """
+"""----------------------------------------------------- Partie SCR ------------------------------------------------ """
 
 
-@app.route('/see_scr')
+@app.route('/see_scr', methods=['GET', 'POST'])
 def seeSCR():
+    anneeDebut = request.form['anneeD']
+    anneeFin = request.form['anneeF']
+    anneeToShow = []
+    for i in range(int(anneeFin) - int(anneeDebut) + 1):
+        anneeToShow.append(int(anneeDebut) + i)
+    nbAnnees = len(anneeToShow)
     scrs = db.session.query(SCR).all()
+    collabs = db.session.query(Collab).all()
+    # Données globales sur l'année :
+    joursTot, coutTot = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)]
+    scrMoyenCalc, scrMoyenArrondi, scrMoyenRetenu = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)], []
+    for i in range(nbAnnees):
+        scrMoyenRetenu.append(db.session.query(Date).filter(Date.annee == int(anneeDebut) + i).all()[0].scrMoyRetenu)
+
+    # Données des collaborateurs pour le 2ème tableau de la page :
+    dataCollabsTableau2 = []
+    for collab in collabs:
+        gcm = db.session.query(Gcm).get(collab.gcm_id)
+        data = [collab, collab.abreviation(), gcm, ["" for i in range(nbAnnees)]]
+        for i in range(nbAnnees):
+            annee = int(anneeDebut) + i
+            asso = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
+                                                          AssoCollabSCR.annee == annee).all()
+            if asso:
+                joursTot[i] += asso[0].scr.ponderation
+                coutTot[i] += asso[0].scr.cout * asso[0].scr.ponderation
+                data[3][i] = asso[0].scr
+        dataCollabsTableau2.append(data)
+    for i in range(nbAnnees):
+        if joursTot[i] != 0:
+            scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
+            scrMoyenArrondi[i] = round(scrMoyenCalc[i])
+
     collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
     for collab in collaborateurs:
@@ -3160,7 +3192,66 @@ def seeSCR():
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
-    return render_template('scr.html', scrs=scrs, data_navbar=data_navbar, mois=mois, annee=annee)
+    return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
+                           dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
+                           data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu)
+
+
+@app.route('/modif_scr_retenu/<annee>', methods=['Get', 'POST'])
+def modifScrRetenu(annee):
+    # Modification du SCR moyen retenu :
+    newScrMoyRetenu = request.form['scrMoyRetenu']
+    datesToChange = db.session.query(Date).filter(Date.annee == annee).all()
+    for date in datesToChange:
+        date.scrMoyRetenu = newScrMoyRetenu
+    db.session.commit()
+
+    # Données pour construction de la page:
+    anneeDebut = request.form['anneeD']
+    anneeFin = request.form['anneeF']
+    anneeToShow = []
+    for i in range(int(anneeFin) - int(anneeDebut) + 1):
+        anneeToShow.append(int(anneeDebut) + i)
+    nbAnnees = len(anneeToShow)
+    scrs = db.session.query(SCR).all()
+    collabs = db.session.query(Collab).all()
+    # Données globales sur l'année :
+    joursTot, coutTot = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)]
+    scrMoyenCalc, scrMoyenArrondi, scrMoyenRetenu = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)], []
+    for i in range(nbAnnees):
+        scrMoyenRetenu.append(db.session.query(Date).filter(Date.annee == int(anneeDebut) + i).all()[0].scrMoyRetenu)
+
+    # Données des collaborateurs pour le 2ème tableau de la page :
+    dataCollabsTableau2 = []
+    for collab in collabs:
+        gcm = db.session.query(Gcm).get(collab.gcm_id)
+        data = [collab, collab.abreviation(), gcm, ["" for i in range(nbAnnees)]]
+        for i in range(nbAnnees):
+            annee = int(anneeDebut) + i
+            asso = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
+                                                          AssoCollabSCR.annee == annee).all()
+            if asso:
+                joursTot[i] += asso[0].scr.ponderation
+                coutTot[i] += asso[0].scr.cout * asso[0].scr.ponderation
+                data[3][i] = asso[0].scr
+        dataCollabsTableau2.append(data)
+    for i in range(nbAnnees):
+        if joursTot[i] != 0:
+            scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
+            scrMoyenArrondi[i] = round(scrMoyenCalc[i])
+
+    collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
+    data_navbar = []
+    for collab in collaborateurs:
+        data_navbar.append([collab.abreviation(), collab])
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
+                           dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
+                           data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu)
 
 
 @app.route('/save_scr', methods=['GET', 'POST'])
@@ -3170,14 +3261,39 @@ def saveSCR():
     scr = SCR(cout, ponderation)
     db.session.add(scr)
     db.session.commit()
+    anneeDebut = request.form['anneeD']
+    anneeFin = request.form['anneeF']
+    anneeToShow = []
+    for i in range(int(anneeFin) - int(anneeDebut) + 1):
+        anneeToShow.append(int(anneeDebut) + i)
+    nbAnnees = len(anneeToShow)
     scrs = db.session.query(SCR).all()
-    return render_template('scr.html', scrs=scrs)
-
-
-@app.route('/see_add_scr_collab/<idScr>')
-def seeAddScrCollab(idScr):
-    scr = db.session.query(SCR).get(idScr)
     collabs = db.session.query(Collab).all()
+    # Données globales sur l'année :
+    joursTot, coutTot = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)]
+    scrMoyenCalc, scrMoyenArrondi, scrMoyenRetenu = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)], []
+    for i in range(nbAnnees):
+        scrMoyenRetenu.append(db.session.query(Date).filter(Date.annee == int(anneeDebut) + i).all()[0].scrMoyRetenu)
+
+    # Données des collaborateurs pour le 2ème tableau de la page :
+    dataCollabsTableau2 = []
+    for collab in collabs:
+        gcm = db.session.query(Gcm).get(collab.gcm_id)
+        data = [collab, collab.abreviation(), gcm, ["" for i in range(nbAnnees)]]
+        for i in range(nbAnnees):
+            annee = int(anneeDebut) + i
+            asso = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
+                                                          AssoCollabSCR.annee == annee).all()
+            if asso:
+                joursTot[i] += asso[0].scr.ponderation
+                coutTot[i] += asso[0].scr.cout * asso[0].scr.ponderation
+                data[3][i] = asso[0].scr
+        dataCollabsTableau2.append(data)
+    for i in range(nbAnnees):
+        if joursTot[i] != 0:
+            scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
+            scrMoyenArrondi[i] = round(scrMoyenCalc[i])
+
     collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
     for collab in collaborateurs:
@@ -3185,7 +3301,39 @@ def seeAddScrCollab(idScr):
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
-    return render_template('addScrCollab.html', collabs=collabs, scr=scr, data_navbar=data_navbar, mois=mois,
+    return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
+                           dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
+                           data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu)
+
+
+@app.route('/see_add_scr_collab/<idScr>')
+def seeAddScrCollab(idScr):
+    scr = db.session.query(SCR).get(idScr)
+    collabs = db.session.query(Collab).all()
+    dataCollabs = []
+    for collab in collabs:
+        data = [collab.abreviation()]
+        assos = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
+                                                       AssoCollabSCR.scr_id == idScr).all()
+        if not assos:  # Liste vide
+            data.append(["" for i in range(10)])  # On va montrer de 2021 à 2030
+        else:
+            scrsAnnee = ["" for i in range(10)]
+            for asso in assos:
+                posListe = asso.annee - 2030 + 9  # Par exemple si annee = 2022, le placement dans la liste sera 1
+                scrsAnnee[posListe] = asso.annee
+            data.append(scrsAnnee)
+        data.append(collab)
+        dataCollabs.append(data)
+    collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
+    data_navbar = []
+    for collab in collaborateurs:
+        data_navbar.append([collab.abreviation(), collab])
+    dateNow = str(datetime.now())
+    mois = int(dateNow[5:7])
+    annee = int(dateNow[:4])
+    return render_template('addScrCollab.html', dataCollabs=dataCollabs, scr=scr, data_navbar=data_navbar, mois=mois,
                            annee=annee)
 
 
@@ -3194,19 +3342,55 @@ def addScrCollab(idScr):
     scr = db.session.query(SCR).get(idScr)
     collabs = db.session.query(Collab).all()
     for collab in collabs:
-        anneeScr = request.form['annee' + str(collab.id_collab)]
-        if anneeScr != "":
+        for i in range(10):
             assoc = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
-                                                           AssoCollabSCR.scr_id == idScr).all()
+                                                           AssoCollabSCR.scr_id == idScr,
+                                                           AssoCollabSCR.annee == 2021 + i).all()
+            anneeScr = request.form[str(2021 + i) + "/" + str(collab.id_collab)]
             if assoc:  # Si il était déjà liée au collaborateur (liste non vide)
-                assoc[0].annee = anneeScr
-            else:  # Sinon on crée l'association
+                if anneeScr == "":  # On veut supprimer le lien entre ce SCR et ce collab pour cette année
+                    db.session.delete(assoc[0])
+            elif anneeScr != "":  # Sinon on crée l'association
                 assoc2 = AssoCollabSCR(annee=anneeScr)
                 assoc2.collab = collab
                 assoc2.scr = scr
                 scr.collabs.append(assoc2)
                 collab.scrs.append(assoc2)
     db.session.commit()
+    anneeDebut = request.form['anneeD']
+    anneeFin = request.form['anneeF']
+    anneeToShow = []
+    for i in range(int(anneeFin) - int(anneeDebut) + 1):
+        anneeToShow.append(int(anneeDebut) + i)
+    nbAnnees = len(anneeToShow)
+    scrs = db.session.query(SCR).all()
+    collabs = db.session.query(Collab).all()
+    # Données globales sur l'année :
+    joursTot, coutTot = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)]
+    scrMoyenCalc, scrMoyenArrondi, scrMoyenRetenu = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)], []
+    for i in range(nbAnnees):
+        scrMoyenRetenu.append(db.session.query(Date).filter(Date.annee == int(anneeDebut) + i).all()[0].scrMoyRetenu)
+
+    # Données des collaborateurs pour le 2ème tableau de la page :
+    dataCollabsTableau2 = []
+    for collab in collabs:
+        gcm = db.session.query(Gcm).get(collab.gcm_id)
+        data = [collab, collab.abreviation(), gcm, ["" for i in range(nbAnnees)]]
+        for i in range(nbAnnees):
+            annee = int(anneeDebut) + i
+            asso = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
+                                                          AssoCollabSCR.annee == annee).all()
+            if asso:
+                joursTot[i] += asso[0].scr.ponderation
+                coutTot[i] += asso[0].scr.cout * asso[0].scr.ponderation
+                data[3][i] = asso[0].scr
+        dataCollabsTableau2.append(data)
+    for i in range(nbAnnees):
+        if joursTot[i] != 0:
+            if joursTot[i] != 0:
+                scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
+                scrMoyenArrondi[i] = round(scrMoyenCalc[i])
+
     collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
     for collab in collaborateurs:
@@ -3214,5 +3398,37 @@ def addScrCollab(idScr):
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
-    return render_template('scr.html', collabs=collabs, scr=scr, data_navbar=data_navbar, mois=mois,
-                           annee=annee)
+    return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
+                           dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
+                           data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu)
+
+
+"""------------------------------------------------------------------------------------------------------------------"""
+"""---------------------------------------------- Partie Production Année ------------------------------------------ """
+
+
+@app.route('/see_prod_annee', methods=['GET', 'POST'])
+def seeProductionAnnee():
+    anneeToShow = request.form['annee']
+    prodsValidees = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "valide").all()
+    prodsReelles = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "reel").all()
+
+    return render_template('prodAnnee.html')
+
+
+@app.route('/add_col_production', methods=['GET', 'POST'])
+def addColProduction():
+    type = request.form['type']
+    mois = request.form['mois']
+    annee = request.form['annee']
+    amort = request.form['amort']
+    coutDP = request.form['coutDP']
+    coutTeam = request.form['coutTeam']
+    jourMoisDP = request.form['jourMoisDP']
+    jourMoisTeam = request.form['jourMoisTeam']
+    newProd = Prod(mois, annee, type, amort, coutDP, coutTeam, jourMoisDP, jourMoisTeam)
+    db.session.add(newProd)
+    db.session.commit()
+    collabs = db.session.query(Collab).filter(Collab.access == 3).all()
+    return render_template('accueil.html', collabs=collabs)

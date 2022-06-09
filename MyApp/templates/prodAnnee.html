@@ -6,7 +6,7 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <meta charset="UTF-8">
-    <title>Accueil</title>
+    <title>Production annuelle</title>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
             <a class="navbar-brand text-uppercase fw-bold" href="/"><span
@@ -191,41 +191,99 @@
                     </div>
                 </div>
                 <li class="list-inline-item">
-                    <a data-bs-toggle="modal" data-bs-target="#prodAnnee" class="nav-link" href="/">Production
-                        annuelle</a>
+                    <a data-bs-toggle="modal" data-bs-target="#prodAnnee" class="nav-link" href="/">Production annuelle</a>
                 </li>
                 <div class="modal fade" id="prodAnnee" tabindex="-1" aria-hidden="true"
                      aria-labelledby="prodAnnee">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header bg-primary">
-                                <h5 class="modal-title text-white">Choisissez l'année à montrer</h5>
+                                <h5 class="modal-title text-white">Choisissez les mois à montrer</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <form style="text-align:center; margin: 20px " action="/see_prod_annee" method="post">
-                                    <label class="form-label text-primary" style="font-weight:bold;"
-                                           for="annee">Année à montrer
-                                        :</label>
-                                    <select class="form-select bg-light text-primary" style="text-align:center;"
-                                            name="annee">
-                                        <option value="2021">2021</option>
-                                        <option selected value="2022">2022</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2026">2026</option>
-                                        <option value="2027">2027</option>
-                                        <option value="2028">2028</option>
-                                        <option value="2029">2029</option>
-                                        <option value="2030">2030</option>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="moisD">Mois début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisD">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="moisF">Mois fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="moisF">
+                                                    <option selected value="1">Janvier</option>
+                                                    <option value="2">Février</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">Décembre</option>
+                                                </select>
+                                                <br>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="anneeD">Année début
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeD">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
 
-                                    </select>
-                                    <br>
+                                                </select>
+                                                <br>
+                                                <label class="form-label text-primary" style="font-weight:bold;"
+                                                       for="anneeF">Année fin
+                                                    :</label>
+                                                <select class="form-select bg-light text-primary" name="anneeF">
+                                                    <option value="2021">2021</option>
+                                                    <option selected value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+                                                </select>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <button style="font-weight:bold;" align="center"
                                             class="btn border border-white btn-primary"
-                                            name="button">Accéder à la production sur cette année
+                                            name="button">Accéder à la production sur ces mois
                                     </button>
                                 </form>
                             </div>
@@ -237,163 +295,6 @@
     </nav>
 </head>
 <body>
-<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Accueil : MS4 SUPV -</h1>
-<div class="bg-light border border-3 border-primary rounded mt-2"
-     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
-    <div style="margin-left: 20px">
-        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Bienvenue sur l'accueil<br>Vous pouvez
-            accéder à la section que vous cherchez en cliquant sur l'icône associée ci-dessous
-        </h5>
-    </div>
-</div>
-<div style="text-align:center">
-    <a id="link" class="btn btn-primary" href="/init_db"
-       style="margin-left:10px; font-weight:bold;text-align:center;background-image: var(--bs-gradient);">
-        Vider la BDD</a>
-    <br>
-    <a class="btn btn-warning"
-       style="margin-left:10px; margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-       href="/create_fonctions">Créer les fonctions</a>
-    <br>
-    <button style="margin-top:20px; background-image: var(--bs-gradient); font-weight:bold;" type="button"
-            class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#modifpourcent">
-        Modifier le pourcentage d'une année
-    </button>
-    <div class="modal fade" id="modifpourcent" tabindex="-1" aria-hidden="true"
-         aria-labelledby="modifPourcent">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title">Modifier le pourcentage d'une année</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="/modif_pourcent" method="post">
-                        <label for="annee">Année :</label>
-                        <select class="form-select bg-warning" name="annee" id="annee">
-                            <option value="2021">2021</option>
-                            <option selected value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
-
-                        </select>
-                        <br>
-                        <label for="pourcentage">Pourcentage à appliquer :</label>
-                        <input value="0.0" class="form-control bg-warning" type="number" step="0.01" id="pourcentage"
-                               name="pourcentage">
-                        <br>
-                        <button name="button" class="btn btn-warning">Valider</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <button style="margin-top:20px; background-image: var(--bs-gradient); font-weight:bold;" type="button"
-            class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#addProd">
-        Ajouter un mois de production
-    </button>
-    <br>
-    <div class="modal fade" id="addProd" tabindex="-1" aria-hidden="true"
-         aria-labelledby="addProd">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Ajouter un mois de production</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="/add_col_production" method="post">
-                        <label for="type" class="form-label text-primary" style="font-weight:bold;">Type de prod
-                            :</label>
-                        <select class="form-select bg-light" name="type" id="type">
-                            <option value="valide">Validé</option>
-                            <option value="reel">Réel</option>
-                        </select>
-                        <br>
-                        <label class="form-label text-primary" style="font-weight:bold;" for="mois">Mois :</label>
-                        <select class="form-select bg-light" name="mois">
-                            <option value="1">Janvier</option>
-                            <option value="2">Février</option>
-                            <option value="3">Mars</option>
-                            <option value="4">Avril</option>
-                            <option value="5">Mai</option>
-                            <option value="6">Juin</option>
-                            <option value="7">Juillet</option>
-                            <option value="8">Août</option>
-                            <option value="9">Septembre</option>
-                            <option value="10">Octobre</option>
-                            <option value="11">Novembre</option>
-                            <option value="12">Décembre</option>
-                        </select>
-                        <br>
-                        <label for="annee" class="form-label text-primary" style="font-weight:bold;">Année :</label>
-                        <select class="form-select bg-light" name="annee">
-                            <option value="2021">2021</option>
-                            <option selected value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
-                        </select>
-                        <br>
-                        <label for="amort" class="form-label text-primary" style="font-weight:bold;">Amortissement
-                            :</label>
-                        <input value="" required="required" class="form-control bg-light" type="number" step="0.01"
-                               id="amort"
-                               name="amort">
-                        <br>
-                        <label for="coutDP" class="form-label text-primary" style="font-weight:bold;">Coût DP :</label>
-                        <input value="" required="required" class="form-control bg-light" type="number" step="0.01"
-                               id="coutDP" name="coutDP">
-                        <br>
-                        <label for="coutTeam" class="form-label text-primary" style="font-weight:bold;">Coût Team
-                            :</label>
-                        <input value="" required="required" class="form-control bg-light" type="number" step="0.01"
-                               id="coutTeam" name="coutTeam">
-                        <br>
-                        <label for="jourMoisDP" class="form-label text-primary" style="font-weight:bold;">Jours par mois
-                            du DP :</label>
-                        <input value="" required="required" class="form-control bg-light" type="number" step="0.01"
-                               id="jourMoisDP" name="jourMoisDP">
-                        <br>
-                        <label for="jourMoisTeam" class="form-label text-primary" style="font-weight:bold;">Jours par
-                            mois de l'équipe :</label>
-                        <input value="" required="required" class="form-control bg-light" type="number" step="0.01"
-                               id="jourMoisTeam" name="jourMoisTeam">
-                        <br>
-                        <button name="button" class="btn btn-primary" style="font-weight: bold;">Valider</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <br>
-    <div>
-        <a id="creationdate" class="btn btn-warning" href="/init_date" style="margin-top:20px;margin-left:10px; font-weight:bold;
-                    text-align:center;background-image: var(--bs-gradient);">Créer le calendrier</a>
-    </div>
-    <br>
-    <div>
-        <a class="btn btn-primary"
-           style="margin-left:10px; font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-           href="/see_data_date">Voir
-            les dates</a>
-    </div>
-</div>
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
