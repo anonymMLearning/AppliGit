@@ -92,7 +92,9 @@ class AssoUoBoncomm(db.Model):
 class AssoCollabSCR(db.Model):
     collab_id = db.Column('collab_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True)
     scr_id = db.Column('scr_id', db.Integer, db.ForeignKey('SCR.id_scr'), primary_key=True)
-    annee = db.Column(db.Integer, nullable=False)
+    annee = db.Column(db.Integer, primary_key=True)
+    moisDebut = db.Column(db.Integer, nullable=False)
+    moisFin = db.Column(db.Integer, nullable=False)
     collab = db.relationship("Collab", back_populates="scrs")
     scr = db.relationship("SCR", back_populates="collabs")
 
@@ -348,15 +350,17 @@ class Date(db.Model):
     pourcentAn = db.Column(db.Float, nullable=False)
     tjm = db.Column(db.Float, nullable=False)
     equipe = db.Column(db.Float, nullable=False)
+    scrMoyRetenu = db.Column(db.Float, nullable=False)
     imputations = db.relationship('Imputation', backref='date', uselist=False)
 
-    def __init__(self, jour, mois, annee, pourcentAn, tjm, equipe):
+    def __init__(self, jour, mois, annee, pourcentAn, tjm, equipe, scrMoyRetenu):
         self.jour = jour
         self.mois = mois
         self.annee = annee
         self.pourcentAn = pourcentAn
         self.tjm = tjm
         self.equipe = equipe
+        self.scrMoyRetenu = scrMoyRetenu
 
     def transfoDate(self):
         date = datetime.date(self.annee, self.mois, self.jour)
