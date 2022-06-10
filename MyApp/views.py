@@ -207,6 +207,32 @@ def init_db():
     """
     db.drop_all()
     db.create_all()
+    for annee in range(10):
+        for mois in range(12):
+            prodValide = Prod(mois + 1, 2021 + annee, "valide", 0, 0, 0, 0, 0)
+            prodValide.coutTeam = 0  # Si ces 2 lignes ne sont pas rajoutées, coutTeam et jourMoisTeam sont = None,
+            prodValide.jourMoisTeam = 0  # seule solution que j'ai trouvé pour résoudre le problème est de réaffecter 0.
+            db.session.add(prodValide)
+            prodReel = Prod(mois + 1, 2021 + annee, "reel", 0, 0, 0, 0, 0)
+            prodReel.coutTeam = 0
+            prodReel.jourMoisTeam = 0
+            db.session.add(prodReel)
+            if mois == 1:  # Mois de février
+                for jour in range(28):
+                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init, 400 le SCR moyen retenu :
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
+                if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
+                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6, 400))
+            else:
+                for jour in range(30):  # Ajout des 31 pour les mois concernés
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
     db.session.commit()
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
@@ -1686,7 +1712,7 @@ def save_collab():
     entreprise = request.form['entreprise_save']
     gcm = request.form['gcm']
     nbCongesTot = request.form['conges_save']
-    nom_conges = "Congés de " + nom + " " + prenom # Nom générique pour les congés d'un collab
+    nom_conges = "Congés de " + nom + " " + prenom  # Nom générique pour les congés d'un collab
     collab = Collab(nom, prenom, access, entreprise, 0)
     collab.gcm_id = gcm
     # On crée les congés du collaborateur
@@ -1694,7 +1720,7 @@ def save_collab():
                      nbCongesTot, 0, 0, "", "", "", "", 0)
     assoc = AssociationBoncommCollab(joursAllouesBC=int(nbCongesTot))
     assoc.collab = collab
-    conges.collabs.append(assoc) # On crée l'association entre les congés et le collab
+    conges.collabs.append(assoc)  # On crée l'association entre les congés et le collab
     db.session.add(collab)
     db.session.add(conges)
     dates = db.session.query(Date).all()
@@ -2590,49 +2616,6 @@ def delete_activite(idb):
 
 
 """ --- Partie Date : voir, enregistrer ---"""
-
-
-@app.route('/init_date')
-def init_date():
-    """
-        Initialise la base de donnée des dates.
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-        render_template
-            renvoie la page d'acceuil.
-    """
-    for annee in range(10):
-        for mois in range(12):
-            if mois == 1:  # Mois de février
-                for jour in range(28):
-                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init, 400 le SCR moyen retenu
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
-                if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
-                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6, 400))
-            else:
-                for jour in range(30):  # Ajout des 31 pour les mois concernés
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
-        db.session.commit()
-    dateNow = str(datetime.now())
-    mois = int(dateNow[5:7])
-    annee = int(dateNow[:4])
-    data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
-    data_navbar = []
-    for collab in data:
-        data_navbar.append([collab.abreviation(), collab])
-    moisStr = stringMois(str(mois))
-    return render_template('accueilImputation.html', data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr)
 
 
 @app.route('/see_data_date')
