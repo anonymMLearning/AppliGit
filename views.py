@@ -225,11 +225,37 @@ def init_db():
     """
     db.drop_all()
     db.create_all()
+    for annee in range(10):
+        for mois in range(12):
+            prodValide = Prod(mois + 1, 2021 + annee, "valide", 0, 0, 0, 0, 0)
+            prodValide.coutTeam = 0  # Si ces 2 lignes ne sont pas rajoutées, coutTeam et jourMoisTeam sont = None,
+            prodValide.jourMoisTeam = 0  # seule solution que j'ai trouvé pour résoudre le problème est de réaffecter 0.
+            db.session.add(prodValide)
+            prodReel = Prod(mois + 1, 2021 + annee, "reel", 0, 0, 0, 0, 0)
+            prodReel.coutTeam = 0
+            prodReel.jourMoisTeam = 0
+            db.session.add(prodReel)
+            if mois == 1:  # Mois de février
+                for jour in range(28):
+                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init, 400 le SCR moyen retenu :
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
+                if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
+                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6, 400))
+            else:
+                for jour in range(30):  # Ajout des 31 pour les mois concernés
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
+        db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
     db.session.commit()
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
-    data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
+    data = db.session.query(Collab).filter(Collab.access != 4).all()
     data_navbar = []
     for collab in data:
         data_navbar.append([collab.abreviation(), collab])
