@@ -209,13 +209,23 @@ def init_db():
     db.create_all()
     for annee in range(10):
         for mois in range(12):
-            prodValide = Prod(mois + 1, 2021 + annee, "valide", 0, 0, 0, 4, 0)
-            prodValide.coutTeam = 0  # Si ces 2 lignes ne sont pas rajoutées, coutTeam et jourMoisTeam sont = None,
-            prodValide.jourMoisTeam = 18  # seule solution que j'ai trouvé pour résoudre le problème est de réaffecter une valeur.
+            db.session.add(Booster(mois + 1, 2021 + annee, "", 0, 0))
+            if annee == 0 and mois == 1:
+                prodValide = Prod(mois + 1, 2021 + annee, "valide", 24, 5320, 0, 4, 0)
+                prodValide.coutTeam = 32260
+                prodValide.jourMoisTeam = 18
+                prodReel = Prod(mois + 1, 2021 + annee, "reel", 24, 3990, 0, 2, 0)
+                prodReel.coutTeam = 30451.75
+                prodReel.jourMoisTeam = 18
+            else:
+                prodValide = Prod(mois + 1, 2021 + annee, "valide", 24, 0, 0, 4, 0)
+                prodValide.coutTeam = 0  # Si ces 2 lignes ne sont pas rajoutées, coutTeam et jourMoisTeam sont = None,
+                prodValide.jourMoisTeam = 18  # seule solution que j'ai trouvé pour résoudre le problème est de
+                # réaffecter 0.
+                prodReel = Prod(mois + 1, 2021 + annee, "reel", 24, 0, 0, 2, 0)
+                prodReel.coutTeam = 0
+                prodReel.jourMoisTeam = 18
             db.session.add(prodValide)
-            prodReel = Prod(mois + 1, 2021 + annee, "reel", 0, 0, 0, 2, 0)
-            prodReel.coutTeam = 0
-            prodReel.jourMoisTeam = 18
             db.session.add(prodReel)
             if mois == 1:  # Mois de février
                 for jour in range(28):
