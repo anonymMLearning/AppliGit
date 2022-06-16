@@ -97,10 +97,11 @@
 <div class="bg-light border border-3 border-primary rounded mt-2"
      style="margin: 20px; margin-right:20px; margin-bottom: 30px">
     <div style="margin-left: 20px">
-        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau regroupant les différents SCR<br>Vous
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau regroupant les différents SCR.<br>Vous
             pouvez
-            ajouter un nouveau SCR ou en attribuer à des collaborateurs, en cliquant sur le bouton associé.
-        </h5>
+            ajouter un nouveau SCR ou en attribuer à des collaborateurs, en cliquant sur le bouton associé.</h5><br>
+        <h5 style="margin-top: 5px; text-align: center" class="text-warning">Les calculs annuels se font avec les SCR en cours de chaque collaborateur.</h5>
+
     </div>
 </div>
 <div style="text-align:center">
@@ -270,7 +271,9 @@
         {% endfor %}
     </tr>
     <tr>
-        <td class="bg-secondary text-white" style="border: 1px solid black; padding: 5px; font-weight: bold;">SCR Moyen</td>
+        <td class="bg-secondary text-white" style="border: 1px solid black; padding: 5px; font-weight: bold;">SCR
+            Moyen
+        </td>
         {% for i in range(nbAnnees) %}
         <td class="bg-light" style="border: 1px solid;">
             <div class="container">
@@ -319,7 +322,7 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form style="text-align:center; margin: 20px " action="/modif_scr_retenu/{{2021+i}}"
+                            <form style="text-align:center; margin: 20px " action="/modif_scr_retenu/{{anneeDebut+i}}"
                                   method="post">
                                 <label class="form-label" style="font-weight:bold;">SCR moyen retenu :</label>
                                 <input type="number" step="0.1" class="bg-light" required="required"

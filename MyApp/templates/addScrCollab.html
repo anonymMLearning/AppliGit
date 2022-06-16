@@ -95,14 +95,24 @@
     <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<h1 style="margin-top:20px;margin-bottom:20px;" class="text-warning" align="center">- Répartition du SCR -<br></h1>
-<div class="border border-3 border-warning rounded bg-light"
-     style="margin-bottom:20px; background-image: var(--bs-gradient);margin-left: 8%;margin-right: 8%;">
+<h1 style="margin-top:20px;margin-bottom:20px;" class="text-primary" align="center">- Répartition du SCR -<br></h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin-right:20%; margin-left: 20%; margin-bottom: 20px;">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 10px; text-align: center" class="text-primary">Sélectionnez la période sur laquelle les collaborateurs ont ce SCR.</h5><br>
+        <h5 style="text-align: center" class="text-danger">Pour supprimer une association, choisissez ✘ pour le mois de début et de fin.</h5>
+
+    </div>
+</div>
+<div class="border border-3 border-primary rounded bg-light"
+     style="margin-bottom:20px; background-image: var(--bs-gradient);margin-left: 1%;margin-right: 1%;">
     <form style="text-align:center; margin: 20px " action="/add_scr_collab/{{scr.id_scr}}" method="post">
         <table id="tableau" align="center"
                style=" margin-top:20px; margin-bottom:20px;  text-align:center;   table-layout: fixed;">
             <tr class="p-3 mb-2 bg-warning" style="background-image: var(--bs-gradient); border: 1px solid black">
-                <td></td>
+                <td style="font-weight: bold; padding: 5px;">Collab</td>
+                <td class="bg-secondary text-white"
+                    style="font-weight:bold; border: 1px solid black; padding:5px;"></td>
                 <td style="font-weight:bold; margin-left: 20px; margin-right: 20px; border-left: 1px solid; border-right: 1px solid; padding: 1px;">
                     2021
                 </td>
@@ -136,12 +146,43 @@
             </tr>
             {% for collab in dataCollabs %}
             <tr style="padding : 5px; border: 1px solid">
-                <td class="bg-warning" style="font-weight:bold; border: 1px solid; padding:5px;">{{collab[0]}}</td>
+                <td class="bg-light" style="font-weight:bold; border: 1px solid; padding:5px;">{{collab[0]}}</td>
+                <td class="bg-secondary text-white" style="font-weight:bold; border: 1px solid black; padding:5px;"><h6
+                        style="margin-bottom: 10px;">De</h6><br><h6
+                        style="margin-top: 10px;">À</h6></td>
                 {% for i in range(10) %}
                 <td class="bg-light" style="border: 1px solid; padding:10px;">
-                    <select class="form-select bg-light" name="{{2021 + i}}/{{collab[2].id_collab}}">
-                        <option value="{{collab[1][i]}}">{{collab[1][i]}}</option>
-                        <option value="{{2021 + i}}">✓</option>
+                    <select class="form-select bg-light" name="moisD/{{2021 + i}}/{{collab[2].id_collab}}">
+                        <option value="{{collab[1][i][0]}}">{{collab[1][i][0]}}</option>
+                        <option value="1">1 : Janvier</option>
+                        <option value="2">2 : Février</option>
+                        <option value="3">3 : Mars</option>
+                        <option value="4">4 : Avril</option>
+                        <option value="5">5 : Mai</option>
+                        <option value="6">6 : Juin</option>
+                        <option value="7">7 : Juillet</option>
+                        <option value="8">8 : Août</option>
+                        <option value="9">9 : Septembre</option>
+                        <option value="10">10 : Octobre</option>
+                        <option value="11">11 : Novembre</option>
+                        <option value="12">12 : Décembre</option>
+                        <option value="">✘</option>
+                    </select>
+                    <br>
+                    <select class="form-select bg-light" name="moisF/{{2021 + i}}/{{collab[2].id_collab}}">
+                        <option value="{{collab[1][i][1]}}">{{collab[1][i][1]}}</option>
+                        <option value="1">1 : Janvier</option>
+                        <option value="2">2 : Février</option>
+                        <option value="3">3 : Mars</option>
+                        <option value="4">4 : Avril</option>
+                        <option value="5">5 : Mai</option>
+                        <option value="6">6 : Juin</option>
+                        <option value="7">7 : Juillet</option>
+                        <option value="8">8 : Août</option>
+                        <option value="9">9 : Septembre</option>
+                        <option value="10">10 : Octobre</option>
+                        <option value="11">11 : Novembre</option>
+                        <option value="12">12 : Décembre</option>
                         <option value="">✘</option>
                     </select>
                 </td>
@@ -149,7 +190,7 @@
             </tr>
             {% endfor %}
         </table>
-        <a data-bs-toggle="modal" data-bs-target="#seescr" style="font-weight: bold;" class="btn btn-warning" href="/">Enregistrer</a>
+        <a data-bs-toggle="modal" data-bs-target="#seescr" style="font-weight: bold;" class="btn btn-primary" href="/">Enregistrer</a>
         <div class="modal fade" id="seescr" tabindex="-1" aria-hidden="true"
              aria-labelledby="seescr">
             <div class="modal-dialog modal-dialog-centered">

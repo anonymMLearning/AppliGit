@@ -153,6 +153,19 @@ def accueilGlobal():
     return render_template('accueil.html', collabs=collabs)
 
 
+@app.route('/modif_nb_equipe', methods=['GET', 'POST'])
+def modifNbEquipe():
+    mois = request.form['mois']
+    annee = request.form['annee']
+    equipe = request.form['equipe']
+    dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
+    for date in dates:
+        date.equipe = equipe
+    db.session.commit()
+    collabs = db.session.query(Collab).filter(Collab.access == 3).all()
+    return render_template('accueil.html', collabs=collabs)
+
+
 @app.route('/export_excel_marche', methods=['GET', 'POST'])
 def export_excel_marche():
     """
@@ -207,6 +220,41 @@ def init_db():
     """
     db.drop_all()
     db.create_all()
+    for annee in range(10):
+        for mois in range(12):
+            if annee == 0 and mois == 1:
+                prodValide = Prod(mois + 1, 2021 + annee, "valide", 24, 5320, 0, 4, 0)
+                prodValide.coutTeam = 32260
+                prodValide.jourMoisTeam = 18
+                prodReel = Prod(mois + 1, 2021 + annee, "reel", 24, 3990, 0, 2, 0)
+                prodReel.coutTeam = 30451.75
+                prodReel.jourMoisTeam = 18
+            else:
+                prodValide = Prod(mois + 1, 2021 + annee, "valide", 24, 0, 0, 4, 0)
+                prodValide.coutTeam = 0  # Si ces 2 lignes ne sont pas rajoutées, coutTeam et jourMoisTeam sont = None,
+                prodValide.jourMoisTeam = 18  # seule solution que j'ai trouvé pour résoudre le problème est de
+                # réaffecter 0.
+                prodReel = Prod(mois + 1, 2021 + annee, "reel", 24, 0, 0, 2, 0)
+                prodReel.coutTeam = 0
+                prodReel.jourMoisTeam = 18
+            db.session.add(prodValide)
+            db.session.add(prodReel)
+            if mois == 1:  # Mois de février
+                for jour in range(28):
+                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init, 400 le SCR moyen retenu :
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
+                if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
+                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6, 400))
+            else:
+                for jour in range(30):  # Ajout des 31 pour les mois concernés
+                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
+    db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6, 400))
+    db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6, 400))
+    db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6, 400))
+    db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6, 400))
+    db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
+    db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
+    db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
     db.session.commit()
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
@@ -1980,10 +2028,8 @@ def save_autre():
     dateNotif = request.form['dateNotif']
     dateFinPrev = request.form['dateFinPrev']
     notification = request.form['notification']
-    print(nbJoursAutre)
     autre = Boncomm(activite, "", com, anneeTarif, 0, nbJoursAutre, 0, 0, 0, "", "", "", 0, notification, "", "",
                     dateNotif, dateFinPrev, dateNotif, "", horsProjet, 0, 0, 0, nbJoursAutre, "", "", "", "", 0)
-    print(nbJoursAutre)
     # Association aux collabs :
     ids = request.form.getlist('collabs3')
     for idc in ids:  # Pour tous les collabs sélectionnés dans la création de l'activité.
@@ -2595,49 +2641,6 @@ def delete_activite(idb):
 """ --- Partie Date : voir, enregistrer ---"""
 
 
-@app.route('/init_date')
-def init_date():
-    """
-        Initialise la base de donnée des dates.
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-        render_template
-            renvoie la page d'acceuil.
-    """
-    for annee in range(10):
-        for mois in range(12):
-            if mois == 1:  # Mois de février
-                for jour in range(28):
-                    # 500 le TJM init, 6 le nombre de membres dans l'équipe init, 400 le SCR moyen retenu :
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
-                if ((2021 + annee) - 2020) % 4 == 0:  # Année bisextile
-                    db.session.add(Date(29, 2, 2021 + annee, 0, 500, 6, 400))
-            else:
-                for jour in range(30):  # Ajout des 31 pour les mois concernés
-                    db.session.add(Date(jour + 1, mois + 1, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 1, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 3, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 5, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 7, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
-        db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
-        db.session.commit()
-    dateNow = str(datetime.now())
-    mois = int(dateNow[5:7])
-    annee = int(dateNow[:4])
-    data = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
-    data_navbar = []
-    for collab in data:
-        data_navbar.append([collab.abreviation(), collab])
-    moisStr = stringMois(str(mois))
-    return render_template('accueilImputation.html', data_navbar=data_navbar, mois=mois, annee=annee, moisStr=moisStr)
-
-
 @app.route('/see_data_date')
 def see_data_date():
     """
@@ -3152,6 +3155,7 @@ def seeSuiviConso():
 
 @app.route('/see_scr', methods=['GET', 'POST'])
 def seeSCR():
+    dateNow = str(datetime.now())
     anneeDebut = request.form['anneeD']
     anneeFin = request.form['anneeF']
     anneeToShow = []
@@ -3173,17 +3177,27 @@ def seeSCR():
         data = [collab, collab.abreviation(), gcm, ["" for i in range(nbAnnees)]]
         for i in range(nbAnnees):
             annee = int(anneeDebut) + i
-            asso = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
-                                                          AssoCollabSCR.annee == annee).all()
-            if asso:
-                joursTot[i] += asso[0].scr.ponderation
-                coutTot[i] += asso[0].scr.cout * asso[0].scr.ponderation
-                data[3][i] = asso[0].scr
+            assos = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
+                                                           AssoCollabSCR.annee == annee).all()
+            if assos:
+                # On va prendre le SCR en cours pour les différents calculs, dans le cas de 2 SCR sur une même année
+                posSCR = 0
+                diff = 12  # Initialisation. L'écart entre les mois ne peut pas être plus grand
+                for j in range(len(assos)):
+                    if assos[j].moisDebut != "":
+                        if int(dateNow[5:7]) >= assos[j].moisDebut:  # A l'inverse, le moisD n'est pas encore arrivé
+                            if diff >= int(dateNow[5:7]) - assos[j].moisDebut:
+                                diff = int(dateNow[5:7]) - assos[j].moisDebut
+                                posSCR = j
+                joursTot[i] += assos[posSCR].scr.ponderation
+                coutTot[i] += assos[posSCR].scr.cout * assos[posSCR].scr.ponderation
+                data[3][i] = assos[posSCR].scr
         dataCollabsTableau2.append(data)
     for i in range(nbAnnees):
         if joursTot[i] != 0:
-            scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
-            scrMoyenArrondi[i] = round(scrMoyenCalc[i])
+            if joursTot[i] != 0:
+                scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
+                scrMoyenArrondi[i] = round(scrMoyenCalc[i])
 
     collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
@@ -3195,11 +3209,12 @@ def seeSCR():
     return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
                            dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
                            data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
-                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu)
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut))
 
 
 @app.route('/modif_scr_retenu/<annee>', methods=['Get', 'POST'])
 def modifScrRetenu(annee):
+    dateNow = str(datetime.now())
     # Modification du SCR moyen retenu :
     newScrMoyRetenu = request.form['scrMoyRetenu']
     datesToChange = db.session.query(Date).filter(Date.annee == annee).all()
@@ -3207,7 +3222,6 @@ def modifScrRetenu(annee):
         date.scrMoyRetenu = newScrMoyRetenu
     db.session.commit()
 
-    # Données pour construction de la page:
     anneeDebut = request.form['anneeD']
     anneeFin = request.form['anneeF']
     anneeToShow = []
@@ -3220,6 +3234,7 @@ def modifScrRetenu(annee):
     joursTot, coutTot = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)]
     scrMoyenCalc, scrMoyenArrondi, scrMoyenRetenu = [0 for i in range(nbAnnees)], [0 for i in range(nbAnnees)], []
     for i in range(nbAnnees):
+        print(db.session.query(Date).filter(Date.annee == int(anneeDebut) + i).all()[0].scrMoyRetenu)
         scrMoyenRetenu.append(db.session.query(Date).filter(Date.annee == int(anneeDebut) + i).all()[0].scrMoyRetenu)
 
     # Données des collaborateurs pour le 2ème tableau de la page :
@@ -3229,17 +3244,27 @@ def modifScrRetenu(annee):
         data = [collab, collab.abreviation(), gcm, ["" for i in range(nbAnnees)]]
         for i in range(nbAnnees):
             annee = int(anneeDebut) + i
-            asso = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
-                                                          AssoCollabSCR.annee == annee).all()
-            if asso:
-                joursTot[i] += asso[0].scr.ponderation
-                coutTot[i] += asso[0].scr.cout * asso[0].scr.ponderation
-                data[3][i] = asso[0].scr
+            assos = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
+                                                           AssoCollabSCR.annee == annee).all()
+            if assos:
+                # On va prendre le SCR en cours pour les différents calculs, dans le cas de 2 SCR sur une même année
+                posSCR = 0
+                diff = 12  # Initialisation. L'écart entre les mois ne peut pas être plus grand
+                for j in range(len(assos)):
+                    if assos[j].moisDebut != "":
+                        if int(dateNow[5:7]) >= assos[j].moisDebut:  # A l'inverse, le moisD n'est pas encore arrivé
+                            if diff >= int(dateNow[5:7]) - assos[j].moisDebut:
+                                diff = int(dateNow[5:7]) - assos[j].moisDebut
+                                posSCR = j
+                joursTot[i] += assos[posSCR].scr.ponderation
+                coutTot[i] += assos[posSCR].scr.cout * assos[posSCR].scr.ponderation
+                data[3][i] = assos[posSCR].scr
         dataCollabsTableau2.append(data)
     for i in range(nbAnnees):
         if joursTot[i] != 0:
-            scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
-            scrMoyenArrondi[i] = round(scrMoyenCalc[i])
+            if joursTot[i] != 0:
+                scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
+                scrMoyenArrondi[i] = round(scrMoyenCalc[i])
 
     collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
@@ -3251,11 +3276,12 @@ def modifScrRetenu(annee):
     return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
                            dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
                            data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
-                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu)
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut))
 
 
 @app.route('/save_scr', methods=['GET', 'POST'])
 def saveSCR():
+    dateNow = str(datetime.now())
     cout = request.form['cout']
     ponderation = request.form['ponderation']
     scr = SCR(cout, ponderation)
@@ -3282,17 +3308,27 @@ def saveSCR():
         data = [collab, collab.abreviation(), gcm, ["" for i in range(nbAnnees)]]
         for i in range(nbAnnees):
             annee = int(anneeDebut) + i
-            asso = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
-                                                          AssoCollabSCR.annee == annee).all()
-            if asso:
-                joursTot[i] += asso[0].scr.ponderation
-                coutTot[i] += asso[0].scr.cout * asso[0].scr.ponderation
-                data[3][i] = asso[0].scr
+            assos = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
+                                                           AssoCollabSCR.annee == annee).all()
+            if assos:
+                # On va prendre le SCR en cours pour les différents calculs, dans le cas de 2 SCR sur une même année
+                posSCR = 0
+                diff = 12  # Initialisation. L'écart entre les mois ne peut pas être plus grand
+                for j in range(len(assos)):
+                    if assos[j].moisDebut != "":
+                        if int(dateNow[5:7]) >= assos[j].moisDebut:  # A l'inverse, le moisD n'est pas encore arrivé
+                            if diff >= int(dateNow[5:7]) - assos[j].moisDebut:
+                                diff = int(dateNow[5:7]) - assos[j].moisDebut
+                                posSCR = j
+                joursTot[i] += assos[posSCR].scr.ponderation
+                coutTot[i] += assos[posSCR].scr.cout * assos[posSCR].scr.ponderation
+                data[3][i] = assos[posSCR].scr
         dataCollabsTableau2.append(data)
     for i in range(nbAnnees):
         if joursTot[i] != 0:
-            scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
-            scrMoyenArrondi[i] = round(scrMoyenCalc[i])
+            if joursTot[i] != 0:
+                scrMoyenCalc[i] = round(coutTot[i] / joursTot[i], 2)
+                scrMoyenArrondi[i] = round(scrMoyenCalc[i])
 
     collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
     data_navbar = []
@@ -3317,12 +3353,13 @@ def seeAddScrCollab(idScr):
         assos = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
                                                        AssoCollabSCR.scr_id == idScr).all()
         if not assos:  # Liste vide
-            data.append(["" for i in range(10)])  # On va montrer de 2021 à 2030
+            data.append([["", ""] for i in range(10)])  # On va montrer de 2021 à 2030
         else:
-            scrsAnnee = ["" for i in range(10)]
+            scrsAnnee = [["", ""] for i in range(10)]
             for asso in assos:
                 posListe = asso.annee - 2030 + 9  # Par exemple si annee = 2022, le placement dans la liste sera 1
-                scrsAnnee[posListe] = asso.annee
+                scrsAnnee[posListe][0] = asso.moisDebut
+                scrsAnnee[posListe][1] = asso.moisFin
             data.append(scrsAnnee)
         data.append(collab)
         dataCollabs.append(data)
@@ -3339,6 +3376,7 @@ def seeAddScrCollab(idScr):
 
 @app.route('/add_scr_collab/<idScr>', methods=['GET', 'POST'])
 def addScrCollab(idScr):
+    dateNow = str(datetime.now())
     scr = db.session.query(SCR).get(idScr)
     collabs = db.session.query(Collab).all()
     for collab in collabs:
@@ -3346,12 +3384,18 @@ def addScrCollab(idScr):
             assoc = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
                                                            AssoCollabSCR.scr_id == idScr,
                                                            AssoCollabSCR.annee == 2021 + i).all()
-            anneeScr = request.form[str(2021 + i) + "/" + str(collab.id_collab)]
+            moisD = request.form['moisD/' + str(2021 + i) + "/" + str(collab.id_collab)]
+            moisF = request.form['moisF/' + str(2021 + i) + "/" + str(collab.id_collab)]
             if assoc:  # Si il était déjà liée au collaborateur (liste non vide)
-                if anneeScr == "":  # On veut supprimer le lien entre ce SCR et ce collab pour cette année
-                    db.session.delete(assoc[0])
-            elif anneeScr != "":  # Sinon on crée l'association
-                assoc2 = AssoCollabSCR(annee=anneeScr)
+                if moisD == "":  # Si on a enlevé le moisD, c'est qu'on veut supprimer l'association
+                    for asso in assoc:
+                        db.session.delete(asso)
+                elif moisD != assoc[0].moisDebut or moisF != assoc[0].moisFin:  # Si on a modifié une ou les 2 données
+                    assoc[0].moisDebut = moisD
+                    assoc[0].moisFin = moisF
+
+            elif moisD != "":  # Il faut rentrer un moisF si on met un moisD, dans ce cas on crée l'association
+                assoc2 = AssoCollabSCR(annee=2021 + i, moisDebut=moisD, moisFin=moisF)
                 assoc2.collab = collab
                 assoc2.scr = scr
                 scr.collabs.append(assoc2)
@@ -3378,12 +3422,21 @@ def addScrCollab(idScr):
         data = [collab, collab.abreviation(), gcm, ["" for i in range(nbAnnees)]]
         for i in range(nbAnnees):
             annee = int(anneeDebut) + i
-            asso = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
-                                                          AssoCollabSCR.annee == annee).all()
-            if asso:
-                joursTot[i] += asso[0].scr.ponderation
-                coutTot[i] += asso[0].scr.cout * asso[0].scr.ponderation
-                data[3][i] = asso[0].scr
+            assos = db.session.query(AssoCollabSCR).filter(AssoCollabSCR.collab_id == collab.id_collab,
+                                                           AssoCollabSCR.annee == annee).all()
+            if assos:
+                # On va prendre le SCR en cours pour les différents calculs, dans le cas de 2 SCR sur une même année
+                posSCR = 0
+                diff = 12  # Initialisation. L'écart entre les mois ne peut pas être plus grand
+                for j in range(len(assos)):
+                    if assos[j].moisDebut != "":
+                        if int(dateNow[5:7]) >= assos[j].moisDebut:  # A l'inverse, le moisD n'est pas encore arrivé
+                            if diff >= int(dateNow[5:7]) - assos[j].moisDebut:
+                                diff = int(dateNow[5:7]) - assos[j].moisDebut
+                                posSCR = j
+                joursTot[i] += assos[posSCR].scr.ponderation
+                coutTot[i] += assos[posSCR].scr.cout * assos[posSCR].scr.ponderation
+                data[3][i] = assos[posSCR].scr
         dataCollabsTableau2.append(data)
     for i in range(nbAnnees):
         if joursTot[i] != 0:
@@ -3411,24 +3464,341 @@ def addScrCollab(idScr):
 @app.route('/see_prod_annee', methods=['GET', 'POST'])
 def seeProductionAnnee():
     anneeToShow = request.form['annee']
+    prodInitValide = db.session.query(Prod).filter(Prod.annee == 2021, Prod.type == "valide", Prod.mois == 2).all()[0]
+    prodInitReel = db.session.query(Prod).filter(Prod.annee == 2021, Prod.type == "reel", Prod.mois == 2).all()[0]
     prodsValidees = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "valide").all()
     prodsReelles = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "reel").all()
+    dataDate = db.session.query(Date).filter(Date.annee == anneeToShow, Date.jour == 1).all()
+    dataProdValide, dataProdReel = [], []
+    for i in range(12):
+        if int(anneeToShow) == 2021 and i == 0:
+            dataValide, dataReel = [prodsValidees[i], 0, 0, 0, 0, 0], [prodsReelles[i], 0, 0, 0, 0, 0]
+        else:
+            dataValide, dataReel = [prodsValidees[i]], [prodsReelles[i]]
 
-    return render_template('prodAnnee.html')
+            # Budget :
+            if int(anneeToShow) == 2021 and (i == 0 or i == 1):
+                budgetValide = 0
+                budgetReel = 0
+            else:
+                if prodsValidees[i].jourMoisDP != 0:
+                    budgetValide = dataDate[i].equipe * dataDate[i].tjm * prodsValidees[i].jourMoisTeam + dataDate[
+                        i].tjm * prodsValidees[i].jourMoisDP
+                else:
+                    budgetValide = 0
+                if int(anneeToShow) == 2021 and i == 2:
+                    budgetReel = 25000
+                else:
+                    if prodsReelles[i].jourMoisDP != 0:
+                        budgetReel = dataDate[i].equipe * dataDate[i].tjm * prodsReelles[i].jourMoisTeam + dataDate[
+                            i].tjm * \
+                                     prodsReelles[i].jourMoisDP
+                    else:
+                        budgetReel = 0
+            dataValide.append(budgetValide)
+            dataReel.append(budgetReel)
+
+            # Coût total :
+            coutTotValide = prodsValidees[i].coutDP + prodsValidees[i].coutTeam
+            coutTotReel = prodsReelles[i].coutDP + prodsReelles[i].coutTeam
+            dataValide.append(coutTotValide)
+            dataReel.append(coutTotReel)
+
+            # Amortissement :
+            """ Amortissement """
+            if int(anneeToShow) == 2021 and (i == 0 or i == 1):
+                amortValide = 0
+                amortReel = 0
+            else:
+                if prodsValidees[i].amort != 0:
+                    amortValide = round((prodInitValide.coutDP + prodInitValide.coutTeam) / prodsValidees[i].amort, 2)
+                else:
+                    amortValide = 0
+                if prodsReelles[i].amort != 0:
+                    amortReel = round((prodInitReel.coutDP + prodInitReel.coutTeam) / prodsReelles[i].amort, 2)
+                else:
+                    amortReel = 0
+            dataValide.append(amortValide)
+            dataReel.append(amortReel)
+            """ Reste à amortir """  # Amortissement mensuel tjs le même
+            if int(anneeToShow) == 2021:
+                if i == 0:  # Mois de janvier
+                    rAAValide = 0  # rAA : reste à amortir
+                    rAAReel = 0
+                elif i == 1:  # Mois de février
+                    rAAReel = 0
+                    rAAValide = 0
+                else:
+                    rAAValide = round(prodInitValide.coutDP + prodInitValide.coutTeam - amortValide * (i - 1), 2)
+                    rAAReel = round(prodInitReel.coutDP + prodInitReel.coutTeam - amortReel * (i - 1), 2)
+            # Pour les autres années
+            else:
+                rAAValide = round(prodInitValide.coutDP + prodInitValide.coutTeam - amortValide * (
+                        10 + 12 * (int(anneeToShow) - 2022) + i + 1), 2)
+                rAAReel = round(prodInitReel.coutDP + prodInitReel.coutTeam - amortReel * (
+                        10 + 12 * (int(anneeToShow) - 2022) + i + 1), 2)
+                # 10 : Tous les mois de 2021
+                # 12 * (anneeToShow - 2021 + 1) : nombre d'années complète entre 2021 et anneeToShow
+                # i - 1 : Nombre de mois passés sur l'année en cours
+            dataValide.append(rAAValide)
+            dataReel.append(rAAReel)
+
+            # Marge:
+            margeValide = round(budgetValide - coutTotValide - amortValide, 2)
+            margeReel = round(budgetReel - coutTotReel - amortReel, 2)
+            dataValide.append(margeValide)
+            dataReel.append(margeReel)
+
+            # Pourcentage marge :
+            if budgetValide != 0:
+                margePourcentValide = round(100 * (budgetValide - (coutTotValide + amortValide)) / budgetValide, 2)
+            else:
+                margePourcentValide = 0
+            if budgetReel != 0:
+                margePourcentReel = round(100 * (budgetReel - (coutTotReel + amortReel)) / budgetReel, 2)
+            else:
+                margePourcentReel = 0
+            dataValide.append(margePourcentValide)
+            dataReel.append(margePourcentReel)
+        dataProdValide.append(dataValide)
+        dataProdReel.append(dataReel)
+    collabs = db.session.query(Collab).all()
+    resultat = ""
+    return render_template('prodAnnee.html', collabs=collabs, dataProdValide=dataProdValide, dataProdReel=dataProdReel,
+                           dataDate=dataDate, anneeToShow=anneeToShow, resultat=resultat)
 
 
-@app.route('/add_col_production', methods=['GET', 'POST'])
-def addColProduction():
-    type = request.form['type']
+@app.route('/calc_cout/<anneeToShow>', methods=['GET', 'POST'])
+def calcCout(anneeToShow):
     mois = request.form['mois']
     annee = request.form['annee']
-    amort = request.form['amort']
-    coutDP = request.form['coutDP']
-    coutTeam = request.form['coutTeam']
-    jourMoisDP = request.form['jourMoisDP']
-    jourMoisTeam = request.form['jourMoisTeam']
-    newProd = Prod(mois, annee, type, amort, coutDP, coutTeam, jourMoisDP, jourMoisTeam)
-    db.session.add(newProd)
+    dataCollabs = request.form.getlist('collabs')
+    coutTot = 0
+    for idCollab in dataCollabs:
+        collab = db.session.query(Collab).get(idCollab)
+        nbJours = request.form['jours' + str(idCollab)]
+        scrsCollab = collab.scrs
+        for asso in scrsCollab:
+            if asso.annee == int(annee):
+                if asso.moisDebut <= int(mois) <= asso.moisFin:
+                    scrEC = asso.scr
+        coutTot += float(scrEC.cout) * float(nbJours)
+    coutTot = round(coutTot, 2)
+    resultat = "→ Coût calculé : " + str(coutTot)
+    prodInitValide = db.session.query(Prod).filter(Prod.annee == 2021, Prod.type == "valide", Prod.mois == 2).all()[0]
+    prodInitReel = db.session.query(Prod).filter(Prod.annee == 2021, Prod.type == "reel", Prod.mois == 2).all()[0]
+    prodsValidees = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "valide").all()
+    prodsReelles = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "reel").all()
+    dataDate = db.session.query(Date).filter(Date.annee == anneeToShow, Date.jour == 1).all()
+    dataProdValide, dataProdReel = [], []
+    for i in range(12):
+        if int(anneeToShow) == 2021 and i == 0:
+            dataValide, dataReel = [prodsValidees[i], 0, 0, 0, 0, 0], [prodsReelles[i], 0, 0, 0, 0, 0]
+        else:
+            dataValide, dataReel = [prodsValidees[i]], [prodsReelles[i]]
+
+            # Budget :
+            if int(anneeToShow) == 2021 and i == 0 or i == 1:
+                budgetValide = 0
+                budgetReel = 0
+            else:
+                if prodsValidees[i].jourMoisDP != 0:
+                    budgetValide = dataDate[i].equipe * dataDate[i].tjm * prodsValidees[i].jourMoisTeam + dataDate[
+                        i].tjm * prodsValidees[i].jourMoisDP
+                else:
+                    budgetValide = 0
+                if prodsReelles[i].jourMoisDP != 0:
+                    budgetReel = dataDate[i].equipe * dataDate[i].tjm * prodsReelles[i].jourMoisTeam + dataDate[i].tjm * \
+                                 prodsReelles[i].jourMoisDP
+                else:
+                    budgetReel = 0
+            dataValide.append(budgetValide)
+            dataReel.append(budgetReel)
+
+            # Coût total :
+            coutTotValide = prodsValidees[i].coutDP + prodsValidees[i].coutTeam
+            coutTotReel = prodsReelles[i].coutDP + prodsReelles[i].coutTeam
+            dataValide.append(coutTotValide)
+            dataReel.append(coutTotReel)
+
+            # Amortissement :
+            """ Amortissement """
+            if int(anneeToShow) == 2021 and i == 0 or i == 1:
+                amortValide = 0
+                amortReel = 0
+            else:
+                if prodsValidees[i].amort != 0:
+                    amortValide = round((prodInitValide.coutDP + prodInitValide.coutTeam) / prodsValidees[i].amort, 2)
+                else:
+                    amortValide = 0
+                if prodsReelles[i].amort != 0:
+                    amortReel = round((prodInitReel.coutDP + prodInitReel.coutTeam) / prodsReelles[i].amort, 2)
+                else:
+                    amortReel = 0
+            dataValide.append(amortValide)
+            dataReel.append(amortReel)
+            """ Reste à amortir """  # Amortissement mensuel tjs le même
+            if int(anneeToShow) == 2021:
+                if i == 0:  # Mois de janvier
+                    rAAValide = 0  # rAA : reste à amortir
+                    rAAReel = 0
+                elif i == 1:  # Mois de février
+                    rAAReel = 0
+                    rAAValide = 0
+                else:
+                    rAAValide = round(prodInitValide.coutDP + prodInitValide.coutTeam - amortValide * (i - 1), 2)
+                    rAAReel = round(prodInitReel.coutDP + prodInitReel.coutTeam - amortReel * (i - 1), 2)
+            # Pour les autres années
+            else:
+                rAAValide = round(prodInitValide.coutDP + prodInitValide.coutTeam - amortValide * (
+                        10 + 12 * (int(anneeToShow) - 2022) + i + 1), 2)
+                rAAReel = round(prodInitReel.coutDP + prodInitReel.coutTeam - amortReel * (
+                        10 + 12 * (int(anneeToShow) - 2022) + i + 1), 2)
+                # 10 : Tous les mois de 2021
+                # 12 * (anneeToShow - 2021 + 1) : nombre d'années complète entre 2021 et anneeToShow
+                # i - 1 : Nombre de mois passés sur l'année en cours
+            dataValide.append(rAAValide)
+            dataReel.append(rAAReel)
+            # Pourcentage marge :
+            if budgetValide != 0:
+                margePourcentValide = round(100 * (budgetValide - (coutTotValide + amortValide)) / budgetValide, 2)
+            else:
+                margePourcentValide = 0
+            if budgetReel != 0:
+                margePourcentReel = round(100 * (budgetReel - (coutTotReel + amortReel)) / budgetReel, 2)
+            else:
+                margePourcentReel = 0
+            dataValide.append(margePourcentValide)
+            dataReel.append(margePourcentReel)
+        dataProdValide.append(dataValide)
+        dataProdReel.append(dataReel)
+    collabs = db.session.query(Collab).all()
+    return render_template('prodAnnee.html', collabs=collabs, dataProdValide=dataProdValide, dataProdReel=dataProdReel,
+                           dataDate=dataDate, anneeToShow=anneeToShow, resultat=resultat)
+
+
+@app.route('/modif_prod_an/<anneeToShow>', methods=['GET', 'POST'])
+def modifProdAn(anneeToShow):
+    prodsValidees = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "valide").all()
+    prodsReelles = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "reel").all()
+    for i in range(12):
+        coutValideDP = request.form['valide/' + str(i + 1) + '/' + str(anneeToShow) + '/DP']
+        coutValideTeam = request.form['valide/' + str(i + 1) + '/' + str(anneeToShow) + '/Team']
+        coutReelDP = request.form['reel/' + str(i + 1) + '/' + str(anneeToShow) + '/DP']
+        coutReelTeam = request.form['reel/' + str(i + 1) + '/' + str(anneeToShow) + '/Team']
+        prodsValidees[i].coutDP = coutValideDP
+        prodsValidees[i].coutTeam = coutValideTeam
+        prodsReelles[i].coutDP = coutReelDP
+        prodsReelles[i].coutTeam = coutReelTeam
     db.session.commit()
-    collabs = db.session.query(Collab).filter(Collab.access == 3).all()
-    return render_template('accueil.html', collabs=collabs)
+
+    prodInitValide = db.session.query(Prod).filter(Prod.annee == 2021, Prod.type == "valide", Prod.mois == 2).all()[0]
+    prodInitReel = db.session.query(Prod).filter(Prod.annee == 2021, Prod.type == "reel", Prod.mois == 2).all()[0]
+    prodsValidees = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "valide").all()
+    prodsReelles = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "reel").all()
+    dataDate = db.session.query(Date).filter(Date.annee == anneeToShow, Date.jour == 1).all()
+    dataProdValide, dataProdReel = [], []
+    for i in range(12):
+        if int(anneeToShow) == 2021 and i == 0:
+            dataValide, dataReel = [prodsValidees[i], 0, 0, 0, 0, 0], [prodsReelles[i], 0, 0, 0, 0, 0]
+        else:
+            dataValide, dataReel = [prodsValidees[i]], [prodsReelles[i]]
+
+            # Budget :
+            if int(anneeToShow) == 2021 and (i == 0 or i == 1):
+                budgetValide = 0
+                budgetReel = 0
+            else:
+                if prodsValidees[i].jourMoisDP != 0:
+                    budgetValide = dataDate[i].equipe * dataDate[i].tjm * prodsValidees[i].jourMoisTeam + dataDate[
+                        i].tjm * prodsValidees[i].jourMoisDP
+                else:
+                    budgetValide = 0
+                if prodsReelles[i].jourMoisDP != 0:
+                    budgetReel = dataDate[i].equipe * dataDate[i].tjm * prodsReelles[i].jourMoisTeam + dataDate[i].tjm * \
+                                 prodsReelles[i].jourMoisDP
+                else:
+                    budgetReel = 0
+            dataValide.append(budgetValide)
+            dataReel.append(budgetReel)
+
+            # Coût total :
+            coutTotValide = prodsValidees[i].coutDP + prodsValidees[i].coutTeam
+            coutTotReel = prodsReelles[i].coutDP + prodsReelles[i].coutTeam
+            dataValide.append(coutTotValide)
+            dataReel.append(coutTotReel)
+
+            # Amortissement :
+            """ Amortissement """
+            if int(anneeToShow) == 2021 and (i == 0 or i == 1):
+                amortValide = 0
+                amortReel = 0
+            else:
+                if prodsValidees[i].amort != 0:
+                    amortValide = round((prodInitValide.coutDP + prodInitValide.coutTeam) / prodsValidees[i].amort, 2)
+                else:
+                    amortValide = 0
+                if prodsReelles[i].amort != 0:
+                    amortReel = round((prodInitReel.coutDP + prodInitReel.coutTeam) / prodsReelles[i].amort, 2)
+                else:
+                    amortReel = 0
+            dataValide.append(amortValide)
+            dataReel.append(amortReel)
+            """ Reste à amortir """  # Amortissement mensuel tjs le même
+            if int(anneeToShow) == 2021:
+                if i == 0:  # Mois de janvier
+                    rAAValide = 0  # rAA : reste à amortir
+                    rAAReel = 0
+                elif i == 1:  # Mois de février
+                    rAAReel = 0
+                    rAAValide = 0
+                else:
+                    rAAValide = round(prodInitValide.coutDP + prodInitValide.coutTeam - amortValide * (i - 1), 2)
+                    rAAReel = round(prodInitReel.coutDP + prodInitReel.coutTeam - amortReel * (i - 1), 2)
+            # Pour les autres années
+            else:
+                rAAValide = round(prodInitValide.coutDP + prodInitValide.coutTeam - amortValide * (
+                        10 + 12 * (int(anneeToShow) - 2022) + i + 1), 2)
+                rAAReel = round(prodInitReel.coutDP + prodInitReel.coutTeam - amortReel * (
+                        10 + 12 * (int(anneeToShow) - 2022) + i + 1), 2)
+                # 10 : Tous les mois de 2021
+                # 12 * (anneeToShow - 2021 + 1) : nombre d'années complète entre 2021 et anneeToShow
+                # i - 1 : Nombre de mois passés sur l'année en cours
+            dataValide.append(rAAValide)
+            dataReel.append(rAAReel)
+            # Pourcentage marge :
+            if budgetValide != 0:
+                margePourcentValide = round(100 * (budgetValide - (coutTotValide + amortValide)) / budgetValide, 2)
+            else:
+                margePourcentValide = 0
+            if budgetReel != 0:
+                margePourcentReel = round(100 * (budgetReel - (coutTotReel + amortReel)) / budgetReel, 2)
+            else:
+                margePourcentReel = 0
+            dataValide.append(margePourcentValide)
+            dataReel.append(margePourcentReel)
+        dataProdValide.append(dataValide)
+        dataProdReel.append(dataReel)
+    collabs = db.session.query(Collab).all()
+    resultat = ""
+    return render_template('prodAnnee.html', collabs=collabs, dataProdValide=dataProdValide, dataProdReel=dataProdReel,
+                           dataDate=dataDate, anneeToShow=anneeToShow, resultat=resultat)
+
+
+"""------------------------------------------------------------------------------------------------------------------"""
+"""------------------------------------------------- Suivi Booster---------------------------------------------------"""
+
+
+@app.route('/accueil_booster')
+def accueilBooster():
+    return render_template('accueilBooster.html')
+
+
+@app.route('/see_booster_conso')
+def seeBoosterConso():
+    return render_template('boosterConso.html')
+
+
+@app.route('/see_suivi_ssq')
+def seeSuiviSSQ():
+    return render_template('suiviSSQ.html')
