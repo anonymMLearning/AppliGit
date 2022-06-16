@@ -673,6 +673,13 @@ def save_collab():
     # On crée les congés du collaborateur
     conges = Boncomm(nom_conges, "", "", 0, 0, 0, 0, 0, 0, "", "", "", 0, "", "", "", "", "", "", "", "", 0,
                      nbCongesTot, 0, 0, "", "", "", "", 0)
+    # On crée l'assoication aux boosters
+    boosters = db.session.query(Booster).all()
+    for booster in boosters:
+        assoc = AssoCollabBooster(ventil=0, rafUpdate=0)
+        assoc.collab = collab
+        assoc.booster = booster
+        booster.collabs.append(assoc)
     assoc = AssociationBoncommCollab(joursAllouesBC=int(nbCongesTot))
     assoc.collab = collab
     conges.collabs.append(assoc)  # On crée l'association entre les congés et le collab
@@ -777,6 +784,9 @@ def delete_collab(idc):
     associations = db.session.query(AssociationBoncommCollab).filter(
         AssociationBoncommCollab.collab_id == idc).all()
     for assoc in associations:  # On supprime les associations de ce collaborateur.
+        db.session.delete(assoc)
+    associations = db.session.query(AssoCollabBooster).filter(AssoCollabBooster.collab_id == idc).all()
+    for assoc in associations:  # On supprime les associations aux Boosters de ce collaborateur.
         db.session.delete(assoc)
     db.session.delete(data_to_delete)
     db.session.commit()
