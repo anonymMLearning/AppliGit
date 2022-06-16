@@ -101,7 +101,6 @@ class AssoCollabSCR(db.Model):
 class AssoCollabBooster(db.Model):
     collab_id = db.Column('collab_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True)
     booster_id = db.Column('booster_id', db.Integer, db.ForeignKey('booster.id_booster'), primary_key=True)
-    annee = db.Column(db.Integer, nullable=False)
     collab = db.relationship("Collab", back_populates="boosters")
     booster = db.relationship("Booster", back_populates="collabs")
 
