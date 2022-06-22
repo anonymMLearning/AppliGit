@@ -243,6 +243,19 @@ def init_db():
         db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
         db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
         db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
+
+        # NDF : associées au BC d'id 0 qui n'existe pas, c'est la référence pour les différents types de NDF
+        db.session.add(NoteDeFrais(0, "Avion", 0))
+        db.session.add(NoteDeFrais(0, "Taxi", 0))
+        db.session.add(NoteDeFrais(0, "Métro", 0))
+        db.session.add(NoteDeFrais(0, "Loc. auto", 0))
+        db.session.add(NoteDeFrais(0, "Essence", 0))
+        db.session.add(NoteDeFrais(0, "Péage", 0))
+        db.session.add(NoteDeFrais(0, "Repas", 0))
+        db.session.add(NoteDeFrais(0, "Hotel", 0))
+        db.session.add(NoteDeFrais(0, "Parking", 0))
+        db.session.add(NoteDeFrais(0, "AMEX - NDF", 0))
+
     db.session.commit()
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
