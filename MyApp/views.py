@@ -227,13 +227,23 @@ def init_db():
     db.create_all()
     for annee in range(10):
         for mois in range(12):
-            prodValide = Prod(mois + 1, 2021 + annee, "valide", 0, 0, 0, 4, 0)
-            prodValide.coutTeam = 0  # Si ces 2 lignes ne sont pas rajoutées, coutTeam et jourMoisTeam sont = None,
-            prodValide.jourMoisTeam = 18  # seule solution que j'ai trouvé pour résoudre le problème est de réaffecter une valeur par la suite.
+            db.session.add(Booster(mois + 1, 2021 + annee, "", 0, 0))
+            if annee == 0 and mois == 1:
+                prodValide = Prod(mois + 1, 2021 + annee, "valide", 24, 5320, 0, 4, 0)
+                prodValide.coutTeam = 32260
+                prodValide.jourMoisTeam = 18
+                prodReel = Prod(mois + 1, 2021 + annee, "reel", 24, 3990, 0, 2, 0)
+                prodReel.coutTeam = 30451.75
+                prodReel.jourMoisTeam = 18
+            else:
+                prodValide = Prod(mois + 1, 2021 + annee, "valide", 24, 0, 0, 4, 0)
+                prodValide.coutTeam = 0  # Si ces 2 lignes ne sont pas rajoutées, coutTeam et jourMoisTeam sont = None,
+                prodValide.jourMoisTeam = 18  # seule solution que j'ai trouvé pour résoudre le problème est de
+                # réaffecter 0.
+                prodReel = Prod(mois + 1, 2021 + annee, "reel", 24, 0, 0, 2, 0)
+                prodReel.coutTeam = 0
+                prodReel.jourMoisTeam = 18
             db.session.add(prodValide)
-            prodReel = Prod(mois + 1, 2021 + annee, "reel", 0, 0, 0, 2, 0)
-            prodReel.coutTeam = 0
-            prodReel.jourMoisTeam = 18
             db.session.add(prodReel)
             if mois == 1:  # Mois de février
                 for jour in range(28):
@@ -251,6 +261,19 @@ def init_db():
         db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
         db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
         db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
+
+        # NDF : associées au BC d'id 0 qui n'existe pas, c'est la référence pour les différents types de NDF
+        db.session.add(NoteDeFrais(0, "Avion", 0))
+        db.session.add(NoteDeFrais(0, "Taxi", 0))
+        db.session.add(NoteDeFrais(0, "Métro", 0))
+        db.session.add(NoteDeFrais(0, "Loc. auto", 0))
+        db.session.add(NoteDeFrais(0, "Essence", 0))
+        db.session.add(NoteDeFrais(0, "Péage", 0))
+        db.session.add(NoteDeFrais(0, "Repas", 0))
+        db.session.add(NoteDeFrais(0, "Hotel", 0))
+        db.session.add(NoteDeFrais(0, "Parking", 0))
+        db.session.add(NoteDeFrais(0, "AMEX - NDF", 0))
+
     db.session.commit()
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
@@ -663,6 +686,13 @@ def save_collab():
     # On crée les congés du collaborateur
     conges = Boncomm(nom_conges, "", "", 0, 0, 0, 0, 0, 0, "", "", "", 0, "", "", "", "", "", "", "", "", 0,
                      nbCongesTot, 0, 0, "", "", "", "", 0)
+    # On crée l'assoication aux boosters
+    boosters = db.session.query(Booster).all()
+    for booster in boosters:
+        assoc = AssoCollabBooster(ventil=0, rafUpdate=0)
+        assoc.collab = collab
+        assoc.booster = booster
+        booster.collabs.append(assoc)
     assoc = AssociationBoncommCollab(joursAllouesBC=int(nbCongesTot))
     assoc.collab = collab
     conges.collabs.append(assoc)  # On crée l'association entre les congés et le collab
@@ -767,6 +797,9 @@ def delete_collab(idc):
     associations = db.session.query(AssociationBoncommCollab).filter(
         AssociationBoncommCollab.collab_id == idc).all()
     for assoc in associations:  # On supprime les associations de ce collaborateur.
+        db.session.delete(assoc)
+    associations = db.session.query(AssoCollabBooster).filter(AssoCollabBooster.collab_id == idc).all()
+    for assoc in associations:  # On supprime les associations aux Boosters de ce collaborateur.
         db.session.delete(assoc)
     db.session.delete(data_to_delete)
     db.session.commit()
