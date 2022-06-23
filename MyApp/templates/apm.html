@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>APM</title>
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_apm">APM</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chrono_apm">Chrono APM</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_solde_atos">Solde réalisé Atos</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_solde_egis">Solde réalisé EGIS</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- APM -</h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau regroupant les APM enregistrés.
+            <br> Pour ajouter un APM, cliquez sur le bouton associé.<br>
+            Vous pouvez ajouter des notes de frais, ou modifier l'association aux UO d'un APM en cliquant sur les
+            boutons en fin de ligne.
+        </h5>
+    </div>
+</div>
+<div align="center">
+    <button style="margin-bottom: 20px;background-image: var(--bs-gradient);" type="button"
+            class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#saveapm">
+        Ajouter un APM
+    </button>
+    <div class="modal fade" id="saveapm" tabindex="-1" aria-hidden="true"
+         aria-labelledby="saveapm">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Ajouter un APM</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/save_apm" id="formulaire" method="post">
+                        <label class="form-label text-primary" for="apm">N°APM :</label>
+                        <input class="text-primary form-control" type="text" id="apm" name="apm" required="required">
+                        <br>
+                        <label class="form-label text-primary" for="num">N° du BC associé :</label>
+                        <input class="text-primary form-control" type="text" id="num" name="num" required="required">
+                        <br>
+                        <label class="form-label text-primary" for="poste">Poste :</label>
+                        <input class="text-primary form-control" type="text" id="poste" name="poste"
+                               required="required">
+                        <br>
+                        <label class="form-label text-primary" for="activite">Objet du déplacement :</label>
+                        <input class="text-primary form-control" type="text" id="activite"
+                               name="activite" required="required">
+                        <br>
+                        <label class="form-label text-primary" for="debut">Date de début :</label>
+                        <input required="required" class="text-primary form-control" type="date"
+                               id="debut" name="debut">
+                        <br>
+                        <label class="form-label text-primary" for="fin">Date de fin :</label>
+                        <input required="required" class="text-primary form-control" type="date"
+                               id="fin" name="fin">
+                        <br>
+                        <label class="form-label text-primary" for="lieu">Lieu :</label>
+                        <input class="text-primary form-control" type="text" id="lieu" name="lieu" required="required">
+                        <br>
+                        <label class="form-label text-primary" for="client">Client :</label>
+                        <input class="text-primary form-control" type="text" id="client" name="client"
+                               required="required" placeholder="Format pour Prénom Nom : PNM">
+                        <br>
+                        <label class="form-label text-primary" for="signature">Date de signature :</label>
+                        <input required="required" class="text-primary form-control" type="date"
+                               id="signature" name="signature">
+                        <br>
+                        <label class="form-label text-primary" for="numBC">Numéro du bon :</label>
+                        <input class="text-primary form-control" type="text" id="numBC" name="numBC"
+                               required="required">
+                        <br>
+                        <label class="form-label text-primary" for="posteBC">Poste :</label>
+                        <input class="text-primary form-control" type="text" id="posteBC" name="posteBC"
+                               required="required">
+                        <br>
+                        <label class="form-label text-primary" for="projetBC">Projet :</label>
+                        <select class="form-select bg-white text-primary" name="projetBC"
+                                id="projetBC">
+                            <option value="CNS">CNS</option>
+                            <option value="APP">APP</option>
+                            <option value="ATM1">ATM1</option>
+                            <option value="ATM2">ATM2</option>
+                            <option value="ATM1-2">ATM1-2</option>
+                            <option value="TRANS">TRANS</option>
+                            <option value="EXP">EXP</option>
+                        </select>
+                        <br>
+                        <label class="form-label text-primary">Date de notification :</label>
+                        <input required="required" class="text-primary form-control" type="date"
+                               id="dateNotifBC" name="dateNotif"
+                               value="2022-04-01">
+                        <br>
+                        <label class="form-label text-primary" for="dateFinPrevBC">Date de fin prévue :</label>
+                        <input required="required" class="text-primary form-control" type="date"
+                               id="dateFinPrevBC"
+                               name="dateFinPrev"
+                               value="2022-04-01">
+                        <br>
+                        <label class="form-label text-primary" for="notification">Bon notifié :</label>
+                        <select required="required" class="form-select bg-white text-primary"
+                                name="notification"
+                                id="notification">
+                            <option value="O">Oui</option>
+                            <option value="N">Non</option>
+                        </select>
+                        <br>
+                        <label class="form-label text-primary" for="facturation">Facturation :</label>
+                        <select class="form-select bg-white text-primary" name="facturation"
+                                id="facturation">
+                            <option value="S">Soldé</option>
+                            <option value="A1">Accompte 1</option>
+                            <option value="A2">Accompte 2</option>
+                            <option value="A3">Accompte 3</option>
+                        </select>
+                        <br>
+                        <label class="form-label text-primary" for="collabsBC">Liste des collaborateurs
+                            concernés :</label>
+                        <br>
+                        <select required="required" class="form-select bg-white text-primary" multiple
+                                name="collabsBC"
+                                id="collabsBC">
+                            {% for collab in collabs %}
+                            <option name="{{collab.id_collab}}" value={{collab.id_collab}}>
+                                {{collab.nom}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <br>
+
+                        <label class="form-label text-primary">Répartition des jours (pour les collaborateurs
+                            sélectionnés) :</label>
+                        <br>
+                        {% for collab in collabs %}
+                        <label class="form-label text-primary">{{collab.nom}}</label>
+                        <input class="text-primary form-control" value="0" onclick="nbJoursAllouables()"
+                               type="number"
+                               step="0.5"
+                               id="joursBC{{collab.id_collab}}"
+                               name="joursBC{{collab.id_collab}}">
+                        <br>
+                        {% endfor %}
+                        <br>
+                        <label class="form-label text-primary">Répartition pour la GDP :</label>
+                        <br>
+                        <label class="form-label text-primary">AVA :</label>
+                        <input class="text-primary form-control" type="number"
+                               step="0.5"
+                               name="joursGDPAVA" value="0">
+                        <br>
+                        <label class="form-label text-primary">CDE :</label>
+                        <input class="text-primary form-control" type="number"
+                               step="0.5"
+                               name="joursGDPCDE" value="0">
+                        <button style="margin-top: 15px;" class="btn btn-primary" name="button">Enregistrer le
+                            BC
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</html>

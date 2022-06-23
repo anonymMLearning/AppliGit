@@ -12,7 +12,7 @@ Bootstrap(app)
 if __name__ == "__main__":
     app.run()
 
-# Config options - Make sure you created a 'config.py' file.
+# Config options - Make sure you created a 'config.py'
 app.config.from_object('config')
 
 # Create database connection object
@@ -222,6 +222,7 @@ def init_db():
     db.create_all()
     for annee in range(10):
         for mois in range(12):
+            db.session.add(Booster(mois + 1, 2021 + annee, "", 0, 0))
             if annee == 0 and mois == 1:
                 prodValide = Prod(mois + 1, 2021 + annee, "valide", 24, 5320, 0, 4, 0)
                 prodValide.coutTeam = 32260
@@ -255,6 +256,19 @@ def init_db():
     db.session.add(Date(31, 8, 2021 + annee, 0, 500, 6, 400))
     db.session.add(Date(31, 10, 2021 + annee, 0, 500, 6, 400))
     db.session.add(Date(31, 12, 2021 + annee, 0, 500, 6, 400))
+
+    # NDF : associées au BC d'id 0 qui n'existe pas, c'est la référence pour les différents types de NDF
+    db.session.add(NoteDeFrais(0, "Avion", 0))
+    db.session.add(NoteDeFrais(0, "Taxi", 0))
+    db.session.add(NoteDeFrais(0, "Métro", 0))
+    db.session.add(NoteDeFrais(0, "Loc. auto", 0))
+    db.session.add(NoteDeFrais(0, "Essence", 0))
+    db.session.add(NoteDeFrais(0, "Péage", 0))
+    db.session.add(NoteDeFrais(0, "Repas", 0))
+    db.session.add(NoteDeFrais(0, "Hotel", 0))
+    db.session.add(NoteDeFrais(0, "Parking", 0))
+    db.session.add(NoteDeFrais(0, "AMEX - NDF", 0))
+
     db.session.commit()
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
@@ -1732,11 +1746,19 @@ def save_collab():
     prenom = request.form['prenom_save']
     access = request.form['access_save']
     entreprise = request.form['entreprise_save']
+    rafInit = request.form['rafInit']
     gcm = request.form['gcm']
     nbCongesTot = request.form['conges_save']
     nom_conges = "Congés de " + nom + " " + prenom  # Nom générique pour les congés d'un collab
-    collab = Collab(nom, prenom, access, entreprise, 0)
+    collab = Collab(nom, prenom, access, entreprise, rafInit)
     collab.gcm_id = gcm
+    # On crée l'assoication aux boosters
+    boosters = db.session.query(Booster).all()
+    for booster in boosters:
+        assoc = AssoCollabBooster(ventil=0, rafUpdate=0)
+        assoc.collab = collab
+        assoc.booster = booster
+        booster.collabs.append(assoc)
     # On crée les congés du collaborateur
     conges = Boncomm(nom_conges, "", "", 0, 0, 0, 0, 0, 0, "", "", "", 0, "", "", "", "", "", "", "", "", 0,
                      nbCongesTot, 0, 0, "", "", "", "", 0)
@@ -1795,11 +1817,13 @@ def modif_collab(idc):
     prenom = request.form['prenom2']
     access = request.form['access2']
     entreprise = request.form['entreprise2']
+    rafInit = request.form['rafInit']
     gcm = request.form['gcm']
     newConges = request.form['conges']
     data_to_change = db.session.query(Collab).get(idc)
     prevConges = data_to_change.boncomms[0].boncomm.nbCongesTot
     data_to_change.entreprise = entreprise
+    data_to_change.rafInit = rafInit
     if nom != "":  # On ne modifie pas si l'utilisateur ne veut pas modifier le nom = champ vide
         data_to_change.nom = nom
     if prenom != "":  # On ne modifie pas si l'utilisateur ne veut pas modifier le prenom = champ vide
@@ -1854,9 +1878,11 @@ def delete_collab(idc):
     imputations = db.session.query(Imputation).filter(Imputation.collab_id == idc).all()
     for imputation in imputations:  # On supprime les imputations de ce collaborateur.
         db.session.delete(imputation)
-    associations = db.session.query(AssociationBoncommCollab).filter(
-        AssociationBoncommCollab.collab_id == idc).all()
+    associations = db.session.query(AssociationBoncommCollab).filter(AssociationBoncommCollab.collab_id == idc).all()
     for assoc in associations:  # On supprime les associations de ce collaborateur.
+        db.session.delete(assoc)
+    associations = db.session.query(AssoCollabBooster).filter(AssoCollabBooster.collab_id == idc).all()
+    for assoc in associations:  # On supprime les associations aux Boosters de ce collaborateur.
         db.session.delete(assoc)
     db.session.delete(data_to_delete)
     db.session.commit()
@@ -3340,7 +3366,7 @@ def saveSCR():
     return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
                            dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
                            data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
-                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu)
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut))
 
 
 @app.route('/see_add_scr_collab/<idScr>')
@@ -3454,7 +3480,7 @@ def addScrCollab(idScr):
     return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
                            dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
                            data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
-                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu)
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut))
 
 
 """------------------------------------------------------------------------------------------------------------------"""
@@ -3794,11 +3820,569 @@ def accueilBooster():
     return render_template('accueilBooster.html')
 
 
+@app.route('/see_ssq_init')
+def seeSSQInit():
+    return render_template('suiviSSQInit.html')
+
+
 @app.route('/see_booster_conso')
 def seeBoosterConso():
-    return render_template('boosterConso.html')
+    collabs = db.session.query(Collab).all()
+    moisDebut, anneeDebut = 9, 2021  # Commence en septembre
+    dateNow = str(datetime.now())
+    anneeFin, moisFin = int(dateNow[:4]), int(dateNow[5:7])
+    if anneeDebut == anneeFin:
+        periode = [[moisDebut + i, anneeDebut] for i in range(moisFin - moisDebut + 1)]
+    else:
+        periode = [[moisDebut + i, anneeDebut] for i in range(12 - moisDebut + 1)]
+        for i in range(int(anneeFin) - int(anneeDebut) - 1):
+            for j in range(12):
+                periode.append([j + 1, anneeDebut + i + 1])
+        for i in range(moisFin):
+            periode.append([i + 1, anneeFin])
+
+    dataToShowLeft, dataToShowRight = [], []
+    nbMois, nbCollab = len(periode), len(collabs)
+    for k in range(nbMois):
+        mois = periode[k][0]
+        annee = periode[k][1]
+        dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
+        dataRight, dataLeft = [], []
+        """ Construction partie droite """
+        rafPrecCollab = [0 for i in range(nbCollab + 1)]
+        conso = [0 for i in range(nbCollab + 1)]
+        raf = [0 for i in range(nbCollab + 1)]  # +1 pour avoir le total de la ligne
+        ventilTot = [0 for i in range(nbCollab + 1)]
+        rafUpCollab = [0 for i in range(nbCollab + 1)]
+
+        if annee == 2021 and mois == 9:
+            for j in range(nbCollab):
+                collab = collabs[j]
+                booster = db.session.query(Booster).filter(
+                    Booster.mois == mois - 1, Booster.annee == annee).all()[0]
+                asso = db.session.query(AssoCollabBooster).filter(
+                    AssoCollabBooster.collab_id == collab.id_collab,
+                    AssoCollabBooster.booster_id == booster.id_booster).all()[0]
+                rafPrecCollab[j] = asso.rafUpdate
+                rafPrecCollab[-1] += asso.rafUpdate
+        else:
+            for j in range(nbCollab):
+                rafPrecCollab[j] = dataToShowRight[k - 1][4][j]
+                rafPrecCollab[-1] = dataToShowRight[k - 1][4][-1]
+        dataRight.append(rafPrecCollab)
+
+        booster = db.session.query(Booster).filter(Booster.mois == mois, Booster.annee == annee).all()[0]
+        for j in range(nbCollab):
+            collab = collabs[j]
+            asso = db.session.query(AssoCollabBooster).filter(
+                AssoCollabBooster.collab_id == collab.id_collab,
+                AssoCollabBooster.booster_id == booster.id_booster).all()[0]
+            """ Ventilation """
+            ventilTot[j] = asso.ventil
+            ventilTot[-1] += asso.ventil
+
+            """ Conso """
+            for date in dates:
+                imputs = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
+                                                             Imputation.collab_id == collab.id_collab,
+                                                             Imputation.collab_id == collab.id_collab,
+                                                             Imputation.type == "client").all()
+                for imput in imputs:
+                    boncomm = db.session.query(Boncomm).get(imput.acti_id)
+                    if boncomm.horsProjet == "Non":
+                        conso[j] += imput.joursAllouesTache
+                        conso[-1] += imput.joursAllouesTache
+
+            """ RAF """
+            raf[j] = rafPrecCollab[j] - conso[j]
+
+            """ RAF Update """
+            rafUpCollab[j] = raf[j] + ventilTot[j]
+
+        raf[-1] = rafPrecCollab[-1] - conso[-1]
+        rafUpCollab[-1] = raf[-1] + ventilTot[-1]
+
+        dataRight.append(conso)
+        dataRight.append(raf)
+        dataRight.append(ventilTot)
+        dataRight.append(rafUpCollab)
+        dataToShowRight.append(dataRight)
+        """ Construction partie gauche """
+
+        rafPrec, rafCalc, rafUp, rafMonte = [], [0, 0, 0], [0, 0, 0], [booster.monteR, booster.monteG,
+                                                                       booster.monteR + booster.monteG]
+
+        """ RAF -1 """
+        if annee == 2021 and mois == 9:
+            rafPrec.append(0)
+            rafPrec.append(101.5)
+            rafPrec.append(101.5)
+        else:
+            rafPrec.append(dataToShowLeft[k - 1][4][0])
+            rafPrec.append(dataToShowLeft[k - 1][4][1])
+            rafPrec.append(dataToShowLeft[k - 1][4][2])
+        dataLeft.append(rafPrec)
+
+        """ Ventilation """
+        ventilation = [0, ventilTot[-1], ventilTot[-1]]
+
+        """ RAF Calc"""
+        rafCalc[0] = rafPrec[0] - ventilation[0]
+        rafCalc[1] = rafPrec[1] - ventilation[1]
+        rafCalc[2] = rafPrec[2] - ventilation[2]
+
+        """ RAF Update """
+        rafUp[0] = rafMonte[0] + rafCalc[0]
+        rafUp[1] = rafMonte[1] + rafCalc[1]
+        rafUp[2] = rafUp[0] + rafUp[1]
+
+        dataLeft.append(ventilation)
+        dataLeft.append(rafCalc)
+        dataLeft.append(rafMonte)
+        dataLeft.append(rafUp)
+        dataLeft.append(booster.com)
+        dataToShowLeft.append(dataLeft)
+
+    abrevCollabs = []
+    for collab in collabs:
+        abrevCollabs.append(collab.abreviation())
+    return render_template('boosterConso.html', dataToShowRight=dataToShowRight, dataToShowLeft=dataToShowLeft,
+                           nbCollab=nbCollab, nbMois=nbMois, collabs=collabs, abrevCollabs=abrevCollabs,
+                           periode=periode)
+
+
+@app.route('/modif_booster', methods=['GET', 'POST'])
+def modifBooster():
+    collabs = db.session.query(Collab).all()
+    moisDebut, anneeDebut = 9, 2021  # Commence en septembre
+    dateNow = str(datetime.now())
+    anneeFin, moisFin = int(dateNow[:4]), int(dateNow[5:7])
+    if anneeDebut == anneeFin:
+        periode = [[moisDebut + i, anneeDebut] for i in range(moisFin - moisDebut + 1)]
+    else:
+        periode = [[moisDebut + i, anneeDebut] for i in range(12 - moisDebut + 1)]
+        for i in range(int(anneeFin) - int(anneeDebut) - 1):
+            for j in range(12):
+                periode.append([j + 1, anneeDebut + i + 1])
+        for i in range(moisFin):
+            periode.append([i + 1, anneeFin])
+    nbMois, nbCollab = len(periode), len(collabs)
+    for k in range(nbMois):
+        booster = db.session.query(Booster).filter(Booster.mois == periode[k][0],
+                                                   Booster.annee == periode[k][1]).all()[0]
+        com = request.form['com/' + str(periode[k][0]) + '/' + str(periode[k][1])]
+        monteR = request.form['monteR/' + str(periode[k][0]) + '/' + str(periode[k][1])]
+        monteG = request.form['monteG/' + str(periode[k][0]) + '/' + str(periode[k][1])]
+        booster.com, booster.monteG, booster.monteR = com, monteG, monteR
+        for j in range(nbCollab):
+            ventil = request.form[
+                'ventil/' + str(collabs[j].id_collab) + '/' + str(periode[k][0]) + '/' + str(periode[k][1])]
+            asso = db.session.query(AssoCollabBooster).filter(
+                AssoCollabBooster.collab_id == collabs[j].id_collab,
+                AssoCollabBooster.booster_id == booster.id_booster).all()[0]
+            asso.ventil = ventil
+    db.session.commit()
+
+    dataToShowLeft, dataToShowRight = [], []
+    for k in range(nbMois):
+        mois = periode[k][0]
+        annee = periode[k][1]
+        dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
+        dataRight, dataLeft = [], []
+        """ Construction partie droite """
+        rafPrecCollab = [0 for i in range(nbCollab + 1)]
+        conso = [0 for i in range(nbCollab + 1)]
+        raf = [0 for i in range(nbCollab + 1)]  # +1 pour avoir le total de la ligne
+        ventilTot = [0 for i in range(nbCollab + 1)]
+        rafUpCollab = [0 for i in range(nbCollab + 1)]
+
+        if annee == 2021 and mois == 9:
+            for j in range(nbCollab):
+                collab = collabs[j]
+                booster = db.session.query(Booster).filter(
+                    Booster.mois == mois - 1, Booster.annee == annee).all()[0]
+                asso = db.session.query(AssoCollabBooster).filter(
+                    AssoCollabBooster.collab_id == collab.id_collab,
+                    AssoCollabBooster.booster_id == booster.id_booster).all()[0]
+                rafPrecCollab[j] = asso.rafUpdate
+                rafPrecCollab[-1] += asso.rafUpdate
+        else:
+            for j in range(nbCollab):
+                rafPrecCollab[j] = dataToShowRight[k - 1][4][j]
+                rafPrecCollab[-1] = dataToShowRight[k - 1][4][-1]
+        dataRight.append(rafPrecCollab)
+
+        booster = db.session.query(Booster).filter(Booster.mois == mois, Booster.annee == annee).all()[0]
+        for j in range(nbCollab):
+            collab = collabs[j]
+            asso = db.session.query(AssoCollabBooster).filter(
+                AssoCollabBooster.collab_id == collab.id_collab,
+                AssoCollabBooster.booster_id == booster.id_booster).all()[0]
+            """ Ventilation """
+            ventilTot[j] = asso.ventil
+            ventilTot[-1] += asso.ventil
+
+            """ Conso """
+            for date in dates:
+                imputs = db.session.query(Imputation).filter(Imputation.date_id == date.id_date,
+                                                             Imputation.collab_id == collab.id_collab,
+                                                             Imputation.collab_id == collab.id_collab,
+                                                             Imputation.type == "client").all()
+                for imput in imputs:
+                    boncomm = db.session.query(Boncomm).get(imput.acti_id)
+                    if boncomm.horsProjet == "Non":
+                        conso[j] += imput.joursAllouesTache
+                        conso[-1] += imput.joursAllouesTache
+
+            """ RAF """
+            raf[j] = rafPrecCollab[j] - conso[j]
+
+            """ RAF Update """
+            rafUpCollab[j] = raf[j] + ventilTot[j]
+
+        raf[-1] = rafPrecCollab[-1] - conso[-1]
+        rafUpCollab[-1] = raf[-1] + ventilTot[-1]
+
+        dataRight.append(conso)
+        dataRight.append(raf)
+        dataRight.append(ventilTot)
+        dataRight.append(rafUpCollab)
+        dataToShowRight.append(dataRight)
+        """ Construction partie gauche """
+
+        rafPrec, rafCalc, rafUp, rafMonte = [], [0, 0, 0], [0, 0, 0], [booster.monteR, booster.monteG,
+                                                                       booster.monteR + booster.monteG]
+
+        """ RAF -1 """
+        if annee == 2021 and mois == 9:
+            rafPrec.append(0)
+            rafPrec.append(101.5)
+            rafPrec.append(101.5)
+        else:
+
+            rafPrec.append(dataToShowLeft[k - 1][4][0])
+            rafPrec.append(dataToShowLeft[k - 1][4][1])
+            rafPrec.append(dataToShowLeft[k - 1][4][2])
+        dataLeft.append(rafPrec)
+
+        """ Ventilation """
+        ventilation = [0, ventilTot[-1], ventilTot[-1]]
+
+        """ RAF Calc"""
+        rafCalc[0] = rafPrec[0] - ventilation[0]
+        rafCalc[1] = rafPrec[1] - ventilation[1]
+        rafCalc[2] = rafPrec[2] - ventilation[2]
+
+        """ RAF Update """
+        rafUp[0] = rafMonte[0] + rafCalc[0]
+        rafUp[1] = rafMonte[1] + rafCalc[1]
+        rafUp[2] = rafUp[0] + rafUp[1]
+
+        dataLeft.append(ventilation)
+        dataLeft.append(rafCalc)
+        dataLeft.append(rafMonte)
+        dataLeft.append(rafUp)
+        dataLeft.append(booster.com)
+        dataToShowLeft.append(dataLeft)
+
+    abrevCollabs = []
+    for collab in collabs:
+        abrevCollabs.append(collab.abreviation())
+    return render_template('boosterConso.html', dataToShowRight=dataToShowRight, dataToShowLeft=dataToShowLeft,
+                           nbCollab=nbCollab, nbMois=nbMois, collabs=collabs, abrevCollabs=abrevCollabs,
+                           periode=periode)
 
 
 @app.route('/see_suivi_ssq')
 def seeSuiviSSQ():
-    return render_template('suiviSSQ.html')
+    moisDebut, anneeDebut = 2, 2021
+    dateNow = str(datetime.now())
+    anneeFin, moisFin = int(dateNow[:4]), int(dateNow[5:7])
+    if anneeDebut == anneeFin:
+        periode = [[moisDebut + i, anneeDebut] for i in range(moisFin - moisDebut + 1)]
+    else:
+        periode = [[moisDebut + i, anneeDebut] for i in range(12 - moisDebut + 1)]
+        for i in range(int(anneeFin) - int(anneeDebut) - 1):
+            for j in range(12):
+                periode.append([j + 1, anneeDebut + i + 1])
+        for i in range(moisFin):
+            periode.append([i + 1, anneeFin])
+    dataToShow = []  # Contiendra pour chaque mois les données pour construire le tableau
+    rafInitTot = 0
+    rafsUpdateTot = []
+    totConsoTot = []
+    rafTot = []
+    cumulesMois = []
+    collabs = db.session.query(Collab).all()
+    for k in range(len(periode)):  # Pour chaque mois à montrer
+        mois = periode[k][0]
+        annee = periode[k][1]
+        semaines = columnMois(mois, annee)
+        booster = db.session.query(Booster).filter(Booster.mois == mois, Booster.annee == annee).all()[0]
+        """Contiendra une liste avec les RAF Update de chaque collab sur le mois, une liste de listes par semaine du 
+        mois avec la conso de chaque collab, une liste pour la conso. totale et une liste pour le RAF du mois : """
+        dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
+        datesAccess = []  # Jours des différentes semaines pour récupérer les imputations
+        consoSemaines = []
+        rafsUpdate, raf, consoTot = [], [0 for i in range(len(collabs))], [0 for i in range(len(collabs))]
+        for j in range(len(semaines)):
+            numSem = semaines[j][0]
+            if (mois == 3 or mois == 2) and annee == 2021 and 6 <= numSem <= 9:
+                consoSemaines.append([semaines[j], [0 for i in range(len(collabs))], "INIT"])
+            elif (mois == 3 or mois == 4) and annee == 2021 and 10 <= numSem <= 14:
+                consoSemaines.append([semaines[j], [0 for i in range(len(collabs))], "INIT CLN"])
+            else:
+                consoSemaines.append([semaines[j], [0 for i in range(len(collabs))], ""])
+            datesSemEC = []
+            for date in dates:
+                if date.numSemaine() == numSem:
+                    datesSemEC.append(date)
+            datesAccess.append(datesSemEC)
+        rafUpdateTot = 0
+        totConso = 0
+        totRAF = 0
+        for i in range(len(collabs)):
+            collab = collabs[i]
+
+            assoBooster = db.session.query(AssoCollabBooster).filter(AssoCollabBooster.collab_id == collab.id_collab,
+                                                                     AssoCollabBooster.booster_id == booster.id_booster).all()[
+                0]
+            rafsUpdate.append(assoBooster.rafUpdate)
+            rafUpdateTot += assoBooster.rafUpdate
+            for j in range(len(semaines)):
+
+                jours = datesAccess[j]  # Jours de la j ème semaine
+                for jour in jours:
+                    imputs = db.session.query(Imputation).filter(Imputation.collab_id == collab.id_collab,
+                                                                 Imputation.date_id == jour.id_date,
+                                                                 Imputation.joursAllouesTache != 0,
+                                                                 Imputation.type == "client").all()
+                    for imput in imputs:
+                        boncomm = db.session.query(Boncomm).filter(Boncomm.id_acti == imput.acti_id).all()[0]
+                        if boncomm.horsProjet == "Non" or boncomm.horsProjet == "":
+                            consoSemaines[j][1][i] += imput.joursAllouesTache
+                            consoTot[i] += imput.joursAllouesTache
+            totConso += consoTot[i]
+            raf[i] = rafsUpdate[i] - consoTot[i]
+            totRAF += raf[i]
+        rafsUpdateTot.append(rafUpdateTot)
+        dataToShow.append([rafsUpdate, consoSemaines, consoTot, raf])
+        totConsoTot.append(totConso)
+        rafTot.append(totRAF)
+
+        # Calcul du cumulés sur le mois
+        if mois == 2 and annee == 2021:
+            cumules = [0, 0, 0]
+        else:
+            conso = totConsoTot[k] + cumulesMois[k - 1][0]
+            ajout = rafsUpdateTot[k] - rafTot[k - 1]
+
+            prevuConso = conso + ajout + rafTot[k]
+            cumules = [conso, ajout, prevuConso]
+        cumulesMois.append(cumules)
+    abrevCollabs = []
+    for collab in collabs:
+        rafInitTot += collab.rafInit
+        abrevCollabs.append(collab.abreviation())
+    nbMois, nbCollabs = len(periode), len(collabs)
+    return render_template('suiviSSQ.html', abrevCollabs=abrevCollabs, dataToShow=dataToShow, periode=periode,
+                           collabs=collabs, rafInitTot=rafInitTot, nbMois=nbMois, nbCollabs=nbCollabs,
+                           rafsUpdateTot=rafsUpdateTot, totConsoTot=totConsoTot, rafTot=rafTot, cumulesMois=cumulesMois,
+                           anneeFin=anneeFin, moisFin=moisFin)
+
+
+@app.route('/modif_conso_client', methods=['GET', 'POST'])
+def modifConsoClient():
+    moisDebut, anneeDebut = 2, 2021
+    dateNow = str(datetime.now())
+    anneeFin, moisFin = int(dateNow[:4]), int(dateNow[5:7])
+    if anneeDebut == anneeFin:
+        periode = [[moisDebut + i, anneeDebut] for i in range(moisFin - moisDebut + 1)]
+    else:
+        periode = [[moisDebut + i, anneeDebut] for i in range(12 - moisDebut + 1)]
+        for i in range(int(anneeFin) - int(anneeDebut) - 1):
+            for j in range(12):
+                periode.append([j + 1, anneeDebut + i + 1])
+        for i in range(moisFin):
+            periode.append([i + 1, anneeFin])
+    collabs = db.session.query(Collab).all()
+    for per in periode:
+        mois = per[0]
+        annee = per[1]
+        booster = db.session.query(Booster).filter(Booster.mois == mois, Booster.annee == annee).all()[0]
+        for collab in collabs:
+            rafUp = request.form['rafUp' + str(collab.id_collab) + '/' + str(mois) + '/' + str(annee)]
+            asso = db.session.query(AssoCollabBooster).filter(
+                AssoCollabBooster.collab_id == collab.id_collab,
+                AssoCollabBooster.booster_id == booster.id_booster).all()[0]
+            asso.rafUpdate = rafUp
+    db.session.commit()
+
+    dataToShow = []  # Contiendra pour chaque mois les données pour construire le tableau
+    rafInitTot = 0
+    rafsUpdateTot = []
+    totConsoTot = []
+    rafTot = []
+    cumulesMois = []
+    collabs = db.session.query(Collab).all()
+    for k in range(len(periode)):  # Pour chaque mois à montrer
+        mois = periode[k][0]
+        annee = periode[k][1]
+        semaines = columnMois(mois, annee)
+        booster = db.session.query(Booster).filter(Booster.mois == mois, Booster.annee == annee).all()[0]
+        """Contiendra une liste avec les RAF Update de chaque collab sur le mois, une liste de listes par semaine du 
+        mois avec la conso de chaque collab, une liste pour la conso. totale et une liste pour le RAF du mois : """
+        dates = db.session.query(Date).filter(Date.mois == mois, Date.annee == annee).all()
+        datesAccess = []  # Jours des différentes semaines pour récupérer les imputations
+        consoSemaines = []
+        rafsUpdate, raf, consoTot = [], [0 for i in range(len(collabs))], [0 for i in range(len(collabs))]
+        for j in range(len(semaines)):
+            numSem = semaines[j][0]
+            consoSemaines.append([semaines[j], [0 for i in range(len(collabs))]])
+            datesSemEC = []
+            for date in dates:
+                if date.numSemaine() == numSem:
+                    datesSemEC.append(date)
+            datesAccess.append(datesSemEC)
+        rafUpdateTot = 0
+        totConso = 0
+        totRAF = 0
+        for i in range(len(collabs)):
+            collab = collabs[i]
+
+            assoBooster = db.session.query(AssoCollabBooster).filter(AssoCollabBooster.collab_id == collab.id_collab,
+                                                                     AssoCollabBooster.booster_id == booster.id_booster).all()[
+                0]
+            rafsUpdate.append(assoBooster.rafUpdate)
+            rafUpdateTot += assoBooster.rafUpdate
+            for j in range(len(semaines)):
+                jours = datesAccess[j]  # Jours de la j ème semaine
+                for jour in jours:
+                    imputs = db.session.query(Imputation).filter(Imputation.collab_id == collab.id_collab,
+                                                                 Imputation.date_id == jour.id_date,
+                                                                 Imputation.joursAllouesTache != 0,
+                                                                 Imputation.type == "client").all()
+                    for imput in imputs:
+                        boncomm = db.session.query(Boncomm).filter(Boncomm.id_acti == imput.acti_id).all()[0]
+                        if boncomm.horsProjet == "Non" or boncomm.horsProjet == "":
+                            consoSemaines[j][1][i] += imput.joursAllouesTache
+                            consoTot[i] += imput.joursAllouesTache
+            totConso += consoTot[i]
+            raf[i] = rafsUpdate[i] - consoTot[i]
+            totRAF += raf[i]
+        rafsUpdateTot.append(rafUpdateTot)
+        dataToShow.append([rafsUpdate, consoSemaines, consoTot, raf])
+        totConsoTot.append(totConso)
+        rafTot.append(totRAF)
+
+        # Calcul du cumulés sur le mois
+        if mois == 2 and annee == 2021:
+            cumules = [0, 0, 0]
+        else:
+            conso = totConsoTot[k] + cumulesMois[k - 1][0]
+            ajout = rafsUpdateTot[k] - rafTot[k - 1]
+
+            prevuConso = conso + ajout + rafTot[k]
+            cumules = [conso, ajout, prevuConso]
+        cumulesMois.append(cumules)
+    abrevCollabs = []
+    for collab in collabs:
+        rafInitTot += collab.rafInit
+        abrevCollabs.append(collab.abreviation())
+    nbMois, nbCollabs = len(periode), len(collabs)
+    return render_template('suiviSSQ.html', abrevCollabs=abrevCollabs, dataToShow=dataToShow, periode=periode,
+                           collabs=collabs, rafInitTot=rafInitTot, nbMois=nbMois, nbCollabs=nbCollabs,
+                           rafsUpdateTot=rafsUpdateTot, totConsoTot=totConsoTot, rafTot=rafTot, cumulesMois=cumulesMois,
+                           anneeFin=anneeFin, moisFin=moisFin)
+
+
+"""------------------------------------------------------------------------------------------------------------------"""
+"""----------------------------------------------- Suivi Déplacement ------------------------------------------------"""
+
+
+@app.route('/accueil_fd')
+def accueilFD():
+    return render_template('accueilFD.html')
+
+
+@app.route('/see_chrono_apm')
+def seeChronoAPM():
+    fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm != "").all()  # Que les apm
+    # Servira pour trier dans l'ordre les asso aux Fds, contient différents type de ndf :
+    ndfRef = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == 0).all()
+    uos = db.session.query(UO).all()  # idem
+    dataToShow = []
+    for j in range(len(fds)):
+        assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == fds[j].id_acti).all()
+        notesDeFrais = fds[j].noteDeFrais
+        dataNDF = []
+        for note in ndfRef:  # On va classer les NDF dans l'ordre pour correspondre à l'affichage
+            i = 0
+            while i != len(ndfRef) or i != len(notesDeFrais):
+                if notesDeFrais[i].type == note.type:
+                    dataNDF.append(notesDeFrais[i].depense)
+                    i = len(ndfRef)  # Pour sortir de la boucle while
+                else:
+                    i += 1
+            if i == len(ndfRef) or i == len(notesDeFrais):
+                dataNDF.append("")  # Si on arrive ici, c'est qu'il n'y a pas de cette note associée à ce BC
+        assoCollab = db.session.query(AssociationBoncommCollab).filter(
+            AssociationBoncommCollab.boncomm_id == fds[j].id_acti).all()[0]  # Un seul intervenant par FD
+        dataToAdd = [fds[j], assoCollab.collab, assoCollab.collab.abreviation(), assosUo, dataNDF]
+
+        totUo, totNdf = 0, 0
+        for asso in assosUo:
+            totUo += asso.facteur * asso.uo.prix
+        for ndf in notesDeFrais:
+            totNdf += ndf.depense
+        dataToAdd.append(totNdf)
+        dataToAdd.append(totUo)
+
+        if j == 0:
+            dataToAdd.append((totUo - totNdf) - fds[j].margeLib)
+        else:
+            dataToAdd.append((totUo - totNdf) + dataToShow[j - 1][7] - fds[j].margeLib)
+
+        dataToShow.append(dataToAdd)
+    return render_template('chronoAPM.html', dataToShow=dataToShow, uos=uos, ndfRef=ndfRef)
+
+
+@app.route('/see_apm')
+def seeAPM():
+    apms = db.session.query(Boncomm).filter(Boncomm.apm != "").all()
+    return render_template('apm.html', apms=apms)
+
+
+@app.route('/save_apm', methods=['GET', 'POST'])
+def saveAPM():
+    idIntervenant = request.form['intervenant']
+    apm = request.form['apm']
+    num = request.form['num']
+    poste = request.form['poste']
+    activite = request.form['activite']
+    debut = request.form['debut']
+    fin = request.form['fin']
+    lieu = request.form['lieu']
+    client = request.form['client']
+    signature = request.form['signature']
+    margeLib = request.form['margeLib']
+    newAPM = Boncomm(activite, "", "", 0, 0, 0, 0, 0, 0, num, poste, "", 0, "O", "S", "Fd", debut, fin, debut, fin,
+                     "Non", 0, 0, 0, 0, apm, lieu, client, signature, margeLib)
+    # Association aux UO
+    uos = db.session.query(UO).all()
+    for uo in uos:
+        assoBC = AssoUoBoncomm(facteur=0)
+        assoBC.uo = uo
+        assoBC.boncomm = newAPM
+        newAPM.uos.append(assoBC)
+    # Association au collab :
+    intervenant = db.session.query(Collab).get(idIntervenant)
+    assoc = AssociationBoncommCollab(joursAllouesBC=0)
+    assoc.collab = intervenant
+    assoc.boncomm = newAPM
+    newAPM.collabs.append(assoc)
+
+    db.session.add(newAPM)
+    db.session.commit()
+    apms = db.session.query(Boncomm).filter(Boncomm.apm != "").all()
+    return render_template('apm.html', apms=apms)

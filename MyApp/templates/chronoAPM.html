@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil FD</title>
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_apm">APM</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chrono_apm">Chrono APM</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_solde_atos">Solde réalisé Atos</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_solde_egis">Solde réalisé EGIS</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Chrono des APM -</h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau regroupant les différents
+            déplacements effectués. <br> Vous pouvez modifier la marge libérée en cliquant sur le bouton en fin de
+            ligne.
+        </h5>
+    </div>
+</div>
+<br>
+<table id="tableau" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        <td></td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">N°APM</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">N°BC</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">Poste</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">Objet</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">Début</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">Lieu</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">Société</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">Intervenant</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">Client</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 3px;">Signature</td>
+    </tr>
+    {% for fd in dataToShow %}
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        <td class="bg-light" style="border: 1px solid black; padding : 3px;">
+            {{fd[0].num}}{{fd[0].poste}}{{fd[1].entreprise}}
+        </td>
+        <td class="bg-light" style="border: 1px solid black; padding : 3px;">{{fd[0].apm}}</td>
+        <td class="bg-light" style=" border: 1px solid black; padding : 3px;">{{fd[0].num}}</td>
+        <td class="bg-light" style=" border: 1px solid black; padding : 3px;">{{fd[0].poste}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 3px;">{{fd[0].activite}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 3px;">{{fd[0].dateDebut}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 3px;">{{fd[0].lieu}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 3px;">{{fd[1].entreprise}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 3px;">{{fd[2]}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 3px;">{{fd[0].client}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 3px;">{{fd[0].dateSign}}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<table id="tableau2" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        {% for uo in uos %}
+        <td class="bg-secondary text-white" style="font-weight: bold; border: 1px solid black; padding : 2px;">
+            {{uo.num}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% for fd in dataToShow %}
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        {% for asso in fd[3] %}
+        <td class="bg-light" style="border: 1px solid black; padding : 2px;">
+            {{asso.facteur}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<table id="tableau3" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        {% for ndf in ndfRef %}
+        <td class="bg-primary text-white" style="font-weight: bold; border: 1px solid black; padding : 2px;">
+            {{ndf.type}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% for fd in dataToShow %}
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        {% for ndf in fd[4] %}
+        <td class="bg-light" style="border: 1px solid black; padding : 2px;">
+            {{ndf}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<table id="tableau4" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        <td class="bg-primary text-white" style="font-weight: bold; border: 1px solid black; padding : 2px;">Total Ndf
+        </td>
+        <td class="bg-secondary text-white" style="font-weight: bold; border: 1px solid black; padding : 2px;">Total
+            UO
+        </td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 2px;">Dép.</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 2px;">Marge lib.</td>
+        <td class="bg-warning" style="font-weight: bold; border: 1px solid black; padding : 2px;">Cumul</td>
+    </tr>
+    {% for fd in dataToShow %}
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        <td class="bg-light" style="border: 1px solid black; padding : 2px;">{{fd[5]}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 2px;">{{fd[6]}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 2px;">{{fd[6]-fd[5]}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 2px;">{{fd[0].margeLib}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 2px;">{{fd[7]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</html>

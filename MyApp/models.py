@@ -101,7 +101,8 @@ class AssoCollabSCR(db.Model):
 class AssoCollabBooster(db.Model):
     collab_id = db.Column('collab_id', db.Integer, db.ForeignKey('collab.id_collab'), primary_key=True)
     booster_id = db.Column('booster_id', db.Integer, db.ForeignKey('booster.id_booster'), primary_key=True)
-    annee = db.Column(db.Integer, nullable=False)
+    ventil = db.Column(db.Float)
+    rafUpdate = db.Column(db.Float)
     collab = db.relationship("Collab", back_populates="boosters")
     booster = db.relationship("Booster", back_populates="collabs")
 
@@ -427,7 +428,7 @@ class NoteDeFrais(db.Model):
     type = db.Column(db.String(50), nullable=False)
     depense = db.Column(db.Float, nullable=False)
 
-    def __int__(self, acti_id, type, depense):
+    def __init__(self, acti_id, type, depense):
         self.acti_id = acti_id
         self.type = type
         self.depense = depense

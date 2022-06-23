@@ -13,26 +13,182 @@
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_suivi_ssq">Suivi Conso SSQ</a>
+                    <a class="nav-link" href="/see_suivi_ssq">Suivi conso SSQ</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_ssq_init">Suivi conso SSQ Init</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_booster_conso">Booster Conso.</a>
                 </li>
+
             </ul>
         </div>
     </nav>
     <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Suivi Conso SSQ / Déclarés -
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Suivi Conso SSQ / Déclarés
     -</h1>
 <div class="bg-light border border-3 border-primary rounded mt-2"
      style="margin: 20px; margin-right:20px; margin-bottom: 30px">
     <div style="margin-left: 20px">
-        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau du suivi conso SSQ
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau du suivi conso SSQ.<br>
+            Vous pouvez modifier les données en remplissant les cases du formulaire, puis en cliquant sur "Enregistrer"
+            en bas de la page.
         </h5>
     </div>
 </div>
+<form action="/modif_conso_client" method="post">
+    <table id="tableau2" align="center"
+           style=" margin-top:20px; margin-bottom:20px;  text-align:center;   table-layout: fixed;">
+        <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+            <td></td>
+            <td></td>
+            <td></td>
+            {% for abrev in abrevCollabs %}
+            <td class="bg-warning" style="font-weight:bold; border:1px solid; padding : 5px;">{{abrev}}</td>
+            {% endfor %}
+            <td class="bg-warning" style="font-weight:bold; border:1px solid; padding : 5px;">Total</td>
+            <td class="bg-secondary" style="padding: 5px;"></td>
+            <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">Cumulés</td>
+        </tr>
+        <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+            <td></td>
+            <td></td>
+            <td class="bg-warning" style="border: 1px solid; font-weight: bold; padding: 5px;">RAF Init</td>
+            {% for collab in collabs %}
+            <td class="bg-light" style="border:1px solid; padding : 5px;">{{collab.rafInit}}</td>
+            {% endfor %}
+            <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">{{rafInitTot}}
+            </td>
+            <td class="bg-secondary" style="padding: 5px;"></td>
+            <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3 bg-warning" style="border: 1px solid;">Conso</div>
+                        <div class="col-3 bg-warning" style="border: 1px solid;">Ajout</div>
+                        <div class="col-6 bg-warning" style="border: 1px solid;">Prévus/Conso</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% for i in range(nbMois) %}
+        <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+            <td></td>
+            <td class="bg-primary text-white"
+                style="font-weight: bold;border: 1px solid black; padding:5px;">
+                {{periode[i][0]}}/{{periode[i][1]}}
+            </td>
+            <td class="bg-secondary" style="border: 1px solid; font-weight: bold; padding: 5px;">RAF
+                Update
+            </td>
+            {% for j in range(nbCollabs) %}
+            <td class="bg-light text-white" style="border:1px solid black; padding : 5px;"><input
+                    value="{{dataToShow[i][0][j]}}" class="bg-secondary text-white" required="required"
+                    name="rafUp{{collabs[j].id_collab}}/{{periode[i][0]}}/{{periode[i][1]}}"
+                    style="width: 80px; text-align: center;" type="number" step="0.5"></td>
+            {% endfor %}
+            <td class="bg-secondary text-white"
+                style="font-weight:bold; border:1px solid black; padding : 5px;">
+                {{rafsUpdateTot[i]}}
+            </td>
+            <td class="bg-secondary" style="padding: 5px;"></td>
+            <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3 bg-secondary" style="border: 1px solid;"></div>
+                        <div class="col-3 bg-secondary text-white" style="border: 1px solid black;">
+                            {{cumulesMois[i][1]}}
+                        </div>
+                        <div class="col-6 bg-secondary" style="border: 1px solid;"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% for semaine in dataToShow[i][1] %}
+        <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+            <td class="bg-light text-danger" style="border: 1px solid; padding:5px;">{{semaine[2]}}</td>
+            <td class="bg-light" style="border: 1px solid; padding:5px;"></td>
+            <td class="bg-primary text-white"
+                style="border: 1px solid black; font-weight: bold; padding: 5px;">
+                S{{semaine[0][0]}} - {{semaine[0][1]}}j
+            </td>
+            {% for j in range(nbCollabs) %}
+            <td class="bg-light" style="border:1px solid black; padding : 5px;"
+                id="{{periode[i][0]}}/{{periode[i][1]}}/{{semaine[0][0]}}/{{collabs[j].id_collab}}">
+                {{semaine[1][j]}}
+            </td>
+            {% endfor %}
+            <td class="bg-secondary text-white"
+                style="font-weight:bold; border:1px solid black; padding : 5px;"></td>
+            <td class="bg-secondary" style="padding: 5px;"></td>
+            <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3 bg-warning" style="border: 1px solid;"></div>
+                        <div class="col-3 bg-warning" style="border: 1px solid;"></div>
+                        <div class="col-6 bg-warning" style="border: 1px solid;"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+            <td></td>
+            <td class="bg-light" style="border: 1px solid; padding:5px;"></td>
+            <td class="bg-warning" style="border: 1px solid black; font-weight: bold; padding: 5px;">Cons.
+                totale
+            </td>
+            {% for j in range(nbCollabs) %}
+            <td class="bg-warning" style="border:1px solid black; padding : 5px;">{{dataToShow[i][2][j]}}
+            </td>
+            {% endfor %}
+            <td class="bg-warning" style="font-weight:bold; border:1px solid black; padding : 5px;">
+                {{totConsoTot[i]}}
+            </td>
+            <td class="bg-secondary" style="padding: 5px;"></td>
+            <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3 bg-warning" style="border: 1px solid;"></div>
+                        <div class="col-3 bg-warning" style="border: 1px solid;"></div>
+                        <div class="col-6 bg-warning" style="border: 1px solid;"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+            <td></td>
+            <td class="bg-light" style="border: 1px solid; padding:5px;"></td>
+            <td class="bg-secondary" style="border: 1px solid black; font-weight: bold; padding: 5px;">RAF
+            </td>
+            {% for j in range(nbCollabs) %}
+            <td class="bg-secondary text-white" style="border:1px solid black; padding : 5px;">
+                {{dataToShow[i][3][j]}}
+            </td>
+            {% endfor %}
+            <td class="bg-secondary text-white"
+                style="font-weight:bold; border:1px solid black; padding : 5px;">
+                {{rafTot[i]}}
+            </td>
+            <td class="bg-secondary" style="padding: 5px;"></td>
+            <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3 bg-warning" style="border: 1px solid;">{{cumulesMois[i][0]}}</div>
+                        <div class="col-3 bg-warning" style="border: 1px solid;"></div>
+                        <div class="col-6 bg-warning" style="border: 1px solid;">{{cumulesMois[i][2]}}</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div align="center">
+        <button class="btn btn-primary" style="font-weight: bold; margin-bottom: 20px;">Enregistrer</button>
+    </div>
+</form>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

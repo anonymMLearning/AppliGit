@@ -163,6 +163,10 @@
                     <input required="required" class="text-primary form-control" type="number" id="conges_save"
                            name="conges_save">
                     <br>
+                    <label class="form-label text-primary" for="rafInit">RAF Init :</label>
+                    <input required="required" class="text-primary form-control" type="number" step="0.5" id="rafInit"
+                           name="rafInit">
+                    <br>
                     <button name="button" class="btn btn-primary">Ajouter ce collaborateur</button>
                 </form>
             </div>
@@ -180,6 +184,7 @@
         <td style="font-weight:bold;border-right: 1px solid white;">Prénom</td>
         <td style="font-weight:bold;border-right: 1px solid white; padding:10px">Access</td>
         <td style="font-weight:bold;border-right: 1px solid white; padding:10px">Entreprise</td>
+        <td style="font-weight:bold;border-right: 1px solid white; padding:10px">RAF init</td>
     </tr>
 
     {% for data in data %}
@@ -200,6 +205,10 @@
         <td class="p-3 mb-2 bg-white text-primary border border-primary"
             style="font-size: 20px;border-left: 1px solid white; vertical-align: middle;border-right:1px solid white;padding:15px;">
             {{data[0].entreprise}}
+        </td>
+        <td class="p-3 mb-2 bg-white text-primary border border-primary"
+            style="font-size: 20px;border-left: 1px solid white; vertical-align: middle;border-right:1px solid white;padding:15px;">
+            {{data[0].rafInit}}
         </td>
         <td class="p-3 mb-2 text-secondary border border-primary" width="150"
             style="border: 1px solid white;vertical-align: middle;background-image: var(--bs-gradient);">
@@ -294,6 +303,10 @@
                                        name="conges"
                                        value="{{data[0].boncomms[0].boncomm.nbCongesTot}}">
                                 <br>
+                                <label class="form-label text-dark" for="rafInit">RAF init :</label>
+                                <input required="required" class="text-dark form-control" type="number" step="0.5"
+                                       name="rafInit" value="{{data[0].rafInit}}">
+                                <br>
                                 <button name="button" class="btn btn-warning">Modifier le collaborateur
                                 </button>
                             </form>
@@ -323,6 +336,7 @@
         document.formulaireDate.action = url;
 	    document.forms["formulaireDate"].submit();
     }
+
 
 
 

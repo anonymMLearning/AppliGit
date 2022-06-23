@@ -13,7 +13,10 @@
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <a class="nav-link" href="/see_suivi_ssq">Suivi Conso SSQ</a>
+                    <a class="nav-link" href="/see_suivi_ssq">Suivi conso SSQ</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_ssq_init">Suivi conso SSQ Init</a>
                 </li>
                 <li class="list-inline-item">
                     <a class="nav-link" href="/see_booster_conso">Booster Conso.</a>
@@ -24,17 +27,302 @@
     <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Accueil : Suivi Booster
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Suivi Booster Conso
     -</h1>
 <div class="bg-light border border-3 border-primary rounded mt-2"
      style="margin: 20px; margin-right:20px; margin-bottom: 30px">
     <div style="margin-left: 20px">
-        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Bienvenue sur l'accueil du suivi
-            Booster.<br>Vous pouvez
-            accéder à la section que vous cherchez à l'aide de la barre de navigation.
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau de répartition des boosters
+            consommation.<br>
+            Vous pouvez modifier les données en remplissant les cases du formulaire, puis en cliquant sur "Enregistrer"
+            en bas de la page.
         </h5>
     </div>
 </div>
+<form action="/modif_booster" method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-7">
+                <table id="tableau" align="center"
+                       style=" margin-top:20px; margin-bottom:20px;  text-align:center;   table-layout: fixed;padding-left: 10px;">
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td></td>
+                        <td></td>
+                        <td style="font-weight: bold; border: 1px solid black;" class="bg-primary text-white">OTP
+                            F3.RAF
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td></td>
+                        <td></td>
+                        <td class="bg-light" style="font-weight: bold; border: 1px solid black;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6 bg-primary text-white" style="border: 1px solid black;">Réserve
+                                    </div>
+                                    <div class="col-6 bg-primary text-white"
+                                         style="padding-left: 1px;border: 1px solid black;">Génériques
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-weight: bold; border: 1px solid black; padding: 5px;"
+                            class="bg-primary text-white">Total
+                        </td>
+                        <td style="font-weight: bold; border: 1px solid black; padding: 5px;"
+                            class="bg-primary text-white">Commentaire
+                        </td>
+                    </tr>
+                    {% for k in range(nbMois) %}
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td class="bg-primary text-white"
+                            style="font-weight: bold; border: 1px solid black; padding: 5px;">
+                            {{periode[k][0]}}/{{periode[k][1]}}
+                        </td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;"> RAF
+                            - 1
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6 bg-light"
+                                         style="border-left: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;">
+                                        {{dataToShowLeft[k][0][0]}}
+                                    </div>
+                                    <div class="col-6 bg-light"
+                                         style="border-right: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;">
+                                        {{dataToShowLeft[k][0][1]}}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;">
+                            {{dataToShowLeft[k][0][2]}}
+                        </td>
+                        <td class="bg-light" style="border-right: 1px solid black;"></td>
+                    </tr>
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td style="font-weight: bold; border: 1px solid black; padding: 5px;"></td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;">
+                            Ventilation
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <div class="container">
+                                <div class="row">
+                                    <div style="border-left: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;"
+                                         class="col-6 bg-light">{{dataToShowLeft[k][1][0]}}
+                                    </div>
+                                    <div style="border-right: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;"
+                                         class="col-6 bg-light">{{dataToShowLeft[k][1][1]}}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;">
+                            {{dataToShowLeft[k][1][2]}}
+                        </td>
+                        <td class="bg-light" style="border-right: 1px solid black;"></td>
+                    </tr>
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td style="font-weight: bold; border: 1px solid black; padding: 5px;"></td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;">RAF
+                            calc.
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <div class="container">
+                                <div class="row">
+                                    <div style="border-left: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;"
+                                         class="col-6">{{dataToShowLeft[k][2][0]}}
+                                    </div>
+                                    <div style="border-right: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;"
+                                         class="col-6">{{dataToShowLeft[k][2][1]}}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;">
+                            {{dataToShowLeft[k][2][2]}}
+                        </td>
+                        <td class="bg-light" style="border-right: 1px solid black;">
+                            <input type="text" class="bg-light" name="com/{{periode[k][0]}}/{{periode[k][1]}}"
+                                   value="{{dataToShowLeft[k][5]}}">
+                        </td>
+                    </tr>
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td style="font-weight: bold; border: 1px solid black; padding: 5px;"></td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;">RAF
+                            Monté
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <div class="container">
+                                <div class="row">
+                                    <div style="border-left: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;"
+                                         class="col-6 bg-light"><input style="width: 80px; text-align: center;"
+                                                                       name="monteR/{{periode[k][0]}}/{{periode[k][1]}}"
+                                                                       class="bg-light" type="number" step="0.5"
+                                                                       required="required" min="0"
+                                                                       value="{{dataToShowLeft[k][3][0]}}">
+                                    </div>
+                                    <div style="border-right: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;"
+                                         class="col-6 bg-light"><input style="width: 80px; text-align: center;"
+                                                                       name="monteG/{{periode[k][0]}}/{{periode[k][1]}}"
+                                                                       class="bg-light" type="number" step="0.5"
+                                                                       required="required" min="0"
+                                                                       value="{{dataToShowLeft[k][3][1]}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;">
+                            {{dataToShowLeft[k][3][2]}}
+                        </td>
+                        <td class="bg-light" style="border-right: 1px solid black;"></td>
+                    </tr>
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td style="font-weight: bold; border: 1px solid black; padding: 5px;"></td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;">RAF
+                            Update
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <div class="container">
+                                <div class="row">
+                                    <div style="border-left: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;"
+                                         class="col-6">{{dataToShowLeft[k][4][0]}}
+                                    </div>
+                                    <div style="border-right: 1px solid black;border-top: 1px solid black;border-bottom: 1px solid black;"
+                                         class="col-6">{{dataToShowLeft[k][4][1]}}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="bg-secondary" style="font-weight: bold; border: 1px solid black; padding: 5px;">
+                            {{dataToShowLeft[k][4][2]}}
+                        </td>
+                        <td class="bg-light" style="border-right: 1px solid black;border-bottom: 1px solid black;"></td>
+                    </tr>
+                    <tr class="p-3 mb-2 bg-warning"
+                        style="background-image: var(--bs-gradient); border-bottom: 1px solid black; height: 20px;">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="col-5">
+                <table id="tableau2" align="center"
+                       style=" margin-top:20px; margin-bottom:20px;  text-align:center;   table-layout: fixed;">
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td></td>
+                        <td></td>
+                        <td class="bg-primary text-white"
+                            style="font-weight: bold;padding: 5px;border:1px solid black;">Répartis
+                        </td>
+                        {% for abrev in abrevCollabs %}
+                        <td class="bg-primary text-white"
+                            style="font-weight:bold; border:1px solid black; padding : 5px;">{{abrev}}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% for k in range(nbMois) %}
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td class="bg-primary text-white"
+                            style="font-weight: bold; border: 1px solid black; padding: 5px;">
+                            {{periode[k][0]}}/{{periode[k][1]}}
+                        </td>
+                        <td class="bg-danger text-white"
+                            style="font-weight:bold; border:1px solid black; padding : 5px;">RAF - 1
+                        </td>
+                        <td class="bg-light" style="font-weight: bold;padding: 5px;border:1px solid black">
+                            {{dataToShowRight[k][0][-1]}}
+                        </td>
+                        {% for j in range(nbCollab) %}
+                        <td class="bg-danger text-white" style="border:1px solid black; padding : 5px;">
+                            {{dataToShowRight[k][0][j]}}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td></td>
+                        <td class="bg-secondary" style="font-weight:bold; border:1px solid; padding : 5px;">Conso.</td>
+                        <td class="bg-secondary" style="font-weight: bold;padding: 5px;border:1px solid black">
+                            {{dataToShowRight[k][1][-1]}}
+                        </td>
+                        {% for j in range(nbCollab) %}
+                        <td class="bg-light" style="border:1px solid; padding : 5px;">
+                            {{dataToShowRight[k][1][j]}}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td></td>
+                        <td class="bg-secondary" style="font-weight:bold; border:1px solid; padding : 5px;">RAF</td>
+                        <td class="bg-secondary" style="font-weight: bold;padding: 5px;border:1px solid black">
+                            {{dataToShowRight[k][2][-1]}}
+                        </td>
+                        {% for j in range(nbCollab) %}
+                        <td class="bg-light" style="border:1px solid; padding : 5px;">
+                            {{dataToShowRight[k][2][j]}}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td></td>
+                        <td class="bg-primary text-white"
+                            style="font-weight:bold; border:1px solid black; padding : 5px;">Ventil.
+                        </td>
+                        <td class="bg-primary text-white"
+                            style="font-weight: bold;padding: 5px;border:1px solid black;">
+                            {{dataToShowRight[k][3][-1]}}
+
+                        </td>
+                        {% for j in range(nbCollab) %}
+                        <td class="bg-light" style="border:1px solid; padding : 5px;"><input
+                                style="width: 80px; text-align: center;" class="bg-light" type="number" step="0.5"
+                                min="0" name="ventil/{{collabs[j].id_collab}}/{{periode[k][0]}}/{{periode[k][1]}}"
+                                required="required"
+                                value="{{dataToShowRight[k][3][j]}}">
+
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+                        <td></td>
+                        <td class="bg-danger text-white"
+                            style="font-weight:bold; border:1px solid black; padding : 5px;">RAF <br>Update
+                        </td>
+                        <td class="bg-light" style="font-weight: bold;padding: 5px;border:1px solid black">
+                            {{dataToShowRight[k][4][-1]}}
+                        </td>
+                        {% for j in range(nbCollab) %}
+                        <td class="bg-danger text-white" style="border:1px solid black; padding : 5px;">
+                            {{dataToShowRight[k][4][j]}}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr class="p-3 mb-2"
+                        style="background-image: var(--bs-gradient); height: 20px;">
+                        <td></td>
+                        <td style="border-bottom: 1px solid black; " class="bg-secondary"></td>
+                        <td style="border-bottom: 1px solid black; " class="bg-secondary"></td>
+                        {% for j in range(nbCollab) %}
+                        <td style="border-bottom: 1px solid black; " class="bg-secondary"></td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div align="center">
+        <button class="btn btn-warning border border-dark" style="font-weight: bold; margin-bottom: 20px;">Enregistrer
+        </button>
+    </div>
+</form>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
