@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Solde réalisé Atos</title>
+    <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+                    class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_fd">FD</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_apm">APM</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_chrono_apm">Chrono APM</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_solde_atos">Solde réalisé Atos</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="nav-link" href="/see_solde_egis">Solde réalisé EGIS</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<h1 style="margin-bottom: 30px; text-align:center; margin-top: 30px;" class="text-primary">- Solde réalisé Atos -</h1>
+<div class="bg-light border border-3 border-primary rounded mt-2"
+     style="margin: 20px; margin-right:20px; margin-bottom: 30px">
+    <div style="margin-left: 20px">
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Tableau récapitulatif des FD d'Atos.<br>
+            La synthèse des UO de déplacement pour chaque FD se trouve sur le deuxième tableau.
+        </h5>
+    </div>
+</div>
+<br>
+<table id="tableau" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2">
+        <td></td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-primary text-white">Lot
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px; font-weight: bold;"
+            class="bg-primary text-white">N°BC
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-primary text-white">Poste
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-primary text-white">Client
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-primary text-white">Libellé
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-primary text-white">Échéance
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-primary text-white">État
+        </td>
+    </tr>
+    {% for fd in dataFdAtos %}
+    <tr class="p-3 mb-2">
+        <td class="bg-secondary text-white"
+            style="background-image: var(--bs-gradient);border: 1px solid black; padding: 5px; font-weight: bold">
+            {{fd[0].num}}{{fd[0].poste}}{{fd[1]}}
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;"
+            class="bg-light ">{{fd[2]}}
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;"
+            class="bg-light ">{{fd[0].num}}
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;"
+            class="bg-light ">{{fd[0].poste}}
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;"
+            class="bg-light ">{{fd[3]}}
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;"
+            class="bg-light ">{{fd[0].activite}}
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;"
+            class="bg-light ">{{fd[0].dateFinOp}}
+        </td>
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;"
+            class="bg-light primary">{{fd[0].etat}}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<br>
+<table id="tableau2" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2">
+        <td></td>
+        {% for uo in uosFd %}
+        <td style="background-image: var(--bs-gradient); border-left: 1px solid black; border-right: 1px solid black;border-top: 1px solid black;padding: 5px;font-weight: bold;"
+            class="bg-primary text-white">{{uo.description}}
+        </td>
+        {% endfor %}
+    </tr>
+    <tr class="p-3 mb-2">
+        <td></td>
+        {% for uo in uosFd %}
+        <td style="background-image: var(--bs-gradient); border-left: 1px solid black; border-right: 1px solid black;border-bottom: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-primary text-white">({{uo.num}})
+        </td>
+        {% endfor %}
+    </tr>
+    <tr class="p-3 mb-2">
+        <td></td>
+        {% for i in range(nbUosFd) %}
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-secondary text-white">
+            <div class="container">
+                <div class="row">
+                    <div class="col-4">BC
+                    </div>
+                    <div class="col-4" style="padding:0px;">Affecté
+                    </div>
+                    <div class="col-4"> Dispo
+                    </div>
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    {% for fd in dataFdAtos %}
+    <tr class="p-3 mb-2">
+        <td class="bg-secondary text-white"
+            style="background-image: var(--bs-gradient);border: 1px solid black; padding: 5px; font-weight: bold">
+            {{fd[0].num}}{{fd[0].poste}}{{fd[1]}}
+        </td>
+        {% for i in range(nbUosFd) %}
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;"
+            class="bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-4">{{fd[4][i][0]}}
+                    </div>
+                    <div class="col-4">{{fd[4][i][1]}}
+                    </div>
+                    <div class="col-4">{{fd[4][i][2]}}
+                    </div>
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr class="p-3 mb-2">
+        <td class="bg-primary text-white"
+            style="background-image: var(--bs-gradient);border: 1px solid black; padding: 5px; font-weight: bold">
+            Total
+        </td>
+        {% for j in range(nbUosFd) %}
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-4">{{dataTotUo[j][0]}}
+                    </div>
+                    <div class="col-4">{{dataTotUo[j][1]}}
+                    </div>
+                    <div class="col-4">{{dataTotUo[j][2]}}
+                    </div>
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+    <tr class="p-3 mb-2">
+        <td class="bg-primary text-white"
+            style="background-image: var(--bs-gradient);border: 1px solid black; padding: 5px; font-weight: bold">
+            Total UO revenus
+        </td>
+        {% for j in range(nbUosFd) %}
+        <td style="background-image: var(--bs-gradient); border: 1px solid black; padding: 5px;font-weight: bold;"
+            class="bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-4">{{dataTotUo[j][3]}}
+                    </div>
+                    <div class="col-4">-
+                    </div>
+                    <div class="col-4">-
+                    </div>
+                </div>
+            </div>
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+</body>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+</html>

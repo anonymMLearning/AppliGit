@@ -111,13 +111,15 @@
             <h5 class="text-danger">Attention : La suppression d'une activité entraine la suppression des imputations
                 des collaborateurs liés à ce bon !</h5></h5>
         <h5 class="text-warning"> H-P : pour les formations ou autres activités, si hors-projet ou non</h5>
+        <h5 class="text-danger">Pour modifier la date de début ou de fin opérationnelle, rendez-vous dans la section CRA
+            Marché de l'onglet Marché MS4</h5>
     </div>
 </div>
 <h5 style="margin-left: 20px; margin-top: 20px;margin-bottom: 20px" class="text-primary font-italic">Pour enregistrer
     une nouvelle activité, cliquer sur le bouton associé : </h5>
 <div class="container">
     <div class="row">
-        <div class="col-3">
+        <div class="col-4">
             <button style="margin-bottom: 20px;background-image: var(--bs-gradient);" type="button"
                     class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#saveboncomm">
@@ -277,99 +279,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-3">
-            <button style="margin-bottom: 20px;background-image: var(--bs-gradient);" type="button"
-                    class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#savefd">
-                Créer un frais de déplacement
-            </button>
-            <div class="modal fade" id="savefd" tabindex="-1" aria-hidden="true"
-                 aria-labelledby="saveboncomm">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title">Créer un FD</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="/save_fraisD" method="post">
-                                <label class="form-label text-primary" for="activite">Description du FD :</label>
-                                <input class="text-primary form-control" type="text" id="activiteFD" name="activite"
-                                       required="required">
-                                <br>
-                                <label class="form-label text-primary" for="com">Commentaire :</label>
-                                <input class="text-primary form-control" type="text" id="comFD" name="com">
-                                <br>
-                                <label class="form-label text-primary" for="anneeTarifFD">Année tarifaire :</label>
-                                <input class="text-primary form-control" value="{{annee}}" type="number"
-                                       id="anneeTarifFD"
-                                       name="anneeTarif" required="required">
-                                <br>
-
-                                <label class="form-label text-primary" for="montantHTFD">Montant HT :</label>
-                                <input class="text-primary form-control" type="number" id="montantHTFD"
-                                       name="montantHT" required="required">
-                                <br>
-                                <label class="form-label text-primary" for="delaisFD">Délais :</label>
-                                <input class="text-primary form-control" type="number" id="delaisFD" name="delais"
-                                       required="required">
-                                <br>
-                                <label class="form-label text-primary" for="caAtosFD">CA Atos :</label>
-                                <input class="text-primary form-control" type="number" id="caAtosFD" name="caAtos"
-                                       required="required">
-                                <br>
-                                <label class="form-label text-primary" for="partEGISFD">Part EGIS :</label>
-                                <input class="text-primary form-control" type="number" id="partEGISFD" name="partEGIS"
-                                       required="required">
-                                <br>
-                                <label class="form-label text-primary" for="numFD">Numéro du FD :</label>
-                                <input class="text-primary form-control" type="text" id="numFD" name="num"
-                                       required="required">
-                                <br>
-                                <label class="form-label text-primary" for="posteFD">Poste :</label>
-                                <input class="text-primary form-control" type="text" id="posteFD" name="poste"
-                                       required="required">
-                                <br>
-                                <label class="form-label text-primary">Date de notification :</label>
-                                <input required="required" class="text-primary form-control" type="date"
-                                       id="dateNotifFD" name="dateNotif"
-                                       value="2022-04-01">
-                                <br>
-                                <label class="form-label text-primary" for="dateFinPrevFD">Date de fin prévue :</label>
-                                <input required="required" class="text-primary form-control" type="date"
-                                       id="dateFinPrevFD"
-                                       name="dateFinPrev"
-                                       value="2022-04-01">
-                                <br>
-                                <label class="form-label text-primary" for="notificationFD">Bon notifié :</label>
-                                <select class="form-select bg-white text-primary" name="notification"
-                                        id="notificationFD">
-                                    <option value="O">Oui</option>
-                                    <option value="N">Non</option>
-                                </select>
-                                <br>
-                                <label class="form-label text-primary" for="collabsFD">Liste des collaborateurs
-                                    concernés :</label>
-                                <br>
-                                <select required="required" class="form-select bg-white text-primary" multiple
-                                        name="collabs"
-                                        id="collabsFD">
-                                    {% for collab in collabs %}
-                                    <option name="{{collab.id_collab}}" value={{collab.id_collab}}>
-                                        {{collab.nom}}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                                <br>
-                                <button class="btn btn-primary" name="button">Enregistrer le FD</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-3">
+        <div class="col-4">
             <button style="margin-bottom: 20px;background-image: var(--bs-gradient);" type="button"
                     class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#saveformation">
@@ -385,7 +295,8 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <h5 align="center" class="text-danger">Si c'est une formation d'une supervision, commencer la description
+                            <h5 align="center" class="text-danger">Si c'est une formation d'une supervision, commencer
+                                la description
                                 par : "SUPV -"</h5>
                             <form action="/save_formation" id="formulaire2" method="post">
                                 <label class="form-label text-primary" for="activite2">Description du bon de commande
@@ -450,7 +361,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-4">
             <button style="margin-bottom: 20px; background-image: var(--bs-gradient);" type="button"
                     class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#saveautre">
@@ -600,9 +511,11 @@
         </td>
         <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{activite[0].anneeTarif}}
         </td>
         <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{activite[0].caAtos}}
         </td>
         <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
@@ -610,21 +523,27 @@
         </td>
         <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{activite[0].delais}}
         </td>
         <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{activite[0].montantHT}}
         </td>
         <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{activite[0].partEGIS}}
         </td>
         <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{activite[0].num}}
         </td>
         <td width="80" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{activite[0].poste}}
         </td>
         <td width="80" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
+            {{activite[0].projet}}
         </td>
         <td width="65" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
@@ -659,9 +578,9 @@
                                     <option value="">En cours</option>
                                 </select>
                                 <br>
-                                <div class="text-danger" style="margin-bottom : 20px">Attention : ne passer le bon en TE
-                                    qu'après avoir exporter les
-                                    données du mois pour le voir apparaitre sur celles-ci !
+                                <div class="text-danger" style="margin-bottom : 20px; font-weight: bold;">Attention : ne
+                                    passer le bon en TE qu'après avoir exporter les données du mois pour le voir
+                                    apparaitre sur celles-ci !
                                 </div>
                                 <button name="button" class="btn btn-primary">Modifier l'état</button>
                             </form>
@@ -1210,6 +1129,10 @@
             var joursAllouables = joursThq - partGDP;
             alert("Il y a " +joursAllouables+" jours à répartir");
             }
+
+
+
+
 
 
 

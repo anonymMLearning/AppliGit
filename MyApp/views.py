@@ -2,6 +2,7 @@ import os
 
 import bs4
 import requests
+
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
@@ -20,6 +21,7 @@ db = SQLAlchemy(app)
 
 from .exportExcel import *
 from .exportExcelMarche import *
+from .exportSuiviConso import *
 from .models import *
 from datetime import datetime
 
@@ -182,6 +184,13 @@ def export_excel_marche():
     export_excel_marcheMS4()  # Appel de la méthode du fichier exportExcelMarche.py
     collabs = db.session.query(Collab).filter(Collab.access == 3).all()
     return render_template('accueilMarcheMS4.html', collabs=collabs)
+
+
+@app.route('/export_excel_ssq_suivi_conso', methods=['GET', 'POST'])
+def exportExcelSSQSuiviConso():
+    export_excel_SSQSuiviConso()
+    collabs = db.session.query(Collab).filter(Collab.access == 3).all()
+    return render_template('accueil.html', collabs=collabs)
 
 
 @app.route('/modif_pourcent', methods=['GET', 'POST'])
@@ -850,8 +859,7 @@ def seeChronoFd():
         render_template
     """
     # On ne montre que les FD
-    boncomms = db.session.query(Boncomm).filter(Boncomm.nbJoursFormation == 0, Boncomm.nbJoursAutre == 0,
-                                                Boncomm.nbCongesTot == 0, Boncomm.prodGdpOuFd == "Fd").all()
+    boncomms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm == "").all()
     data_fds = []
     for boncomm in boncomms:
         assocs = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == boncomm.id_acti).all()
@@ -1930,7 +1938,7 @@ def see_data_boncomm():
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collabsGDP = [ava, cde]
-    boncomms = db.session.query(Boncomm).all()
+    boncomms = db.session.query(Boncomm).filter(Boncomm.apm == "").all()  # On ne montre pas les apm
     data_boncomm = []
     data_reste = []
     for i in range(len(boncomms)):
@@ -2003,7 +2011,7 @@ def save_formation():
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collabsGDP = [ava, cde]
-    boncomms = db.session.query(Boncomm).all()
+    boncomms = db.session.query(Boncomm).filter(Boncomm.apm == "").all()  # On ne montre pas les apm
     data_boncomm = []
     data_reste = []
     for i in range(len(boncomms)):
@@ -2075,7 +2083,7 @@ def save_autre():
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collabsGDP = [ava, cde]
-    boncomms = db.session.query(Boncomm).all()
+    boncomms = db.session.query(Boncomm).filter(Boncomm.apm == "").all()  # On ne montre pas les apm
     data_boncomm = []
     data_reste = []
     for i in range(len(boncomms)):
@@ -2194,92 +2202,7 @@ def save_bonComm():
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collabsGDP = [ava, cde]
-    boncomms = db.session.query(Boncomm).all()
-    data_boncomm = []
-    data_reste = []
-    for i in range(len(boncomms)):
-        boncomm = boncomms[i]
-        if boncomm.activite[0:4] != "CP -":  # On traite le cas des BC de GdP avec le BC qui lui est associé
-            if boncomm.caAtos != 0 and boncomm.jourThq != 0:  # c'est un BC, et non pas une formation ou autre
-                collabs = boncomm.collabs
-                # Dans l'ordre, si c'est un BC, il y a forcément ensuite sa partie GDP
-                dataCollabsGDP = boncomms[i + 1].collabs
-                collabsGDP = []
-                for j in range(len(dataCollabsGDP)):
-                    if dataCollabsGDP[j].joursAllouesBC != 0:
-                        collabsGDP.append(dataCollabsGDP[j])
-                data_boncomm.append([boncomm, collabs, boncomms[i + 1], collabsGDP])
-            elif boncomm.nbCongesTot == 0:  # Autres activités, sauf les congés
-                collabs = boncomm.collabs
-                data_reste.append([boncomm, collabs])
-    collabs = db.session.query(Collab).all()
-    collaborateurs = db.session.query(Collab).filter(Collab.access != 4, Collab.access != 3).all()
-    data_navbar = []
-    for collab in collaborateurs:
-        data_navbar.append([collab.abreviation(), collab])
-    dateNow = str(datetime.now())
-    mois = int(dateNow[5:7])
-    annee = int(dateNow[:4])
-    return render_template('activite.html', data_boncomm=data_boncomm, data_reste=data_reste, collabs=collabs,
-                           data_navbar=data_navbar, mois=mois, annee=annee, collabsGDP=collabsGDP)
-
-
-@app.route('/save_fraisD', methods=['GET', 'POST'])
-def save_fraisD():
-    """
-        Permet de créer un nouveau FD.
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-        render_template
-            renvoie la page des activités.
-    """
-    activite = request.form['activite']
-    com = request.form['com']
-    anneeTarif = request.form['anneeTarif']
-    caAtos = request.form['caAtos']
-    delais = request.form['delais']
-    montantHT = request.form['montantHT']
-    partEGIS = request.form['partEGIS']
-    num = request.form['num']
-    poste = request.form['poste']
-    dateNotif = request.form['dateNotif']
-    dateFinPrev = request.form['dateFinPrev']
-    notification = request.form['notification']
-    bon = Boncomm(activite, "", com, anneeTarif, caAtos, 0, delais, montantHT, partEGIS,
-                  num, poste, "DEP", 500, notification, "", "Fd", dateNotif, dateFinPrev, dateNotif,
-                  "", "", 0, 0, 0, 0, "", "", "", "", 0)
-    # Association aux UO
-    uos = db.session.query(UO).all()
-    for uo in uos:
-        assoBC = AssoUoBoncomm(facteur=0)
-        assoBC.uo = uo
-        assoBC.boncomm = bon
-        bon.uos.append(assoBC)
-    # Association aux collabs :
-    ids = request.form.getlist('collabs')
-    for idc in ids:  # Pour tous les collabs sélectionnés.
-        data = db.session.query(Collab).get(idc)
-        assoc = AssociationBoncommCollab(joursAllouesBC=0)
-        assoc.collab = data
-        assoc.boncomm = bon
-        bon.collabs.append(assoc)
-        # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates.
-        dates = db.session.query(Date).all()
-        for date in dates:
-            imp = Imputation(bon.id_acti, idc, date.id_date, 0, "client")
-            impAtos = Imputation(bon.id_acti, idc, date.id_date, 0, "atos")
-            db.session.add(imp)
-            db.session.add(impAtos)
-    db.session.add(bon)
-    db.session.commit()
-    ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
-    cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
-    collabsGDP = [ava, cde]
-    boncomms = db.session.query(Boncomm).all()
+    boncomms = db.session.query(Boncomm).filter(Boncomm.apm == "").all()  # On ne montre pas les apm
     data_boncomm = []
     data_reste = []
     for i in range(len(boncomms)):
@@ -2398,7 +2321,7 @@ def modif_boncomm(idb):
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collabsGDP = [ava, cde]
-    boncomms = db.session.query(Boncomm).all()
+    boncomms = db.session.query(Boncomm).filter(Boncomm.apm == "").all()  # On ne montre pas les apm
     data_boncomm = []
     data_reste = []
     for i in range(len(boncomms)):
@@ -2487,7 +2410,7 @@ def modif_activite(idb):
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collabsGDP = [ava, cde]
-    boncomms = db.session.query(Boncomm).all()
+    boncomms = db.session.query(Boncomm).filter(Boncomm.apm == "").all()  # On ne montre pas les apm
     data_boncomm = []
     data_reste = []
     for i in range(len(boncomms)):
@@ -2544,7 +2467,7 @@ def modif_etat(idb):
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collabsGDP = [ava, cde]
-    boncomms = db.session.query(Boncomm).all()
+    boncomms = db.session.query(Boncomm).filter(Boncomm.apm == "").all()  # On ne montre pas les apm
     data_boncomm = []
     data_reste = []
     for i in range(len(boncomms)):
@@ -2629,12 +2552,16 @@ def delete_activite(idb):
             AssociationBoncommCollab.boncomm_id == idb).all()
         for assoc in associations:  # On supprime toutes les associations
             db.session.delete(assoc)
+        associations = db.session.query(AssoUoBoncomm).filter(
+            AssoUoBoncomm.boncomm_id == idb).all()
+        for assoc in associations:
+            db.session.delete(assoc)
         db.session.delete(activite_to_delete)
     db.session.commit()
     ava = db.session.query(Collab).filter(Collab.nom == "Vieira").all()[0]
     cde = db.session.query(Collab).filter(Collab.nom == "Damotte").all()[0]
     collabsGDP = [ava, cde]
-    boncomms = db.session.query(Boncomm).all()
+    boncomms = db.session.query(Boncomm).filter(Boncomm.apm == "").all()  # On ne montre pas les apm
     data_boncomm = []
     data_reste = []
     for i in range(len(boncomms)):
@@ -4314,18 +4241,22 @@ def seeChronoAPM():
     dataToShow = []
     for j in range(len(fds)):
         assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == fds[j].id_acti).all()
-        notesDeFrais = fds[j].noteDeFrais
-        dataNDF = []
-        for note in ndfRef:  # On va classer les NDF dans l'ordre pour correspondre à l'affichage
-            i = 0
-            while i != len(ndfRef) or i != len(notesDeFrais):
-                if notesDeFrais[i].type == note.type:
-                    dataNDF.append(notesDeFrais[i].depense)
-                    i = len(ndfRef)  # Pour sortir de la boucle while
-                else:
-                    i += 1
-            if i == len(ndfRef) or i == len(notesDeFrais):
-                dataNDF.append("")  # Si on arrive ici, c'est qu'il n'y a pas de cette note associée à ce BC
+        notesDeFrais = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == fds[j].id_acti).all()
+        if len(notesDeFrais) == 0:
+            dataNDF = ["" for i in range(len(ndfRef))]
+        else:
+            dataNDF = []
+            for note in ndfRef:  # On va classer les NDF dans l'ordre pour correspondre à l'affichage
+                i = 0
+                nb = len(dataNDF)
+                while i < len(ndfRef) and i < len(notesDeFrais):
+                    if notesDeFrais[i].type == note.type:
+                        dataNDF.append(notesDeFrais[i].depense)
+                        i = len(ndfRef)  # Pour sortir de la boucle while
+                    else:
+                        i += 1
+                if nb == len(dataNDF):
+                    dataNDF.append("")  # Si on arrive ici, c'est qu'il n'y a pas de cette note associée à ce BC
         assoCollab = db.session.query(AssociationBoncommCollab).filter(
             AssociationBoncommCollab.boncomm_id == fds[j].id_acti).all()[0]  # Un seul intervenant par FD
         dataToAdd = [fds[j], assoCollab.collab, assoCollab.collab.abreviation(), assosUo, dataNDF]
@@ -4339,18 +4270,31 @@ def seeChronoAPM():
         dataToAdd.append(totUo)
 
         if j == 0:
-            dataToAdd.append((totUo - totNdf) - fds[j].margeLib)
+            dataToAdd.append(round((totUo - totNdf) + fds[j].margeLib, 2))
         else:
-            dataToAdd.append((totUo - totNdf) + dataToShow[j - 1][7] - fds[j].margeLib)
+            dataToAdd.append(round((totUo - totNdf) + dataToShow[j - 1][7] + fds[j].margeLib, 2))
 
         dataToShow.append(dataToAdd)
-    return render_template('chronoAPM.html', dataToShow=dataToShow, uos=uos, ndfRef=ndfRef)
+    collabs = db.session.query(Collab).all()
+    return render_template('chronoAPM.html', dataToShow=dataToShow, uos=uos, ndfRef=ndfRef, collabs=collabs)
 
 
 @app.route('/see_apm')
 def seeAPM():
     apms = db.session.query(Boncomm).filter(Boncomm.apm != "").all()
-    return render_template('apm.html', apms=apms)
+    dataApm = []
+
+    for apm in apms:
+        ndfs = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == apm.id_acti).all()
+        assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == apm.id_acti).all()
+        assosFdUo = []
+        for asso in assosUo:
+            if asso.uo.type == 'Fd':
+                assosFdUo.append(asso)
+        dataApm.append([apm, ndfs, assosFdUo])
+    collabs = db.session.query(Collab).all()
+    ndfRef = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == 0).all()
+    return render_template('apm.html', dataApm=dataApm, collabs=collabs, ndfRef=ndfRef)
 
 
 @app.route('/save_apm', methods=['GET', 'POST'])
@@ -4384,5 +4328,414 @@ def saveAPM():
 
     db.session.add(newAPM)
     db.session.commit()
+
     apms = db.session.query(Boncomm).filter(Boncomm.apm != "").all()
-    return render_template('apm.html', apms=apms)
+    dataApm = []
+    for apm in apms:
+        ndfs = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == apm.id_acti).all()
+        assosFdUo = []
+        assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == apm.id_acti).all()
+        for asso in assosUo:
+            if asso.uo.type == 'Fd':
+                assosFdUo.append(asso)
+        dataApm.append([apm, ndfs, assosFdUo])
+    collabs = db.session.query(Collab).all()
+    ndfRef = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == 0).all()
+    return render_template('apm.html', dataApm=dataApm, collabs=collabs, ndfRef=ndfRef)
+
+
+@app.route('/save_ndf/<idApm>', methods=['GET', 'POST'])
+def saveNdf(idApm):
+    type = request.form['type']
+    depense = request.form['depense']
+    ndf = NoteDeFrais(idApm, type, depense)
+    db.session.add(ndf)
+    db.session.commit()
+
+    apms = db.session.query(Boncomm).filter(Boncomm.apm != "").all()
+    dataApm = []
+    for apm in apms:
+        ndfs = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == apm.id_acti).all()
+        assosFdUo = []
+        assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == apm.id_acti).all()
+        for asso in assosUo:
+            if asso.uo.type == 'Fd':
+                assosFdUo.append(asso)
+        dataApm.append([apm, ndfs, assosFdUo])
+    collabs = db.session.query(Collab).all()
+    ndfRef = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == 0).all()
+    return render_template('apm.html', dataApm=dataApm, collabs=collabs, ndfRef=ndfRef)
+
+
+@app.route('/delete_ndf/<idN>', methods=['GET', 'POST'])
+def deleteNdf(idN):
+    ndf = db.session.query(NoteDeFrais).get(idN)
+    db.session.delete(ndf)
+    db.session.commit()
+    apms = db.session.query(Boncomm).filter(Boncomm.apm != "").all()
+    dataApm = []
+    for apm in apms:
+        ndfs = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == apm.id_acti).all()
+        assosFdUo = []
+        assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == apm.id_acti).all()
+        for asso in assosUo:
+            if asso.uo.type == 'Fd':
+                assosFdUo.append(asso)
+        dataApm.append([apm, ndfs, assosFdUo])
+    collabs = db.session.query(Collab).all()
+    ndfRef = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == 0).all()
+    return render_template('apm.html', dataApm=dataApm, collabs=collabs, ndfRef=ndfRef)
+
+
+@app.route('/link_uo_apm/<idApm>', methods=['GET', 'POST'])
+def linkUoApm(idApm):
+    apm = db.session.query(Boncomm).get(idApm)
+    assosFdUo = []
+    assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == apm.id_acti).all()
+    for asso in assosUo:
+        if asso.uo.type == 'Fd':
+            assosFdUo.append(asso)
+    for asso in assosFdUo:
+        asso.facteur = request.form[str(asso.uo.id_uo) + '/' + str(apm.id_acti)]
+
+    db.session.commit()
+
+    apms = db.session.query(Boncomm).filter(Boncomm.apm != "").all()
+    dataApm = []
+
+    for apm in apms:
+        ndfs = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == apm.id_acti).all()
+        assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == apm.id_acti).all()
+        assosFdUo = []
+        for asso in assosUo:
+            if asso.uo.type == 'Fd':
+                assosFdUo.append(asso)
+        dataApm.append([apm, ndfs, assosFdUo])
+    collabs = db.session.query(Collab).all()
+    ndfRef = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == 0).all()
+    return render_template('apm.html', dataApm=dataApm, collabs=collabs, ndfRef=ndfRef)
+
+
+@app.route('/see_fd')
+def seeFd():
+    fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm == "").all()  # Que les FD
+    collabs = db.session.query(Collab).all()
+    return render_template('fd.html', fds=fds, collabs=collabs)
+
+
+@app.route('/save_fraisD', methods=['GET', 'POST'])
+def save_fraisD():
+    """
+        Permet de créer un nouveau FD.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        render_template
+            renvoie la page des activités.
+    """
+    activite = request.form['activite']
+    com = request.form['com']
+    anneeTarif = request.form['anneeTarif']
+    caAtos = request.form['caAtos']
+    delais = request.form['delais']
+    montantHT = request.form['montantHT']
+    partEGIS = request.form['partEGIS']
+    num = request.form['num']
+    poste = request.form['poste']
+    dateNotif = request.form['dateNotif']
+    dateFinPrev = request.form['dateFinPrev']
+    notification = request.form['notification']
+    bon = Boncomm(activite, "", com, anneeTarif, caAtos, 0, delais, montantHT, partEGIS,
+                  num, poste, "DEP", 500, notification, "", "Fd", dateNotif, dateFinPrev, dateNotif,
+                  "", "", 0, 0, 0, 0, "", "", "", "", 0)
+    # Association aux UO
+    uos = db.session.query(UO).all()
+    for uo in uos:
+        assoBC = AssoUoBoncomm(facteur=0)
+        assoBC.uo = uo
+        assoBC.boncomm = bon
+        bon.uos.append(assoBC)
+    # Association aux collabs :
+    idCollab = request.form['collabs']
+    data = db.session.query(Collab).get(idCollab)
+    assoc = AssociationBoncommCollab(joursAllouesBC=0)
+    assoc.collab = data
+    assoc.boncomm = bon
+    bon.collabs.append(assoc)
+    # On initialise une imputation nulle pour chaque collab sur le bon, pour toutes les dates.
+    dates = db.session.query(Date).all()
+    for date in dates:
+        imp = Imputation(bon.id_acti, idCollab, date.id_date, 0, "client")
+        impAtos = Imputation(bon.id_acti, idCollab, date.id_date, 0, "atos")
+        db.session.add(imp)
+        db.session.add(impAtos)
+    db.session.add(bon)
+    db.session.commit()
+    fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm == "").all()  # Que les FD
+    collabs = db.session.query(Collab).all()
+    return render_template('fd.html', fds=fds, collabs=collabs)
+
+
+@app.route('/delete_fd/<idFd>', methods=['GET', 'POST'])
+def deleteFd(idFd):
+    fd = db.session.query(Boncomm).get(idFd)
+    imputations = db.session.query(Imputation).filter(Imputation.acti_id == idFd).all()
+    for imputation in imputations:  # On supprime toutes les imputations
+        db.session.delete(imputation)
+    associations = db.session.query(AssociationBoncommCollab).filter(
+        AssociationBoncommCollab.boncomm_id == idFd).all()
+    for assoc in associations:  # On supprime toutes les associations
+        db.session.delete(assoc)
+    associations = db.session.query(AssoUoBoncomm).filter(
+        AssoUoBoncomm.boncomm_id == idFd).all()
+    for assoc in associations:  # On supprime toutes les associations
+        db.session.delete(assoc)
+    db.session.delete(fd)
+    db.session.commit()
+
+    fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm == "").all()  # Que les FD
+    collabs = db.session.query(Collab).all()
+    return render_template('fd.html', fds=fds, collabs=collabs)
+
+
+@app.route('/modif_fd/<idFd>', methods=['GET', 'POST'])
+def modifFd(idFd):
+    """
+        Permet de modifier les attributs d'un frais de déplacement.
+
+        Parameters
+        ----------
+        idFd
+            id du FD à modifier.
+        Returns
+        -------
+        render_template
+            renvoie la page HTML dédiée aux FD.
+    """
+    fd = db.session.query(Boncomm).get(idFd)
+    fd.activite = request.form['activite']
+    fd.com = request.form['com']
+    fd.anneeTarif = request.form['anneeTarif']
+    fd.caAtos = request.form['caAtos']
+    fd.delais = request.form['delais']
+    fd.montantHT = request.form['montantHT']
+    fd.partEGIS = request.form['partEGIS']
+    fd.num = request.form['num']
+    fd.poste = request.form['poste']
+    fd.dateNotif = request.form['dateNotif']
+    fd.dateFinPrev = request.form['dateFinPrev']
+    fd.notification = request.form['notification']
+    idCollab = request.form['collab']
+    if request.form['collab'] != "pasDeModif":
+        collab = db.session.query(Collab).get(int(request.form['collab']))
+        add = True  # Pour savoir si le collab est différent
+        for asso in fd.collabs:
+            if asso.collab.id_collab == collab.id_collab:  # Si il y est déjà, on ne modifie pas
+                add = False
+        if add:
+            db.session.delete(fd.collabs[0])
+            assoc = AssociationBoncommCollab(joursAllouesBC=0)
+            assoc.collab = collab
+            assoc.boncomm = fd
+            fd.collabs.append(assoc)
+    db.session.commit()
+    fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm == "").all()  # Que les FD
+    collabs = db.session.query(Collab).all()
+    return render_template('fd.html', fds=fds, collabs=collabs)
+
+
+@app.route('/modif_apm/<idApm>', methods=['GET', 'POST'])
+def modifApm(idApm):
+    apm = db.session.query(Boncomm).get(idApm)
+    apm.apm = request.form['apm']
+    apm.num = request.form['num']
+    apm.poste = request.form['poste']
+    apm.activite = request.form['activite']
+    apm.dateDebut = request.form['debut']
+    apm.dateNotif = request.form['debut']
+    apm.dateFinPrev = request.form['fin']
+    apm.dateFinOp = request.form['fin']
+    apm.lieu = request.form['lieu']
+    apm.client = request.form['client']
+    apm.dateSign = request.form['signature']
+    apm.margeLib = request.form['margeLib']
+    if request.form['intervenant'] != "pasDeModif":
+        intervenant = db.session.query(Collab).get(int(request.form['intervenant']))
+        add = True  # Pour savoir si le collab est différent
+        for asso in apm.collabs:
+            if asso.collab.id_collab == intervenant.id_collab:  # Si il y est déjà, on ne modifie pas
+                add = False
+        if add:
+            db.session.delete(apm.collabs[0])
+            assoc = AssociationBoncommCollab(joursAllouesBC=0)
+            assoc.collab = intervenant
+            assoc.boncomm = apm
+            apm.collabs.append(assoc)
+    db.session.commit()
+
+    fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm != "").all()  # Que les apm
+    # Servira pour trier dans l'ordre les asso aux Fds, contient différents type de ndf :
+    ndfRef = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == 0).all()
+    uos = db.session.query(UO).all()  # idem
+    dataToShow = []
+    for j in range(len(fds)):
+        assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == fds[j].id_acti).all()
+        notesDeFrais = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == fds[j].id_acti).all()
+        if len(notesDeFrais) == 0:
+            dataNDF = ["" for i in range(len(ndfRef))]
+        else:
+            dataNDF = []
+            for note in ndfRef:  # On va classer les NDF dans l'ordre pour correspondre à l'affichage
+                i = 0
+                nb = len(dataNDF)
+                while i < len(ndfRef) and i < len(notesDeFrais):
+                    if notesDeFrais[i].type == note.type:
+                        dataNDF.append(notesDeFrais[i].depense)
+                        i = len(ndfRef)  # Pour sortir de la boucle while
+                    else:
+                        i += 1
+                if nb == len(dataNDF):
+                    dataNDF.append("")  # Si on arrive ici, c'est qu'il n'y a pas de cette note associée à ce BC
+        assoCollab = db.session.query(AssociationBoncommCollab).filter(
+            AssociationBoncommCollab.boncomm_id == fds[j].id_acti).all()[0]  # Un seul intervenant par FD
+        dataToAdd = [fds[j], assoCollab.collab, assoCollab.collab.abreviation(), assosUo, dataNDF]
+
+        totUo, totNdf = 0, 0
+        for asso in assosUo:
+            totUo += asso.facteur * asso.uo.prix
+        for ndf in notesDeFrais:
+            totNdf += ndf.depense
+        dataToAdd.append(totNdf)
+        dataToAdd.append(totUo)
+
+        if j == 0:
+            dataToAdd.append((totUo - totNdf) + fds[j].margeLib)
+        else:
+            dataToAdd.append((totUo - totNdf) + dataToShow[j - 1][7] + fds[j].margeLib)
+
+        dataToShow.append(dataToAdd)
+    collabs = db.session.query(Collab).all()
+    return render_template('chronoAPM.html', dataToShow=dataToShow, uos=uos, ndfRef=ndfRef, collabs=collabs)
+
+
+@app.route('/delete_apm/<idApm>', methods=['GET', 'POST'])
+def deleteApm(idApm):
+    apm = db.session.query(Boncomm).get(idApm)
+    ndfs = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == idApm).all()
+    for ndf in ndfs:
+        db.session.delete(ndf)
+    imputations = db.session.query(Imputation).filter(Imputation.acti_id == idApm).all()
+    for imputation in imputations:  # On supprime toutes les imputations
+        db.session.delete(imputation)
+    associations = db.session.query(AssociationBoncommCollab).filter(
+        AssociationBoncommCollab.boncomm_id == idApm).all()
+    for assoc in associations:  # On supprime toutes les associations
+        db.session.delete(assoc)
+    associations = db.session.query(AssoUoBoncomm).filter(
+        AssoUoBoncomm.boncomm_id == idApm).all()
+    for assoc in associations:  # On supprime toutes les associations
+        db.session.delete(assoc)
+    db.session.delete(apm)
+    db.session.commit()
+
+    apms = db.session.query(Boncomm).filter(Boncomm.apm != "").all()
+    dataApm = []
+
+    for apm in apms:
+        ndfs = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == apm.id_acti).all()
+        assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == apm.id_acti).all()
+        assosFdUo = []
+        for asso in assosUo:
+            if asso.uo.type == 'Fd':
+                assosFdUo.append(asso)
+        dataApm.append([apm, ndfs, assosFdUo])
+    collabs = db.session.query(Collab).all()
+    ndfRef = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == 0).all()
+    return render_template('apm.html', dataApm=dataApm, collabs=collabs, ndfRef=ndfRef)
+
+
+@app.route('/see_solde_atos')
+def seeSoldeAtos():
+    fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm == "").all()
+    fdAtos = triFd("Atos", fds)
+    uosFd = db.session.query(UO).filter(UO.type == "Fd").all()
+    nbUosFd = len(uosFd)
+    dataFdAtos = []
+    dataTotUo = []
+    for i in range(nbUosFd):
+        dataTotUo.append([0, 0, 0, 0])
+    for fd in fdAtos:
+        dataToAdd = [fd]
+        apms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm != "",
+                                                Boncomm.num == fd.num).all()  # Tous les apms liés à ce FD
+        dataToAdd.append(apms[0].collabs[0].collab.entreprise)  # Entreprise lié à ce FD
+        dataToAdd.append('20' + str(apms[0].num[-2:]))  # Année du FD
+        dataToAdd.append(apms[0].client)  # Client lié à ce FD
+        # collabs[0] car un seul collab lié à un FD
+        dataUo = []
+        for j in range(nbUosFd):
+            uo = uosFd[j]
+            data = []
+            facteurFd = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.uo_id == uo.id_uo,
+                                                               AssoUoBoncomm.boncomm_id == fd.id_acti).all()[0].facteur
+            data.append(facteurFd)
+            dataTotUo[j][0] += facteurFd
+            facteurAffecte = 0
+            for apm in apms:
+                facteurAffecte += db.session.query(AssoUoBoncomm).filter(
+                    AssoUoBoncomm.uo_id == uo.id_uo, AssoUoBoncomm.boncomm_id == apm.id_acti).all()[0].facteur
+            data.append(facteurAffecte)
+            dataTotUo[j][1] += facteurAffecte
+            data.append(facteurFd - facteurAffecte)
+            dataTotUo[j][2] += (facteurFd - facteurAffecte)
+            dataUo.append(data)
+        dataToAdd.append(dataUo)
+        dataFdAtos.append(dataToAdd)
+    for j in range(nbUosFd):
+        dataTotUo[j][3] = dataTotUo[j][0] * uosFd[j].prix
+    return render_template('soldeAtos.html', dataFdAtos=dataFdAtos, uosFd=uosFd, nbUosFd=nbUosFd, dataTotUo=dataTotUo)
+
+
+@app.route('/see_solde_egis')
+def seeSoldeEgis():
+    fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm == "").all()
+    fdEgis = triFd("EGIS", fds)
+    uosFd = db.session.query(UO).filter(UO.type == "Fd").all()
+    nbUosFd = len(uosFd)
+    dataFdEgis = []
+    dataTotUo = []
+    for i in range(nbUosFd):
+        dataTotUo.append([0, 0, 0, 0])
+    for fd in fdEgis:
+        dataToAdd = [fd]
+        apms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm != "",
+                                                Boncomm.num == fd.num).all()  # Tous les apms liés à ce FD
+        dataToAdd.append(apms[0].collabs[0].collab.entreprise)  # Entreprise lié à ce FD
+        dataToAdd.append('20' + str(apms[0].num[-2:]))  # Année du FD
+        dataToAdd.append(apms[0].client)  # Client lié à ce FD
+        # collabs[0] car un seul collab lié à un FD
+        dataUo = []
+        for j in range(nbUosFd):
+            uo = uosFd[j]
+            data = []
+            facteurFd = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.uo_id == uo.id_uo,
+                                                               AssoUoBoncomm.boncomm_id == fd.id_acti).all()[0].facteur
+            data.append(facteurFd)
+            dataTotUo[j][0] += facteurFd
+            facteurAffecte = 0
+            for apm in apms:
+                facteurAffecte += db.session.query(AssoUoBoncomm).filter(
+                    AssoUoBoncomm.uo_id == uo.id_uo, AssoUoBoncomm.boncomm_id == apm.id_acti).all()[0].facteur
+            data.append(facteurAffecte)
+            dataTotUo[j][1] += facteurAffecte
+            data.append(facteurFd - facteurAffecte)
+            dataTotUo[j][2] += (facteurFd - facteurAffecte)
+            dataUo.append(data)
+        dataToAdd.append(dataUo)
+        dataFdEgis.append(dataToAdd)
+    for j in range(nbUosFd):
+        dataTotUo[j][3] = dataTotUo[j][0] * uosFd[j].prix
+    return render_template('soldeEgis.html', dataFdEgis=dataFdEgis, uosFd=uosFd, nbUosFd=nbUosFd, dataTotUo=dataTotUo)

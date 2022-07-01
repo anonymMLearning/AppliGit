@@ -13,6 +13,9 @@
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
+                    <a class="nav-link" href="/see_fd">FD</a>
+                </li>
+                <li class="list-inline-item">
                     <a class="nav-link" href="/see_apm">APM</a>
                 </li>
                 <li class="list-inline-item">
@@ -42,7 +45,7 @@
     </div>
 </div>
 <div align="center">
-    <button style="margin-bottom: 20px;background-image: var(--bs-gradient);" type="button"
+    <button style="background-image: var(--bs-gradient); border: 1px solid black; font-weight:bold;" type="button"
             class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#saveapm">
         Ajouter un APM
@@ -91,60 +94,14 @@
                         <input required="required" class="text-primary form-control" type="date"
                                id="signature" name="signature">
                         <br>
-                        <label class="form-label text-primary" for="numBC">Numéro du bon :</label>
-                        <input class="text-primary form-control" type="text" id="numBC" name="numBC"
-                               required="required">
+                        <label class="form-label text-primary" for="margeLib">Marge libérée :</label>
+                        <input class="text-primary form-control" type="number" step="0.1" id="margeLib" name="margeLib"
+                               required="required" value="0">
                         <br>
-                        <label class="form-label text-primary" for="posteBC">Poste :</label>
-                        <input class="text-primary form-control" type="text" id="posteBC" name="posteBC"
-                               required="required">
+                        <label class="form-label text-primary" for="intervenant">Collaborateur concerné :</label>
                         <br>
-                        <label class="form-label text-primary" for="projetBC">Projet :</label>
-                        <select class="form-select bg-white text-primary" name="projetBC"
-                                id="projetBC">
-                            <option value="CNS">CNS</option>
-                            <option value="APP">APP</option>
-                            <option value="ATM1">ATM1</option>
-                            <option value="ATM2">ATM2</option>
-                            <option value="ATM1-2">ATM1-2</option>
-                            <option value="TRANS">TRANS</option>
-                            <option value="EXP">EXP</option>
-                        </select>
-                        <br>
-                        <label class="form-label text-primary">Date de notification :</label>
-                        <input required="required" class="text-primary form-control" type="date"
-                               id="dateNotifBC" name="dateNotif"
-                               value="2022-04-01">
-                        <br>
-                        <label class="form-label text-primary" for="dateFinPrevBC">Date de fin prévue :</label>
-                        <input required="required" class="text-primary form-control" type="date"
-                               id="dateFinPrevBC"
-                               name="dateFinPrev"
-                               value="2022-04-01">
-                        <br>
-                        <label class="form-label text-primary" for="notification">Bon notifié :</label>
-                        <select required="required" class="form-select bg-white text-primary"
-                                name="notification"
-                                id="notification">
-                            <option value="O">Oui</option>
-                            <option value="N">Non</option>
-                        </select>
-                        <br>
-                        <label class="form-label text-primary" for="facturation">Facturation :</label>
-                        <select class="form-select bg-white text-primary" name="facturation"
-                                id="facturation">
-                            <option value="S">Soldé</option>
-                            <option value="A1">Accompte 1</option>
-                            <option value="A2">Accompte 2</option>
-                            <option value="A3">Accompte 3</option>
-                        </select>
-                        <br>
-                        <label class="form-label text-primary" for="collabsBC">Liste des collaborateurs
-                            concernés :</label>
-                        <br>
-                        <select required="required" class="form-select bg-white text-primary" multiple
-                                name="collabsBC"
-                                id="collabsBC">
+                        <select required="required" class="form-select bg-white text-primary" name="intervenant"
+                                id="intervenant">
                             {% for collab in collabs %}
                             <option name="{{collab.id_collab}}" value={{collab.id_collab}}>
                                 {{collab.nom}}
@@ -152,33 +109,7 @@
                             {% endfor %}
                         </select>
                         <br>
-
-                        <label class="form-label text-primary">Répartition des jours (pour les collaborateurs
-                            sélectionnés) :</label>
-                        <br>
-                        {% for collab in collabs %}
-                        <label class="form-label text-primary">{{collab.nom}}</label>
-                        <input class="text-primary form-control" value="0" onclick="nbJoursAllouables()"
-                               type="number"
-                               step="0.5"
-                               id="joursBC{{collab.id_collab}}"
-                               name="joursBC{{collab.id_collab}}">
-                        <br>
-                        {% endfor %}
-                        <br>
-                        <label class="form-label text-primary">Répartition pour la GDP :</label>
-                        <br>
-                        <label class="form-label text-primary">AVA :</label>
-                        <input class="text-primary form-control" type="number"
-                               step="0.5"
-                               name="joursGDPAVA" value="0">
-                        <br>
-                        <label class="form-label text-primary">CDE :</label>
-                        <input class="text-primary form-control" type="number"
-                               step="0.5"
-                               name="joursGDPCDE" value="0">
-                        <button style="margin-top: 15px;" class="btn btn-primary" name="button">Enregistrer le
-                            BC
+                        <button style="margin-top: 15px;" class="btn btn-primary" name="button">Enregistrer l'APM
                         </button>
                     </form>
                 </div>
@@ -186,6 +117,169 @@
         </div>
     </div>
 </div>
+<br>
+<table id="tableau" align="center"
+       style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="bg-primary text-white" style="font-weight: bold; border: 1px solid black; padding : 5px;">Notes de
+            frais
+        </td>
+    </tr>
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        <td></td>
+        <td class="bg-primary text-white" style="font-weight: bold; border: 1px solid black; padding : 5px;">N°APM</td>
+        <td class="bg-primary text-white" style="font-weight: bold; border: 1px solid black; padding : 5px;">N°BC</td>
+        <td class="bg-primary text-white" style="font-weight: bold; border: 1px solid black; padding : 5px;">Objet</td>
+        <td class="bg-primary text-white" style="font-weight: bold; border: 1px solid black; padding : 5px;">Lieu</td>
+        <td class="bg-primary text-white" style="font-weight: bold; border: 1px solid black; padding : 5px;">Client</td>
+        <td class="bg-primary text-white" style="font-weight: bold; border: 1px solid black; padding : 5px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-4" style="padding-left: 0px; ">Type</div>
+                    <div class="col-4" style="padding-left: 0px; ">Dépense</div>
+                    <div class="col-4" style="padding-left:10px; ">Effacer</div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% for apm in dataApm %}
+    <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
+        <td></td>
+        <td class="bg-light" style="border: 1px solid black; padding : 5px;">{{apm[0].apm}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 5px;">{{apm[0].num}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 5px;">{{apm[0].activite}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 5px;">{{apm[0].lieu}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 5px;">{{apm[0].client}}</td>
+        <td class="bg-light" style="border: 1px solid black; padding : 5px;">
+            <div class="container">
+                {% for ndf in apm[1] %}
+                <div class="row">
+                    <div class="col-4">{{ndf.type}}</div>
+                    <div class="col-4" style="padding-left: 0px; ">{{ndf.depense}}</div>
+                    <div class="col-4"><a href="/delete_ndf/{{ndf.id_ndf}}">X</a></div>
+                </div>
+                {% endfor %}
+            </div>
+        </td>
+        <td class="bg-light" style="border: 1px solid black; padding : 5px;">
+            <div align="center">
+                <button style="background-image: var(--bs-gradient); border: 1px solid black; font-weight: bold;"
+                        type="button" class="btn btn-warning" data-bs-toggle="modal"
+                        data-bs-target="#savendf{{apm[0].id_acti}}">
+                    Ajouter une Ndf
+                </button>
+                <div class="modal fade" id="savendf{{apm[0].id_acti}}" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="savendf{{apm[0].id_acti}}">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-warning">
+                                <h5 class="modal-title">Ajouter une note de frais</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/save_ndf/{{apm[0].id_acti}}" id="formulaire2" method="post">
+                                    <label style="font-weight: bold;" class="form-label" for="apm">Type :</label>
+                                    <select required="required" class="form-select bg-light"
+                                            name="type" id="type">
+                                        {% for ref in ndfRef %}
+                                        <option name="{{ref.type}}" value={{ref.type}}>
+                                            {{ref.type}}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <br>
+                                    <label class="form-label" style="font-weight: bold;" for="depense">Dépense :</label>
+                                    <input class="bg-light form-control" type="number" id="depense" name="depense"
+                                           required="required" step="any">
+                                    <br>
+                                    <button style="margin-top: 15px; border: 1px solid black;font-weight: bold;"
+                                            class="btn btn-warning" name="button">Ajouter
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td class="bg-light" style="border: 1px solid black; padding : 5px;">
+            <div align="center">
+                <button style="background-image: var(--bs-gradient); border: 1px solid black; font-weight: bold;"
+                        type="button" class="btn btn-warning" data-bs-toggle="modal"
+                        data-bs-target="#linkUoApm{{apm[0].id_acti}}">
+                    Relier aux UO
+                </button>
+                <div class="modal fade" id="linkUoApm{{apm[0].id_acti}}" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="linkUoApm{{apm[0].id_acti}}">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-warning">
+                                <h5 class="modal-title">Associer des UO</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/link_uo_apm/{{apm[0].id_acti}}" id="formulaire3" method="post">
+                                    {% for asso in apm[2] %}
+                                    <label style="font-weight: bold;" class="form-label"
+                                           for="{{asso.uo.id_uo}}/{{apm[0].id_acti}}">UO {{asso.uo.num}} :</label>
+                                    <input name="{{asso.uo.id_uo}}/{{apm[0].id_acti}}" style="text-align:center;"
+                                           id="{{asso.uo.id_uo}}/{{apm[0].id_acti}}"
+                                           type="number" step="1" value="{{asso.facteur}}">
+                                    <br>
+                                    {% endfor %}
+                                    <button style="margin-top: 15px; border: 1px solid black;font-weight: bold;"
+                                            class="btn btn-warning" name="button">Ajouter
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td class="bg-light" style="border: 1px solid black; padding:5px;">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                    style="font-weight: bold; border: 1px solid black;" data-bs-target="#effacer{{apm[0].id_acti}}">
+                Effacer
+            </button>
+            <div class="modal fade" id="effacer{{apm[0].id_acti}}" tabindex="-1" aria-hidden="true"
+                 aria-labelledby="effacer{{apm[0].id_acti}}">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Effacer l'APM</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label>Voulez-vous vraiment supprimer cette activité ?</label>
+                            <br>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a href="/delete_apm/{{apm[0].id_acti}}">Oui</a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="/see_apm">Non</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

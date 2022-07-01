@@ -10,9 +10,9 @@ def export_excel_marcheMS4():
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
-
+    das = request.form['das']
     workbook = xlsxwriter.Workbook(
-        r'C:\Users\a' + '857591' + '\Downloads\MarchéMS4-' + str(mois) + '-' + str(annee) + '.xlsx')
+        r'C:\Users\a' + das + '\Downloads\MarchéMS4-' + str(mois) + '-' + str(annee) + '.xlsx')
     chronoBC = workbook.add_worksheet('chrono des BC')
     chronoBC.set_tab_color('#305496')
     chronoFD = workbook.add_worksheet('chrono des FD')
@@ -159,7 +159,7 @@ def export_excel_marcheMS4():
         row += 1
     """--------------------------------------------------------------------------------------------------------------"""
     """ -------------------------------------- Feuille chronoFD ---------------------------------------------------- """
-    bons = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd").all()
+    bons = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm =="").all()
     uosFD = db.session.query(UO).filter(UO.type == "Fd").all()
     dateNow = str(datetime.now())
     moisStr = stringMois(str(int(dateNow[5:7])))

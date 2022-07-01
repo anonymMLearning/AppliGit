@@ -7,6 +7,7 @@ from urllib import request
 from models import *
 from exportExcelMarche import *
 
-bcs = db.session.query(Boncomm).all()
-for bc in bcs:
-    print(bc.id_acti)
+bon = db.session.query(Boncomm).all()[-1]
+print(bon.num)
+
+

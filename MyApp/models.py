@@ -621,4 +621,14 @@ def moisVisibles(mois, annee):
     return moisVisibles
 
 
+def triFd(entreprise, fds):
+    result = []
+    for fd in fds:
+        assoCollab = db.session.query(AssociationBoncommCollab).filter(
+            AssociationBoncommCollab.boncomm_id == fd.id_acti).all()[0]
+        if assoCollab.collab.entreprise == entreprise:
+            result.append(fd)
+    return result
+
+
 db.create_all()
