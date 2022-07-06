@@ -42,7 +42,8 @@
             L'association du FD aux UO se fait sur la page "Chrono des BC".
 
         </h5>
-        <h5 style="text-align: center" class="text-danger">Pour modifier la date de début ou de fin opérationnelle, rendez-vous dans la section CRA
+        <h5 style="text-align: center" class="text-danger">Pour modifier la date de début ou de fin opérationnelle,
+            rendez-vous dans la section CRA
             Marché de l'onglet Marché MS4</h5>
     </div>
 </div>
@@ -203,7 +204,8 @@
             {{fd.collabs[0].collab.nom}}
         </td>
         <td class="bg-light" style="font-weight: bold; border: 1px solid black; padding : 5px;">
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal" style="font-weight: bold; border: 1px solid black;"
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                    style="font-weight: bold; border: 1px solid black;"
                     data-bs-target="#modifFd{{fd.id_acti}}">Modifier
             </button>
             <div class="modal fade" id="modifFd{{fd.id_acti}}" tabindex="-1" aria-hidden="true"
@@ -227,7 +229,16 @@
                                 <input class="text-primary form-control" type="number"
                                        name="anneeTarif" required="required" value="{{fd.anneeTarif}}">
                                 <br>
-
+                                <label style="text-align: center; margin-bottom : 10px" class="text-primary">Etat
+                                    :</label>
+                                <select class="form-select bg-white text-primary" name="etat" id="etat">
+                                    <option value="{{fd.etat}}">Actuellement sélectionné
+                                        :{{fd.etat}}
+                                    </option>
+                                    <option value="TE">Clôturé</option>
+                                    <option value="">En cours</option>
+                                </select>
+                                <br>
                                 <label class="form-label text-primary" for="montantHTFD">Montant HT :</label>
                                 <input class="text-primary form-control" type="number"
                                        name="montantHT" required="required" value="{{fd.montantHT}}">
@@ -260,6 +271,12 @@
                                 <input required="required" class="text-primary form-control" type="date"
                                        name="dateFinPrev" value="{{fd.dateFinPrev}}">
                                 <br>
+                                <label class="form-label text-primary" for="dateFinOp">Date de fin op.
+                                        :</label>
+                                    <input class="text-primary form-control" type="date" id="dateFinOp"
+                                           name="dateFinOp"
+                                           value="{{fd.dateFinOp}}">
+                                    <br>
                                 <label class="form-label text-primary" for="notificationFD">Bon notifié :</label>
                                 <select class="form-select bg-white text-primary" name="notification">
                                     <option selected value="{{fd.notification}}">Actuellement sélectionné :
@@ -291,7 +308,8 @@
             </div>
         </td>
         <td class="bg-light" style="font-weight: bold; border: 1px solid black; padding : 5px;">
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal" style="font-weight: bold; border: 1px solid black;"
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                    style="font-weight: bold; border: 1px solid black;"
                     data-bs-target="#delete{{fd.id_acti}}">Effacer
             </button>
             <div class="modal fade" id="delete{{fd.id_acti}}" tabindex="-1" aria-hidden="true"

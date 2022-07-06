@@ -7,7 +7,7 @@ from urllib import request
 from models import *
 from exportExcelMarche import *
 
-bon = db.session.query(Boncomm).all()[-1]
-print(bon.num)
+collab = db.session.query(Collab).all()[0]
+print(collab.scrs)
 
 

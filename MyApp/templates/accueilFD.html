@@ -44,6 +44,35 @@
         </h5>
     </div>
 </div>
+<div align="center">
+    <button style="font-weight:bold; text-align:center;background-image: var(--bs-gradient);" type="button"
+            class="btn btn-warning" data-bs-toggle="modal"
+            data-bs-target="#exportexcel">
+        Exporter sur excel
+    </button>
+    <div class="modal fade" id="exportexcel" tabindex="-1" aria-hidden="true"
+         aria-labelledby="exportExcel">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">Renseignez votre DAS</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="text-danger">Ne renseignez que les chiffres du DAS</h5>
+                    <form action="/export_excel_deplacements" method="post">
+                        <label class="form-label" for="das">DAS :</label>
+                        <input class="form-control" type="text" id="das" name="das">
+                        <br>
+                        <button name="button" style="font-weight:bold;" class="btn btn-warning">Exporter sur excel
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

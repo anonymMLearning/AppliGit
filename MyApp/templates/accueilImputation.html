@@ -130,8 +130,39 @@
                     <div class="modal-body">
                         <h5 class="text-danger">Ne renseignez que les chiffres du DAS</h5>
                         <form action="/export_excel" method="post">
-                            <label class="form-label" for="das">DAS :</label>
+                            <label style="font-weight:bold;" class="form-label" for="das">DAS :</label>
                             <input class="form-control" type="text" id="das" name="das">
+                            <br>
+                            <label class="form-label" style="font-weight:bold;" for="mois">Mois :</label>
+                            <select class="form-select" name="mois" id="mois">
+                                <option selected value="1">Janvier</option>
+                                <option value="2">Février</option>
+                                <option value="3">Mars</option>
+                                <option value="4">Avril</option>
+                                <option value="5">Mai</option>
+                                <option value="6">Juin</option>
+                                <option value="7">Juillet</option>
+                                <option value="8">Août</option>
+                                <option value="9">Septembre</option>
+                                <option value="10">Octobre</option>
+                                <option value="11">Novembre</option>
+                                <option value="12">Décembre</option>
+                            </select>
+                            <br>
+                            <label class="form-label" style="font-weight:bold;" for="annee">Année :</label>
+                            <select class="form-select" name="annee" id="annee">
+                                <option value="2021">2021</option>
+                                <option selected value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+
+                            </select>
                             <br>
                             <button name="button" style="font-weight:bold;" class="btn btn-warning">Exporter sur excel
                             </button>
@@ -151,6 +182,7 @@
                             var jAllouesThq= caAtos / tjm;
                             document.getElementById("formulaire").elements["jourThq"].value=jAllouesThq;
                             document.getElementById("formulaire").elements["partGDP"].value = jAllouesThq*0.2;}
+
 
 </script>
 </html>

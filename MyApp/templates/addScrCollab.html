@@ -99,14 +99,16 @@
 <div class="bg-light border border-3 border-primary rounded mt-2"
      style="margin-right:20%; margin-left: 20%; margin-bottom: 20px;">
     <div style="margin-left: 20px">
-        <h5 style="margin-top: 10px; text-align: center" class="text-primary">Sélectionnez la période sur laquelle les collaborateurs ont ce SCR.</h5><br>
-        <h5 style="text-align: center" class="text-danger">Pour supprimer une association, choisissez ✘ pour le mois de début et de fin.</h5>
+        <h5 style="margin-top: 10px; text-align: center" class="text-primary">Sélectionnez la période sur laquelle les
+            collaborateurs ont ce SCR.</h5><br>
+        <h5 style="text-align: center" class="text-danger">Pour supprimer une association, choisissez ✘ pour le mois de
+            début et de fin.</h5>
 
     </div>
 </div>
 <div class="border border-3 border-primary rounded bg-light"
      style="margin-bottom:20px; background-image: var(--bs-gradient);margin-left: 1%;margin-right: 1%;">
-    <form style="text-align:center; margin: 20px " action="/add_scr_collab/{{scr.id_scr}}" method="post">
+    <form style="text-align:center; margin: 20px " action="/add_scr_collab/{{scr.id_scr}}/{{anneeDebut}}-{{anneeFin}}" method="post">
         <table id="tableau" align="center"
                style=" margin-top:20px; margin-bottom:20px;  text-align:center;   table-layout: fixed;">
             <tr class="p-3 mb-2 bg-warning" style="background-image: var(--bs-gradient); border: 1px solid black">
@@ -190,59 +192,8 @@
             </tr>
             {% endfor %}
         </table>
-        <a data-bs-toggle="modal" data-bs-target="#seescr" style="font-weight: bold;" class="btn btn-primary" href="/">Enregistrer</a>
-        <div class="modal fade" id="seescr" tabindex="-1" aria-hidden="true"
-             aria-labelledby="seescr">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary">
-                        <h5 class="modal-title text-white">Choisissez les années à montrer</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form style="text-align:center; margin: 20px " action="/see_scr" method="post">
-                            <label class="form-label text-primary" style="font-weight:bold;">Année
-                                début
-                                :</label>
-                            <select class="form-select bg-light text-primary" name="anneeD">
-                                <option value="2021">2021</option>
-                                <option selected value="2022">2022</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                                <option value="2025">2025</option>
-                                <option value="2026">2026</option>
-                                <option value="2027">2027</option>
-                                <option value="2028">2028</option>
-                                <option value="2029">2029</option>
-                                <option value="2030">2030</option>
-                            </select>
-                            <br>
-                            <label class="form-label text-primary" style="font-weight:bold;">Année
-                                fin
-                                :</label>
-                            <select class="form-select bg-light text-primary" name="anneeF">
-                                <option value="2021">2021</option>
-                                <option selected value="2022">2022</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                                <option value="2025">2025</option>
-                                <option value="2026">2026</option>
-                                <option value="2027">2027</option>
-                                <option value="2028">2028</option>
-                                <option value="2029">2029</option>
-                                <option value="2030">2030</option>
-                            </select>
-                            <br>
-                            <button style="font-weight:bold;" align="center"
-                                    class="btn border border-white btn-primary"
-                                    name="button">Voir les SCR
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button style="font-weight:bold;" align="center" class="btn border btn-primary" name="button">Enregistrer
+        </button>
     </form>
 </div>
 </body>

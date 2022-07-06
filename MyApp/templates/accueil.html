@@ -254,10 +254,10 @@
 </div>
 <div style="text-align:center">
     <a id="link" class="btn btn-primary" href="/init_db"
-       style="margin-left:10px; margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); ">
+       style="margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); ">
         Initialiser la BDD</a>
     <br>
-    <div style="margin-left:10px; margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); ">
+    <div style="margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); ">
         <button style="font-weight:bold; text-align:center;background-image: var(--bs-gradient);" type="button"
                 class="btn btn-warning" data-bs-toggle="modal"
                 data-bs-target="#exportexcel">
@@ -363,7 +363,7 @@
             </div>
         </div>
     </div>
-    <div style="margin-left:10px; margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); ">
+    <div style="margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); ">
         <button style="font-weight:bold; text-align:center;background-image: var(--bs-gradient);" type="button"
                 class="btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#exportexcelProd">
@@ -380,9 +380,9 @@
                     </div>
                     <div class="modal-body">
                         <h5 class="text-danger">Ne renseignez que les chiffres du DAS</h5>
-                        <form style="text-align:center; margin: 20px " action="/see_prod_annee" method="post">
+                        <form style="text-align:center; margin: 20px " action="/export_excel_prod_annuelle" method="post">
                             <label class="form-label text-primary" for="das">DAS :</label>
-                            <input class="form-control  bg-light text-primary" type="text" name="das">
+                            <input required="required" class="form-control  bg-light text-primary" type="text" name="das">
                             <br>
                             <label class="form-label text-primary" style="font-weight:bold;"
                                    for="annee">Année à montrer
@@ -404,7 +404,7 @@
                             <br>
                             <button style="font-weight:bold;" align="center"
                                     class="btn border border-white btn-primary"
-                                    name="button">Accéder à la production sur cette année
+                                    name="button">Exporter
                             </button>
                         </form>
                     </div>
@@ -412,12 +412,8 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-warning"
-       style="margin-left:10px; margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-       href="/create_fonctions">Créer les fonctions</a>
-    <br>
     <button style="margin-top:20px; background-image: var(--bs-gradient); font-weight:bold;" type="button"
-            class="btn btn-primary" data-bs-toggle="modal"
+            class="btn btn-warning" data-bs-toggle="modal"
             data-bs-target="#modifpourcent">
         Modifier le pourcentage d'une année
     </button>
@@ -458,13 +454,13 @@
         </div>
     </div>
     <br>
-    <a class="btn btn-warning"
-       style="margin-left:10px; margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
+    <a class="btn btn-primary"
+       style="margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
        href="/see_data_date">Voir
         les dates</a>
     <br>
     <button style="margin-top:20px; background-image: var(--bs-gradient); font-weight:bold;" type="button"
-            class="btn btn-primary" data-bs-toggle="modal"
+            class="btn btn-warning" data-bs-toggle="modal"
             data-bs-target="#modifNbEquipe">
         Modifier la taille de l'équipe sur un mois
     </button>

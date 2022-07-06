@@ -376,6 +376,7 @@ def export_excel_marcheMS4():
     """----- Taille lignes et colonnes -----"""
     pdc.set_column_pixels('A:A', 10)
     pdc.set_row_pixels(0, 10)
+    pdc.set_column_pixels('C:C', 90)
     pdc.set_column_pixels('D:D', 130)
     pdc.set_column_pixels('E:E', 90)
     pdc.set_column_pixels('F:F', 72)

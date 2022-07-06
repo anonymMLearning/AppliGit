@@ -248,10 +248,10 @@
 <div class="bg-light border border-3 border-primary rounded mt-2"
      style="margin: 20px; margin-right:20px; margin-bottom: 10px">
     <div style="margin-left: 20px">
-        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Récapitulatif de la prodiction sur l'année
+        <h5 style="margin-top: 5px; text-align: center" class="text-primary">Récapitulatif de la production sur l'année
             {{anneeToShow}}. <br>
             Pour modifier des données, changer les valeurs et cliquer sur "Enregistrer".<br>
-            Pour calculer un coût, cliquer sur "Calculer un coût".
+            Pour calculer un coût, cliquer sur le bouton associé.
         </h5>
     </div>
 </div>
@@ -351,7 +351,7 @@
             {% endfor %}
         </tr>
         <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
-            <td class="bg-warning" , style="font-weight: bold; border: 1px solid black; padding:5px;">Equipe</td>
+            <td class="bg-warning" , style="font-weight: bold; border: 1px solid black; padding:5px;">Équipe</td>
             {% for date in dataDate %}
             <td class="bg-light" style="border: 1px solid; padding:5px;">
                 {{date.equipe}}

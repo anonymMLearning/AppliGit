@@ -22,6 +22,9 @@ db = SQLAlchemy(app)
 from .exportExcel import *
 from .exportExcelMarche import *
 from .exportSuiviConso import *
+from .exportExcelProdAn import *
+from .exportExcelBooster import *
+from .exportExcelDeplacement import *
 from .models import *
 from datetime import datetime
 
@@ -186,6 +189,25 @@ def export_excel_marche():
     return render_template('accueilMarcheMS4.html', collabs=collabs)
 
 
+@app.route('/export_excel_prod_annuelle', methods=['GET', 'POST'])
+def exportExcelProdAnnuelle():
+    export_excel_prod_annuelle()
+    collabs = db.session.query(Collab).filter(Collab.access == 3).all()
+    return render_template('accueil.html', collabs=collabs)
+
+
+@app.route('/export_excel_booster', methods=['GET', 'POST'])
+def exportExcelBooster():
+    export_excel_suivi_booster()
+    return render_template('accueilBooster.html')
+
+
+@app.route('/export_excel_deplacements', methods=['GET', 'POST'])
+def exportExcelDeplacement():
+    export_excel_deplacement()
+    return render_template('accueilBooster.html')
+
+
 @app.route('/export_excel_ssq_suivi_conso', methods=['GET', 'POST'])
 def exportExcelSSQSuiviConso():
     export_excel_SSQSuiviConso()
@@ -277,6 +299,14 @@ def init_db():
     db.session.add(NoteDeFrais(0, "Hotel", 0))
     db.session.add(NoteDeFrais(0, "Parking", 0))
     db.session.add(NoteDeFrais(0, "AMEX - NDF", 0))
+    rpa = Fonction("RPA")
+    rla = Fonction("RLA")
+    po = Fonction("PO")
+    exp = Fonction("EXP")
+    db.session.add(rpa)
+    db.session.add(rla)
+    db.session.add(po)
+    db.session.add(exp)
 
     db.session.commit()
     dateNow = str(datetime.now())
@@ -579,29 +609,6 @@ def deleteGcm(idg):
     for gcm in gcms:
         dataGcm.append([gcm, gcm.fonctions])
     return render_template('fonctionGcm.html', fonctions=fonctions, dataGcm=dataGcm)
-
-
-@app.route('/create_fonctions', methods=['GET', 'POST'])
-def createFonctions():
-    """
-        Crée l'ensemble des fonctions.
-
-        Parameters
-        ----------
-        Returns
-        -------
-        render_template
-    """
-    rpa = Fonction("RPA")
-    rla = Fonction("RLA")
-    po = Fonction("PO")
-    exp = Fonction("EXP")
-    db.session.add(rpa)
-    db.session.add(rla)
-    db.session.add(po)
-    db.session.add(exp)
-    db.session.commit()
-    return render_template('accueil.html')
 
 
 @app.route('/delete_fonction/<idf>', methods=['GET', 'POST'])
@@ -1760,6 +1767,12 @@ def save_collab():
     nom_conges = "Congés de " + nom + " " + prenom  # Nom générique pour les congés d'un collab
     collab = Collab(nom, prenom, access, entreprise, rafInit)
     collab.gcm_id = gcm
+    # On l'associe à la montée Doc. si cette activité a déjà été créé
+    monteeDoc = db.session.query(Boncomm).filter(Boncomm.activite == "Montée Doc. Autonomie").all()
+    if len(monteeDoc) != 0:  # Activité déjà créé
+        assoc = AssociationBoncommCollab(joursAllouesBC=30)
+        assoc.collab = collab
+        monteeDoc[0].collabs.append(assoc)
     # On crée l'assoication aux boosters
     boosters = db.session.query(Booster).all()
     for booster in boosters:
@@ -1776,11 +1789,17 @@ def save_collab():
     db.session.add(collab)
     db.session.add(conges)
     dates = db.session.query(Date).all()
-    for date in dates:  # Initilialise les imputations à 0 sur toutes les dates pour les congés.
+    for date in dates:  # Initilialise les imputations à 0 sur toutes les dates pour les congés et la montée en doc.
         imp = Imputation(conges.id_acti, collab.id_collab, date.id_date, 0, "client")
         impAtos = Imputation(conges.id_acti, collab.id_collab, date.id_date, 0, "atos")
+        if len(monteeDoc) != 0:
+            impDoc = Imputation(monteeDoc[0].id_acti, collab.id_collab, date.id_date, 0, "client")
+            impDocAtos = Imputation(monteeDoc[0].id_acti, collab.id_collab, date.id_date, 0, "atos")
+            db.session.add(impDoc)
+            db.session.add(impDocAtos)
         db.session.add(imp)
         db.session.add(impAtos)
+
     db.session.commit()
     collabs = db.session.query(Collab).all()
     data = []
@@ -3162,11 +3181,12 @@ def seeSCR():
     return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
                            dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
                            data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
-                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut))
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut),
+                           anneeFin=int(anneeFin))
 
 
-@app.route('/modif_scr_retenu/<annee>', methods=['Get', 'POST'])
-def modifScrRetenu(annee):
+@app.route('/modif_scr_retenu/<annee>/<anneeDebut>-<anneeFin>', methods=['Get', 'POST'])
+def modifScrRetenu(annee, anneeDebut, anneeFin):
     dateNow = str(datetime.now())
     # Modification du SCR moyen retenu :
     newScrMoyRetenu = request.form['scrMoyRetenu']
@@ -3175,8 +3195,6 @@ def modifScrRetenu(annee):
         date.scrMoyRetenu = newScrMoyRetenu
     db.session.commit()
 
-    anneeDebut = request.form['anneeD']
-    anneeFin = request.form['anneeF']
     anneeToShow = []
     for i in range(int(anneeFin) - int(anneeDebut) + 1):
         anneeToShow.append(int(anneeDebut) + i)
@@ -3229,19 +3247,19 @@ def modifScrRetenu(annee):
     return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
                            dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
                            data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
-                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut))
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut),
+                           anneeFin=int(anneeFin))
 
 
-@app.route('/save_scr', methods=['GET', 'POST'])
-def saveSCR():
+@app.route('/save_scr/<anneeDebut>-<anneeFin>', methods=['GET', 'POST'])
+def saveSCR(anneeDebut, anneeFin):
     dateNow = str(datetime.now())
     cout = request.form['cout']
     ponderation = request.form['ponderation']
     scr = SCR(cout, ponderation)
     db.session.add(scr)
     db.session.commit()
-    anneeDebut = request.form['anneeD']
-    anneeFin = request.form['anneeF']
+
     anneeToShow = []
     for i in range(int(anneeFin) - int(anneeDebut) + 1):
         anneeToShow.append(int(anneeDebut) + i)
@@ -3293,11 +3311,12 @@ def saveSCR():
     return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
                            dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
                            data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
-                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut))
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut),
+                           anneeFin=int(anneeFin))
 
 
-@app.route('/see_add_scr_collab/<idScr>')
-def seeAddScrCollab(idScr):
+@app.route('/see_add_scr_collab/<idScr>/<anneeDebut>-<anneeFin>')
+def seeAddScrCollab(idScr, anneeDebut, anneeFin):
     scr = db.session.query(SCR).get(idScr)
     collabs = db.session.query(Collab).all()
     dataCollabs = []
@@ -3324,11 +3343,11 @@ def seeAddScrCollab(idScr):
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
     return render_template('addScrCollab.html', dataCollabs=dataCollabs, scr=scr, data_navbar=data_navbar, mois=mois,
-                           annee=annee)
+                           annee=annee, anneeDebut=anneeDebut, anneeFin=anneeFin)
 
 
-@app.route('/add_scr_collab/<idScr>', methods=['GET', 'POST'])
-def addScrCollab(idScr):
+@app.route('/add_scr_collab/<idScr>/<anneeDebut>-<anneeFin>', methods=['GET', 'POST'])
+def addScrCollab(idScr, anneeDebut, anneeFin):
     dateNow = str(datetime.now())
     scr = db.session.query(SCR).get(idScr)
     collabs = db.session.query(Collab).all()
@@ -3354,8 +3373,6 @@ def addScrCollab(idScr):
                 scr.collabs.append(assoc2)
                 collab.scrs.append(assoc2)
     db.session.commit()
-    anneeDebut = request.form['anneeD']
-    anneeFin = request.form['anneeF']
     anneeToShow = []
     for i in range(int(anneeFin) - int(anneeDebut) + 1):
         anneeToShow.append(int(anneeDebut) + i)
@@ -3407,7 +3424,8 @@ def addScrCollab(idScr):
     return render_template('scr.html', nbAnnees=nbAnnees, anneeToShow=anneeToShow, scrs=scrs,
                            dataCollabsTableau2=dataCollabsTableau2, joursTot=joursTot, coutTot=coutTot,
                            data_navbar=data_navbar, scrMoyenCalc=scrMoyenCalc, scrMoyenArrondi=scrMoyenArrondi,
-                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut))
+                           mois=mois, annee=annee, scrMoyenRetenu=scrMoyenRetenu, anneeDebut=int(anneeDebut),
+                           anneeFin=int(anneeFin))
 
 
 """------------------------------------------------------------------------------------------------------------------"""
@@ -3538,6 +3556,7 @@ def calcCout(anneeToShow):
         coutTot += float(scrEC.cout) * float(nbJours)
     coutTot = round(coutTot, 2)
     resultat = "→ Coût calculé : " + str(coutTot)
+    anneeToShow = request.form['annee']
     prodInitValide = db.session.query(Prod).filter(Prod.annee == 2021, Prod.type == "valide", Prod.mois == 2).all()[0]
     prodInitReel = db.session.query(Prod).filter(Prod.annee == 2021, Prod.type == "reel", Prod.mois == 2).all()[0]
     prodsValidees = db.session.query(Prod).filter(Prod.annee == anneeToShow, Prod.type == "valide").all()
@@ -3551,7 +3570,7 @@ def calcCout(anneeToShow):
             dataValide, dataReel = [prodsValidees[i]], [prodsReelles[i]]
 
             # Budget :
-            if int(anneeToShow) == 2021 and i == 0 or i == 1:
+            if int(anneeToShow) == 2021 and (i == 0 or i == 1):
                 budgetValide = 0
                 budgetReel = 0
             else:
@@ -3560,11 +3579,15 @@ def calcCout(anneeToShow):
                         i].tjm * prodsValidees[i].jourMoisDP
                 else:
                     budgetValide = 0
-                if prodsReelles[i].jourMoisDP != 0:
-                    budgetReel = dataDate[i].equipe * dataDate[i].tjm * prodsReelles[i].jourMoisTeam + dataDate[i].tjm * \
-                                 prodsReelles[i].jourMoisDP
+                if int(anneeToShow) == 2021 and i == 2:
+                    budgetReel = 25000
                 else:
-                    budgetReel = 0
+                    if prodsReelles[i].jourMoisDP != 0:
+                        budgetReel = dataDate[i].equipe * dataDate[i].tjm * prodsReelles[i].jourMoisTeam + dataDate[
+                            i].tjm * \
+                                     prodsReelles[i].jourMoisDP
+                    else:
+                        budgetReel = 0
             dataValide.append(budgetValide)
             dataReel.append(budgetReel)
 
@@ -3576,7 +3599,7 @@ def calcCout(anneeToShow):
 
             # Amortissement :
             """ Amortissement """
-            if int(anneeToShow) == 2021 and i == 0 or i == 1:
+            if int(anneeToShow) == 2021 and (i == 0 or i == 1):
                 amortValide = 0
                 amortReel = 0
             else:
@@ -3612,6 +3635,13 @@ def calcCout(anneeToShow):
                 # i - 1 : Nombre de mois passés sur l'année en cours
             dataValide.append(rAAValide)
             dataReel.append(rAAReel)
+
+            # Marge:
+            margeValide = round(budgetValide - coutTotValide - amortValide, 2)
+            margeReel = round(budgetReel - coutTotReel - amortReel, 2)
+            dataValide.append(margeValide)
+            dataReel.append(margeReel)
+
             # Pourcentage marge :
             if budgetValide != 0:
                 margePourcentValide = round(100 * (budgetValide - (coutTotValide + amortValide)) / budgetValide, 2)
@@ -4237,10 +4267,14 @@ def seeChronoAPM():
     fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm != "").all()  # Que les apm
     # Servira pour trier dans l'ordre les asso aux Fds, contient différents type de ndf :
     ndfRef = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == 0).all()
-    uos = db.session.query(UO).all()  # idem
+    uos = db.session.query(UO).filter(UO.type == "Fd").all()  # idem
     dataToShow = []
     for j in range(len(fds)):
-        assosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == fds[j].id_acti).all()
+        dataAssosUo = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.boncomm_id == fds[j].id_acti).all()
+        assosUo = []
+        for asso in dataAssosUo:
+            if asso.uo.type == "Fd":  # Que les UO de déplacement
+                assosUo.append(asso)
         notesDeFrais = db.session.query(NoteDeFrais).filter(NoteDeFrais.acti_id == fds[j].id_acti).all()
         if len(notesDeFrais) == 0:
             dataNDF = ["" for i in range(len(ndfRef))]
@@ -4419,6 +4453,7 @@ def linkUoApm(idApm):
 @app.route('/see_fd')
 def seeFd():
     fds = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm == "").all()  # Que les FD
+    print(fds[1].collabs[0].collab.entreprise)
     collabs = db.session.query(Collab).all()
     return render_template('fd.html', fds=fds, collabs=collabs)
 
@@ -4528,7 +4563,8 @@ def modifFd(idFd):
     fd.dateNotif = request.form['dateNotif']
     fd.dateFinPrev = request.form['dateFinPrev']
     fd.notification = request.form['notification']
-    idCollab = request.form['collab']
+    fd.etat = request.form['etat']
+    fd.dateFinOp = request.form['dateFinOp']
     if request.form['collab'] != "pasDeModif":
         collab = db.session.query(Collab).get(int(request.form['collab']))
         add = True  # Pour savoir si le collab est différent
@@ -4668,6 +4704,7 @@ def seeSoldeAtos():
     for i in range(nbUosFd):
         dataTotUo.append([0, 0, 0, 0])
     for fd in fdAtos:
+
         dataToAdd = [fd]
         apms = db.session.query(Boncomm).filter(Boncomm.prodGdpOuFd == "Fd", Boncomm.apm != "",
                                                 Boncomm.num == fd.num).all()  # Tous les apms liés à ce FD
@@ -4681,6 +4718,7 @@ def seeSoldeAtos():
             data = []
             facteurFd = db.session.query(AssoUoBoncomm).filter(AssoUoBoncomm.uo_id == uo.id_uo,
                                                                AssoUoBoncomm.boncomm_id == fd.id_acti).all()[0].facteur
+
             data.append(facteurFd)
             dataTotUo[j][0] += facteurFd
             facteurAffecte = 0

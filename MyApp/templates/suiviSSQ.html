@@ -45,7 +45,6 @@
         <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
             <td></td>
             <td></td>
-            <td></td>
             {% for abrev in abrevCollabs %}
             <td class="bg-warning" style="font-weight:bold; border:1px solid; padding : 5px;">{{abrev}}</td>
             {% endfor %}
@@ -54,7 +53,6 @@
             <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">Cumulés</td>
         </tr>
         <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
-            <td></td>
             <td></td>
             <td class="bg-warning" style="border: 1px solid; font-weight: bold; padding: 5px;">RAF Init</td>
             {% for collab in collabs %}
@@ -75,7 +73,6 @@
         </tr>
         {% for i in range(nbMois) %}
         <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
-            <td></td>
             <td class="bg-primary text-white"
                 style="font-weight: bold;border: 1px solid black; padding:5px;">
                 {{periode[i][0]}}/{{periode[i][1]}}
@@ -108,7 +105,6 @@
         </tr>
         {% for semaine in dataToShow[i][1] %}
         <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
-            <td class="bg-light text-danger" style="border: 1px solid; padding:5px;">{{semaine[2]}}</td>
             <td class="bg-light" style="border: 1px solid; padding:5px;"></td>
             <td class="bg-primary text-white"
                 style="border: 1px solid black; font-weight: bold; padding: 5px;">
@@ -123,19 +119,11 @@
             <td class="bg-secondary text-white"
                 style="font-weight:bold; border:1px solid black; padding : 5px;"></td>
             <td class="bg-secondary" style="padding: 5px;"></td>
-            <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-3 bg-warning" style="border: 1px solid;"></div>
-                        <div class="col-3 bg-warning" style="border: 1px solid;"></div>
-                        <div class="col-6 bg-warning" style="border: 1px solid;"></div>
-                    </div>
-                </div>
+            <td>
             </td>
         </tr>
         {% endfor %}
         <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
-            <td></td>
             <td class="bg-light" style="border: 1px solid; padding:5px;"></td>
             <td class="bg-warning" style="border: 1px solid black; font-weight: bold; padding: 5px;">Cons.
                 totale
@@ -148,18 +136,10 @@
                 {{totConsoTot[i]}}
             </td>
             <td class="bg-secondary" style="padding: 5px;"></td>
-            <td class="bg-light" style="font-weight:bold; border:1px solid; padding : 5px;">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-3 bg-warning" style="border: 1px solid;"></div>
-                        <div class="col-3 bg-warning" style="border: 1px solid;"></div>
-                        <div class="col-6 bg-warning" style="border: 1px solid;"></div>
-                    </div>
-                </div>
+            <td>
             </td>
         </tr>
         <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
-            <td></td>
             <td class="bg-light" style="border: 1px solid; padding:5px;"></td>
             <td class="bg-secondary" style="border: 1px solid black; font-weight: bold; padding: 5px;">RAF
             </td>

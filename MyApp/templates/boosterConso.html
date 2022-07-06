@@ -234,14 +234,14 @@
                             style="font-weight: bold; border: 1px solid black; padding: 5px;">
                             {{periode[k][0]}}/{{periode[k][1]}}
                         </td>
-                        <td class="bg-danger text-white"
+                        <td class="bg-warning"
                             style="font-weight:bold; border:1px solid black; padding : 5px;">RAF - 1
                         </td>
                         <td class="bg-light" style="font-weight: bold;padding: 5px;border:1px solid black">
                             {{dataToShowRight[k][0][-1]}}
                         </td>
                         {% for j in range(nbCollab) %}
-                        <td class="bg-danger text-white" style="border:1px solid black; padding : 5px;">
+                        <td class="bg-warning" style="border:1px solid black; padding : 5px;">
                             {{dataToShowRight[k][0][j]}}
                         </td>
                         {% endfor %}
@@ -292,14 +292,14 @@
                     </tr>
                     <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
                         <td></td>
-                        <td class="bg-danger text-white"
+                        <td class="bg-warning"
                             style="font-weight:bold; border:1px solid black; padding : 5px;">RAF <br>Update
                         </td>
                         <td class="bg-light" style="font-weight: bold;padding: 5px;border:1px solid black">
                             {{dataToShowRight[k][4][-1]}}
                         </td>
                         {% for j in range(nbCollab) %}
-                        <td class="bg-danger text-white" style="border:1px solid black; padding : 5px;">
+                        <td class="bg-warning" style="border:1px solid black; padding : 5px;">
                             {{dataToShowRight[k][4][j]}}
                         </td>
                         {% endfor %}

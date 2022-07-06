@@ -8,8 +8,8 @@ from flask import Flask, render_template, request
 
 def export_excel():
     dateNow = str(datetime.now())
-    mois = int(dateNow[5:7])
-    annee = int(dateNow[:4])
+    mois = request.form['mois']
+    annee = request.form['annee']
     das = request.form['das']
     workbook = xlsxwriter.Workbook(
         r'C:\Users\a' + das + '\Downloads\ImputationsMS4-' + str(mois) + '-' + str(annee) + '.xlsx')
@@ -239,9 +239,8 @@ def export_excel():
         impGlob.write(xl_col_to_name(col) + '4', 'Alloués', format_entete)
         impGlob.write(xl_col_to_name(col + 1) + '4', 'Conso', format_entete)
         impGlob.write(xl_col_to_name(col + 2) + '4', 'RAF', format_entete)
-        impGlob.write(xl_col_to_name(col) + '3', '', format_entete)
-        impGlob.write(xl_col_to_name(col + 1) + '3', collab.nom, format_entete)
-        impGlob.write(xl_col_to_name(col + 2) + '3', '', format_entete)
+        impGlob.merge_range(2, col, 2, col + 2, collab.nom, format_entete)
+
         col += 3
 
     """----- Bons de commande -----"""
