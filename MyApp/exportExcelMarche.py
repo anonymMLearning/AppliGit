@@ -10,9 +10,7 @@ def export_excel_marcheMS4():
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
-    das = request.form['das']
-    workbook = xlsxwriter.Workbook(
-        r'C:\Users\a' + das + '\Downloads\MarchéMS4-' + str(mois) + '-' + str(annee) + '.xlsx')
+    workbook = xlsxwriter.Workbook('MarchéMS4-' + str(mois) + '-' + str(annee) + '.xlsx')
     chronoBC = workbook.add_worksheet('chrono des BC')
     chronoBC.set_tab_color('#305496')
     chronoFD = workbook.add_worksheet('chrono des FD')

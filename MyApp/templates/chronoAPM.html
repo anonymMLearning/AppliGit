@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
-            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+            <a class="navbar-brand text-uppercase fw-bold" href="/accueil_global"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
@@ -44,6 +44,7 @@
     </div>
 </div>
 <br>
+<div align="center"><h3 class="text-primary" style="text-decoration: underline;">Description des APM :</h3></div>
 <table id="tableau" align="center"
        style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
     <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
@@ -79,11 +80,11 @@
         <td class="bg-light" style="border: 1px solid black; padding: 5px;">
             <div align="center">
                 <button style="background-image: var(--bs-gradient); border: 1px solid black; font-weight: bold;"
-                        type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modifapm">
+                        type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modifapm{{fd[0].id_acti}}">
                     Modifier
                 </button>
-                <div class="modal fade" id="modifapm" tabindex="-1" aria-hidden="true"
-                     aria-labelledby="modifapm">
+                <div class="modal fade" id="modifapm{{fd[0].id_acti}}" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="modifapm{{fd[0].id_acti}}">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header bg-primary text-white">
@@ -162,6 +163,7 @@
     </tr>
     {% endfor %}
 </table>
+<div align="center"><h3 class="text-primary" style="text-decoration: underline;">Associations aux UO :</h3></div>
 <table id="tableau2" align="center"
        style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
     <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
@@ -185,6 +187,7 @@
     </tr>
     {% endfor %}
 </table>
+<div align="center"><h3 class="text-primary" style="text-decoration: underline;">Notes de frais liées :</h3></div>
 <table id="tableau3" align="center"
        style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
     <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">
@@ -208,6 +211,7 @@
     </tr>
     {% endfor %}
 </table>
+<div align="center"><h3 class="text-primary" style="text-decoration: underline;">Total :</h3></div>
 <table id="tableau4" align="center"
        style="margin-bottom: 30px; margin-top: 30px; text-align:center;   table-layout: fixed;">
     <tr class="p-3 mb-2" style="background-image: var(--bs-gradient);">

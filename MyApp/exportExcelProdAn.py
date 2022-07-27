@@ -10,11 +10,9 @@ def export_excel_prod_annuelle():
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
-    das = request.form['das']
     anneeToShow = request.form['annee']
 
-    workbook = xlsxwriter.Workbook(
-        r'C:\Users\a' + das + '\Downloads\Production Année ' + str(annee) + '.xlsx')
+    workbook = xlsxwriter.Workbook('Production Année ' + str(annee) + '.xlsx')
     sheetScr = workbook.add_worksheet('SCR')
     sheetScr.set_tab_color('#305496')
     prodAnReel = workbook.add_worksheet('Prod. annuelle réelle')

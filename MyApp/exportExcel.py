@@ -10,9 +10,7 @@ def export_excel():
     dateNow = str(datetime.now())
     mois = request.form['mois']
     annee = request.form['annee']
-    das = request.form['das']
-    workbook = xlsxwriter.Workbook(
-        r'C:\Users\a' + das + '\Downloads\ImputationsMS4-' + str(mois) + '-' + str(annee) + '.xlsx')
+    workbook = xlsxwriter.Workbook('ImputationsMS4-' + str(mois) + '-' + str(annee) + '.xlsx')
     bcm = workbook.add_worksheet('BCM')
     impGlob = workbook.add_worksheet('Imp globales')
     activitesMois = workbook.add_worksheet('Activités en cours')

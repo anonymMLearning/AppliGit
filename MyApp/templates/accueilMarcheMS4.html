@@ -9,7 +9,7 @@
     <title>Accueil Marché MS4</title>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
-            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+            <a class="navbar-brand text-uppercase fw-bold" href="/accueil_global"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
@@ -250,6 +250,8 @@
         </h5>
     </div>
 </div>
+<div align="center"><h5 class="text-danger">{{resultat}}</h5></div>
+<br>
 <div align="center">
     <button style="font-weight:bold; text-align:center;background-image: var(--bs-gradient);" type="button"
             class="btn btn-warning" data-bs-toggle="modal"
@@ -261,16 +263,12 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title">Renseignez votre DAS</h5>
+                    <h5 class="modal-title">Choisissez la période</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h5 class="text-danger">Ne renseignez que les chiffres du DAS</h5>
                     <form action="/export_excel_marche" method="post">
-                        <label class="form-label" for="das">DAS :</label>
-                        <input class="form-control" type="text" id="das" name="das">
-                        <br>
                         <div class="container">
                             <div class="row">
                                 <div class="col-6">

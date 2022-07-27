@@ -4,7 +4,7 @@
     <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
-            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+            <a class="navbar-brand text-uppercase fw-bold" href="/accueil_global"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
@@ -167,7 +167,9 @@
                     <input required="required" class="text-primary form-control" type="number" step="0.5" id="rafInit"
                            name="rafInit">
                     <br>
-                    <button name="button" class="btn btn-primary">Ajouter ce collaborateur</button>
+                    <div align="center">
+                        <button name="button" class="btn btn-primary">Ajouter ce collaborateur</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -336,6 +338,7 @@
         document.formulaireDate.action = url;
 	    document.forms["formulaireDate"].submit();
     }
+
 
 
 

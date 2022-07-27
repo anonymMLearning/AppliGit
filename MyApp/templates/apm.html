@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
-            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+            <a class="navbar-brand text-uppercase fw-bold" href="/accueil_global"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
@@ -271,6 +271,89 @@
                                         <a href="/see_apm">Non</a>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td class="bg-light" style="border: 1px solid black; padding:5px;">
+            <div align="center">
+                <button style="background-image: var(--bs-gradient); border: 1px solid black; font-weight: bold;"
+                        type="button" class="btn btn-warning" data-bs-toggle="modal"
+                        data-bs-target="#modifapm{{apm[0].id_acti}}">
+                    Modifier
+                </button>
+                <div class="modal fade" id="modifapm{{apm[0].id_acti}}" tabindex="-1" aria-hidden="true"
+                     aria-labelledby="modifapm{{apm[0].id_acti}}">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">Modifier l'APM</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/modif_apm/{{apm[0].id_acti}}" method="post">
+                                    <label class="form-label text-primary" for="apm">N°APM :</label>
+                                    <input class="text-primary form-control" type="text" name="apm"
+                                           required="required" value="{{apm[0].apm}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="num">N° du BC associé :</label>
+                                    <input class="text-primary form-control" type="text" name="num"
+                                           required="required" value="{{apm[0].num}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="poste">Poste :</label>
+                                    <input class="text-primary form-control" type="text" name="poste"
+                                           required="required" value="{{apm[0].poste}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="activite">Objet du déplacement :</label>
+                                    <input class="text-primary form-control" type="text"
+                                           name="activite" required="required" value="{{apm[0].activite}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="debut">Date de début :</label>
+                                    <input required="required" class="text-primary form-control" type="date"
+                                           name="debut" value="{{apm[0].dateDebut}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="fin">Date de fin :</label>
+                                    <input required="required" class="text-primary form-control" type="date"
+                                           name="fin" value="{{apm[0].dateFinOp}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="lieu">Lieu :</label>
+                                    <input class="text-primary form-control" type="text" name="lieu"
+                                           required="required" value="{{apm[0].lieu}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="client">Client :</label>
+                                    <input class="text-primary form-control" type="text" name="client"
+                                           required="required" value="{{apm[0].client}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="signature">Date de signature :</label>
+                                    <input required="required" class="text-primary form-control" type="date"
+                                           name="signature" value="{{apm[0].dateSign}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="margeLib">Marge libérée :</label>
+                                    <input class="text-primary form-control" type="number" step="0.1"
+                                           name="margeLib"
+                                           required="required" value="{{apm[0].margeLib}}">
+                                    <br>
+                                    <label class="form-label text-primary" for="intervenant">Collaborateur concerné
+                                        :</label>
+                                    <br>
+                                    <h6 class="text-danger">Ne pas être sélectionné si ne doit pas être modifié</h6>
+                                    <select class="form-select bg-white text-primary"
+                                            name="intervenant">
+                                        <option selected value="pasDeModif"></option>
+                                        {% for collab in collabs %}
+                                        <option name="{{collab.id_collab}}" value={{collab.id_collab}}>
+                                            {{collab.nom}}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <br>
+                                    <button style="margin-top: 15px;" class="btn btn-primary" name="button">Enregistrer
+                                        l'APM
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

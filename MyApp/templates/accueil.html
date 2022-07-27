@@ -9,7 +9,7 @@
     <title>Accueil</title>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
-            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+            <a class="navbar-brand text-uppercase fw-bold" href="/accueil_global"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
@@ -252,11 +252,9 @@
         </h5>
     </div>
 </div>
+<br>
+<div align="center"><h5 class="text-danger">{{resultat}}</h5></div>
 <div style="text-align:center">
-    <a id="link" class="btn btn-primary" href="/init_db"
-       style="margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); ">
-        Initialiser la BDD</a>
-    <br>
     <div style="margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); ">
         <button style="font-weight:bold; text-align:center;background-image: var(--bs-gradient);" type="button"
                 class="btn btn-warning" data-bs-toggle="modal"
@@ -268,16 +266,12 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-warning">
-                        <h5 class="modal-title">Renseignez votre DAS</h5>
+                        <h5 class="modal-title">Choisissez la période</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h5 class="text-danger">Ne renseignez que les chiffres du DAS</h5>
                         <form action="/export_excel_ssq_suivi_conso" method="post">
-                            <label class="form-label" for="das">DAS :</label>
-                            <input class="form-control" type="text" id="das" name="das">
-                            <br>
                             <div class="container">
                                 <div class="row">
                                     <div class="col-6">
@@ -374,16 +368,13 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">Renseignez votre DAS</h5>
+                        <h5 class="modal-title">Choisissez l'année</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h5 class="text-danger">Ne renseignez que les chiffres du DAS</h5>
-                        <form style="text-align:center; margin: 20px " action="/export_excel_prod_annuelle" method="post">
-                            <label class="form-label text-primary" for="das">DAS :</label>
-                            <input required="required" class="form-control  bg-light text-primary" type="text" name="das">
-                            <br>
+                        <form style="text-align:center; margin: 20px " action="/export_excel_prod_annuelle"
+                              method="post">
                             <label class="form-label text-primary" style="font-weight:bold;"
                                    for="annee">Année à montrer
                                 :</label>
@@ -399,7 +390,6 @@
                                 <option value="2028">2028</option>
                                 <option value="2029">2029</option>
                                 <option value="2030">2030</option>
-
                             </select>
                             <br>
                             <button style="font-weight:bold;" align="center"
@@ -454,13 +444,8 @@
         </div>
     </div>
     <br>
-    <a class="btn btn-primary"
-       style="margin-top:20px;font-weight:bold; text-align:center;background-image: var(--bs-gradient); "
-       href="/see_data_date">Voir
-        les dates</a>
-    <br>
     <button style="margin-top:20px; background-image: var(--bs-gradient); font-weight:bold;" type="button"
-            class="btn btn-warning" data-bs-toggle="modal"
+            class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#modifNbEquipe">
         Modifier la taille de l'équipe sur un mois
     </button>

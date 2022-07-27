@@ -198,7 +198,7 @@ class Collab(db.Model):
     entreprise = db.Column(db.String(30), nullable=False)
     rafInit = db.Column(db.Float, nullable=False)
     gcm_id = db.Column(db.Integer, db.ForeignKey('gcm.id_gcm'), nullable=False)
-    imputations = db.relationship('Imputation', backref='collab', uselist=False)
+    imputations = db.relationship('Imputation', backref='collab', uselist=False, cascade="all, delete-orphan")
     boncomms = db.relationship('AssociationBoncommCollab', back_populates="collab")
     scrs = db.relationship('AssoCollabSCR', back_populates="collab")
     boosters = db.relationship('AssoCollabBooster', back_populates="collab")

@@ -7,9 +7,7 @@ from flask import Flask, request
 
 
 def export_excel_suivi_booster():
-    das = request.form['das']
-    workbook = xlsxwriter.Workbook(
-        r'C:\Users\a' + das + '\Downloads\MS4 - SSQ - Suivi Booster' + '.xlsx')
+    workbook = xlsxwriter.Workbook('MS4 - SSQ - Suivi Booster.xlsx')
     suiviSSQInit = workbook.add_worksheet('Suivi Conso SSQ Init')
     suiviSSQInit.set_tab_color('#305496')
     suiviSSQ = workbook.add_worksheet('Suivi Conso SSQ')

@@ -10,16 +10,12 @@ def export_excel_SSQSuiviConso():
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
-    das = request.form['das']
     moisDebut, anneeDebut = request.form['moisD'], request.form['anneeD']
     moisFin, anneeFin = request.form['moisF'], request.form['anneeF']
     if int(anneeDebut) == int(anneeFin):
-        workbook = xlsxwriter.Workbook(
-            r'C:\Users\a' + das + '\Downloads\AtosSSQSuiviConso-' + str(anneeDebut) + '.xlsx')
+        workbook = xlsxwriter.Workbook('AtosSSQSuiviConso-' + str(anneeDebut) + '.xlsx')
     else:
-        workbook = xlsxwriter.Workbook(
-            r'C:\Users\a' + das + '\Downloads\AtosSSQSuiviConso-' + str(anneeDebut) + '/' + str(
-                anneeFin) + '.xlsx')
+        workbook = xlsxwriter.Workbook('AtosSSQSuiviConso-' + str(anneeDebut) + '/' + str(anneeFin) + '.xlsx')
     suiviConso = workbook.add_worksheet('SSQ Suivi Conso')
     suiviConso.set_tab_color('#305496')
 

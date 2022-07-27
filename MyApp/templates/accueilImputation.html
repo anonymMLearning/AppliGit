@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
-            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+            <a class="navbar-brand text-uppercase fw-bold" href="/accueil_global"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
@@ -109,9 +109,7 @@
                     <h5 class="text-danger" style="text-align: center">Mois en cours : {{moisStr}} / {{annee}}</h5></h5>
             </div>
         </div>
-        <br>
-        <br>
-
+        <div align="center"><h5 class="text-danger">{{resultat}}</h5></div>
         <br>
         <button style="font-weight:bold; text-align:center;background-image: var(--bs-gradient);" type="button"
                 class="btn btn-warning" data-bs-toggle="modal"
@@ -123,16 +121,12 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-warning">
-                        <h5 class="modal-title">Renseignez votre DAS</h5>
+                        <h5 class="modal-title">Choisissez le mois</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h5 class="text-danger">Ne renseignez que les chiffres du DAS</h5>
                         <form action="/export_excel" method="post">
-                            <label style="font-weight:bold;" class="form-label" for="das">DAS :</label>
-                            <input class="form-control" type="text" id="das" name="das">
-                            <br>
                             <label class="form-label" style="font-weight:bold;" for="mois">Mois :</label>
                             <select class="form-select" name="mois" id="mois">
                                 <option selected value="1">Janvier</option>
@@ -182,6 +176,8 @@
                             var jAllouesThq= caAtos / tjm;
                             document.getElementById("formulaire").elements["jourThq"].value=jAllouesThq;
                             document.getElementById("formulaire").elements["partGDP"].value = jAllouesThq*0.2;}
+
+
 
 
 </script>

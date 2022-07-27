@@ -10,10 +10,8 @@ def export_excel_deplacement():
     dateNow = str(datetime.now())
     mois = int(dateNow[5:7])
     annee = int(dateNow[:4])
-    das = request.form['das']
 
-    workbook = xlsxwriter.Workbook(
-        r'C:\Users\a' + das + '\Downloads\Suivi Déplacements MS4 ' + '.xlsx')
+    workbook = xlsxwriter.Workbook('Suivi Déplacements MS4.xlsx')
     chronoAPM = workbook.add_worksheet('chronoAPM')
     chronoAPM.set_tab_color('#305496')
     soldeAtos = workbook.add_worksheet('Solde realise Atos')

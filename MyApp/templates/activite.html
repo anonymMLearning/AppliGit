@@ -4,7 +4,7 @@
     <link rel="shortcut icon" href="../static/atos-globe-blue-high-res.png"/>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
-            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+            <a class="navbar-brand text-uppercase fw-bold" href="/accueil_global"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
@@ -486,9 +486,6 @@
         <td width="65" style="font-weight:bold; border-right: 1px solid white; padding: 1px;">
             TJM
         </td>
-        <td width="130" style="font-weight:bold; padding: 1px;">
-            Collab
-        </td>
     </tr>
 
     {% for activite in data_reste %}
@@ -547,11 +544,6 @@
         </td>
         <td width="65" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
-        </td>
-        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
-            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
-            {% for collabs in
-            activite[1] %} {{collabs.collab.nom}} <br> {% endfor %}
         </td>
         <td class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
@@ -744,11 +736,6 @@
         <td width="65" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
             {{activite[0].tjm}}
-        </td>
-        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
-            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
-            {% for collabs in
-            activite[1] %} {{collabs.collab.nom}} <br> {% endfor %}
         </td>
         <td class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
@@ -1001,11 +988,6 @@
         </td>
         <td width="65" class="p-3 mb-2 bg-white text-primary border border-primary"
             style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
-        </td>
-        <td width="130" class="p-3 mb-2 bg-white text-primary border border-primary"
-            style="color: rgb(82,82,82) ;border-left: 1px solid ;vertical-align: middle; border-right:1px solid white;padding:15px;">
-            {% for collabs in
-            activite[3] %} {{collabs.collab.nom}} <br> {% endfor %}
         </td>
         <td style="border-bottom: 1px solid #0d6efd;"></td>
         <td class="p-3 mb-2 bg-white text-primary"

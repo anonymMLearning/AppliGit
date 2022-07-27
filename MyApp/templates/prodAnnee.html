@@ -9,7 +9,7 @@
     <title>Production annuelle</title>
     <nav class="bg-light" style="border-bottom : 2px solid #0d6efd">
         <div class="container-fluid">
-            <a class="navbar-brand text-uppercase fw-bold" href="/"><span
+            <a class="navbar-brand text-uppercase fw-bold" href="/accueil_global"><span
                     class="bg-primary bg-gradient p-1 rounded-3 text-light">Atos</span> Gestion de Projet MS4 SUPV</a>
             <ul class="list-inline">
                 <li class="list-inline-item">
@@ -292,38 +292,30 @@
                                     </select>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label" style="font-weight: bold;">Année :</label>
-                                    <select class="form-select bg-light" name="annee">
-                                        <option value="2021">2021</option>
-                                        <option selected value="2022">2022</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2026">2026</option>
-                                        <option value="2027">2027</option>
-                                        <option value="2028">2028</option>
-                                        <option value="2029">2029</option>
-                                        <option value="2030">2030</option>
+                                    <label class="form-label" style="font-weight: bold;">Coût :</label>
+                                    <select required="required" class="form-select bg-light" name="cout">
+                                        <option value="DP">DP</option>
+                                        <option value="Team">Team</option>
                                     </select>
+                                    <br>
                                 </div>
                             </div>
-                            <br>
                             <div class="row">
-                                <div class="col-6">
-                                    <label class="form-label" style="font-weight: bold;">Collaborateurs :</label>
-                                    <select required="required" class="form-select bg-light" multiple
-                                            name="collabs"
-                                            id="collabs">
-                                        {% for collab in collabs %}
-                                        <option value={{collab.id_collab}}>{{collab.nom}}</option>
-                                        {% endfor %}
+                                <div class="col-4">
+                                    <label class="form-label" style="font-weight: bold;">Tableau :</label>
+                                    <select required="required" class="form-select bg-light" name="tableau">
+                                        <option value="valide">Validé</option>
+                                        <option value="reel">Réel</option>
                                     </select>
                                 </div>
-                                <div class="col-6">
-                                    <label class="form-label" style="font-weight: bold;">Nombre de jours :</label>
-                                    {% for collab in collabs %}
-                                    <input type="number" step="0.5" value="18" name="jours{{collab.id_collab}}">
-                                    {% endfor %}
+                                <div class="col-8">
+                                    <label class="form-label" style="font-weight: bold;">Nombre de jours :</label><br>
+                            {% for collab in abrevs %}
+                            <label class="form-label" style="font-weight: bold;">{{collab[1]}} :</label>
+                            <input required="required" type="number" step="0.5" value="0"
+                                   name="jours{{collab[0].id_collab}}">
+                            <br>
+                            {% endfor %}
                                 </div>
                             </div>
                         </div>
@@ -383,6 +375,7 @@
             <td class="bg-light" style="border: 1px solid black; padding:5px;">
                 <input type="number" style="text-align:center; width: 80px;" step="0.1"
                        value="{{dataProdValide[i][0].coutDP}}"
+                       id="valide/{{dataDate[i].mois}}/{{dataDate[i].annee}}/DP"
                        name="valide/{{dataDate[i].mois}}/{{dataDate[i].annee}}/DP">
 
             </td>
@@ -396,6 +389,7 @@
             <td class="bg-light" style="border: 1px solid black; padding:5px;">
                 <input type="number" style="text-align:center;width: 80px;" step="0.1"
                        value="{{dataProdValide[i][0].coutTeam}}"
+                       id="valide/{{dataDate[i].mois}}/{{dataDate[i].annee}}/Team"
                        name="valide/{{dataDate[i].mois}}/{{dataDate[i].annee}}/Team">
             </td>
             {% endfor %}
@@ -503,6 +497,7 @@
             <td class="bg-light" style="border: 1px solid black; padding:5px;">
                 <input type="number" style="text-align:center; width: 80px;" step="0.1"
                        value="{{dataProdReel[i][0].coutDP}}"
+                       id="reel/{{dataDate[i].mois}}/{{dataDate[i].annee}}/DP"
                        name="reel/{{dataDate[i].mois}}/{{dataDate[i].annee}}/DP">
 
             </td>
@@ -516,6 +511,7 @@
             <td class="bg-light" style="border: 1px solid black; padding:5px;">
                 <input type="number" style="text-align:center;width: 80px;" step="0.1"
                        value="{{dataProdReel[i][0].coutTeam}}"
+                       id="reel/{{dataDate[i].mois}}/{{dataDate[i].annee}}/Team"
                        name="reel/{{dataDate[i].mois}}/{{dataDate[i].annee}}/Team">
             </td>
             {% endfor %}
